@@ -1,0 +1,69 @@
+/* ============================================================
+   全息屏覆盖层 —— 只在 holo.html 入口加载（main.tsx 里 import 于 index.css 之后）。
+   作用：把「完整主 App」改成 白底 + 满宽 + 无场景背景 + 无 DJ 遮罩 + 无舞台背景。
+   全部规则限定在 :root[data-holo] 下，且只有本页 import 本文件 —— 主客户端零影响。
+
+   ★原生渲染（html.native-live2d，角色由 WebView 之下的 GLSurfaceView 画）下所有「整面
+   不透明」的底色必须让位，否则角色被整个盖住。本文件的底色规则特异性高于 index.css 的
+   `html.native-live2d body`（(0,3,1) vs (0,1,2)，都带 !important），压不住 —— 故底色规则
+   一律自带 `:not(.native-live2d)` 守卫，从源头不匹配，而不是靠特异性打架。
+   让位后的底色改由原生 GL 清屏色承担（HoloApp 按主题调 setNativeClearColor）。
+   ============================================================ */
+
+/* —— 1. 满宽：画框铺满整个屏幕（原主客户端宽屏是居中 440px 手机画幅） —— */
+@media (min-width: 480px) {
+  :root[data-holo]:not([data-native]) .device-frame {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    box-shadow: none !important;
+  }
+  /* 宽屏两侧留白 → 白 */
+  :root[data-holo]:not(.native-live2d),
+  :root[data-holo]:not(.native-live2d) body {
+    background: #ffffff !important;
+  }
+}
+
+/* —— 2. 白底：角色背后的公交/场景图整体去掉，露出纯白 —— */
+:root[data-holo]:not(.native-live2d) .app-bg {
+  background: #ffffff !important;
+}
+:root[data-holo] .app-bg-img {
+  display: none !important;
+}
+
+/* —— 3. 舞台背景（登录后 activeBg / 用户选背景 / DJ 背景）不显示 —— */
+:root[data-holo] .stage-bg {
+  display: none !important;
+}
+
+/* —— 4. DJ 台黑色遮罩去掉（含通勤子模式的压暗层） —— */
+:root[data-holo] .dj-mode-scrim,
+:root[data-holo] .dj-mode-root--commute .dj-mode-scrim {
+  background: none !important;
+}
+
+/* ============================================================
+   黑夜模式：白底 → 黑底（双击角色切换，:root 上加 data-holo-theme="night"）。
+   仅背景层在此翻黑；文字/面板/换装的反转在 holoDashboard.css 与 HoloStage 里。
+   多带一个属性选择器 → 特异性高于上面白底规则，稳压。
+   ============================================================ */
+@media (min-width: 480px) {
+  :root[data-holo][data-holo-theme='night']:not(.native-live2d),
+  :root[data-holo][data-holo-theme='night']:not(.native-live2d) body {
+    background: #000000 !important;
+  }
+}
+:root[data-holo][data-holo-theme='night']:not(.native-live2d) .app-bg {
+  background: #000000 !important;
+}
+
+/* ============================================================
+   原生渲染：DOM 侧整面透明，底色让给 GL 清屏色。
+   上面的底色规则已用 :not(.native-live2d) 排除自己，这里只做正面声明（并覆盖
+   holo.html 内联的 `html,body{background:#fff}` 首屏兜底）。
+   ============================================================ */
+:root[data-holo].native-live2d,
+:root[data-holo].native-live2d body {
+  background: transparent !important;
+}

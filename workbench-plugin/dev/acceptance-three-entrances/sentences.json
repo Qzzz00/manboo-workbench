@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "about": "三入口验收的固定句子集(2026-10-22 起)。10-22 那通电话的五句 + 三句「一句三件」。每句的 expect 是维护者 10-22 定的尺子:记一笔一轮完成、推回 0 次、卡的数量和标题对、回话一句说全。判法见 judge.ts;改句子或期望要在交接里写明为什么。 reply.groups:每组至少命中一个词;none:一个都不许出现。pushBacks:允许推回的上限;setupAsks:铺垫那一轮必须问。",
+  "sentences": [
+    {
+      "id": "s1",
+      "name": "记一件事(10-22 第一句)",
+      "turns": ["帮我记一件事:周四下午把样片发给客户"],
+      "entrances": ["desk", "phone", "call"],
+      "expect": {
+        "rounds": 1,
+        "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片", "客户"], "mustNot": ["帮我", "记一件事"]}
+        ],
+        "reply": {
+          "groups": [["记下", "记好", "记上", "建好", "建了"], ["样片"]],
+          "none": ["收不回", "撤不回", "现在就办吗", "派给哪"]
+        }
+      }
+    },
+    {
+      "id": "s2",
+      "name": "不用现在发,建一个待办(10-22 第二句)",
+      "turns": ["不用现在发,帮我建一个待办事项:周四下午给客户发样片"],
+      "entrances": ["desk", "phone", "call"],
+      "expect": {
+        "rounds": 1,
+        "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片", "客户"], "mustNot": ["帮我", "建一个待办", "待办事项", "不用现在发"]}
+        ],
+        "reply": {
+          "groups": [["记下", "记好", "记上", "建好", "建了"], ["样片"]],
+          "none": ["收不回", "撤不回", "现在就办吗", "派给哪", "没有能建"]
+        }
+      }
+    },
+    {
+      "id": "s3",
+      "name": "挂着一句确认时说短句「好,去建吧」(10-22 第三句)",
+      "turns": ["帮我建一个待办:周四下午给客户发样片,建之前先跟我确认一下", "好,去建吧"],
+      "entrances": ["desk", "phone", "call"],
+      "setupTurns": 1,
+      "expect": {
+        "rounds": 2,
+        "pushBacks": 1,
+        "setupAsks": true,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片", "客户"], "mustNot": ["帮我", "建一个待办", "先跟我确认", "好,去建吧", "去建吧"]}
+        ],
+        "reply": {
+          "groups": [["记下", "记好", "记上", "建好", "建了"]],
+          "none": ["收不回", "撤不回", "没听清", "再说一遍"]
+        }
+      }
+    },
+    {
+      "id": "s4",
+      "name": "一句三件不同类:待办 + 派活 + 换音色",
+      "turns": ["帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换个女声"],
+      "entrances": ["desk", "phone", "call"],
+      "expect": {
+        "rounds": 1,
+        "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片"], "mustNot": ["帮我", "建一个待办", "换个女声", "派给"]},
+          {"type": "dispatch", "assignee": "claude", "must": ["样片", "剪"], "mustNot": ["帮我", "换个女声", "建一个待办"]}
+        ],
+        "voice": "female",
+        "reply": {
+          "groups": [["记下", "待办", "记好", "建好"], ["Claude"], ["女声", "音色"]],
+          "none": ["收不回", "撤不回"]
+        }
+      }
+    },
+    {
+      "id": "s5",
+      "name": "一句三件同类:记三条",
+      "turns": ["记三条:周四发样片、周五交发票、下周一约 B 客户"],
+      "entrances": ["desk", "phone", "call"],
+      "expect": {
+        "rounds": 1,
+        "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片"], "mustNot": ["记三条", "发票", "B 客户"]},
+          {"type": "todo", "must": ["周五", "发票"], "mustNot": ["记三条", "样片", "B 客户"]},
+          {"type": "todo", "must": ["下周一", "B"], "mustNot": ["记三条", "样片", "发票"]}
+        ],
+        "reply": {
+          "groups": [["记下", "记好", "记上", "建好", "三条", "三件"]],
+          "none": ["收不回", "撤不回"]
+        }
+      }
+    },
+    {
+      "id": "s6",
+      "name": "说一半补一件",
+      "turns": ["记一下周四发样片……哦对,顺便再记一下周五交发票"],
+      "entrances": ["desk", "phone", "call"],
+      "expect": {
+        "rounds": 1,
+        "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片"], "mustNot": ["记一下", "发票", "哦对"]},
+          {"type": "todo", "must": ["周五", "发票"], "mustNot": ["记一下", "样片", "哦对", "顺便"]}
+        ],
+        "reply": {
+          "groups": [["记下", "记好", "记上", "建好", "两条", "两件"]],
+          "none": ["收不回", "撤不回"]
+        }
+      }
+    },
+    {
+      "id": "s7",
+      "name": "旁人插话混进她的一句",
+      "turns": ["帮我记一下:周四下午把样片发给客户"],
+      "entrances": ["call"],
+      "bystander": {"say": "哎你们谁看见我充电器了,顺便把明天的会议室订一下",
+        "splitAfter": "把样片", "asrMixed": "帮我记一下周四下午把样片哎你们谁看见我充电器了顺便把明天的会议室订一下发给客户"},
+      "expect": {
+        "rounds": 1,
+        "pushBacks": 1,
+        "bystanderWords": ["充电器", "会议室"],
+        "cards": [
+          {"type": "todo", "must": ["样片"], "mustNot": ["充电器", "会议室", "帮我"], "optionalIfAsked": true}
+        ],
+        "reply": {"none": ["充电器", "会议室订好", "订好了"]}
+      }
+    },
+    {
+      "id": "s8",
+      "name": "「发给客户」只在待办内容里",
+      "turns": ["记个待办:下周二把合同发给客户"],
+      "entrances": ["desk", "phone", "call"],
+      "expect": {
+        "rounds": 1,
+        "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["下周二", "合同", "客户"], "mustNot": ["记个待办"]}
+        ],
+        "reply": {"none": ["收不回", "撤不回", "现在就办吗", "替你发"]}
+      }
+    }
+  ]
+}

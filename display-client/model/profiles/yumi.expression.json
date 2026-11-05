@@ -1,0 +1,174 @@
+{
+  "role": "yumi",
+  "kind": "expression",
+  "version": "v3",
+  "items": [
+    {
+      "id": "俯身按键",
+      "file": "俯身按键.exp3.json",
+      "category": "prop",
+      "kind": "pose",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "手势",
+      "keywords": ["按键", "俯身", "按按钮", "手势"]
+    },
+    {
+      "id": "抬手右",
+      "file": "抬手右.exp3.json",
+      "category": "prop",
+      "kind": "pose",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "抬右手",
+      "keywords": ["抬手", "右手", "抬右手", "举手"]
+    },
+    {
+      "id": "抬手左",
+      "file": "抬手左.exp3.json",
+      "category": "prop",
+      "kind": "pose",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "抬左手",
+      "keywords": ["抬手", "左手", "抬左手", "举手"]
+    },
+    {
+      "id": "拿话筒",
+      "file": "拿话筒.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "拿话筒",
+      "keywords": ["话筒", "拿话筒", "唱歌", "唱一首", "麦克风"]
+    },
+    {
+      "id": "星星眼",
+      "file": "星星眼.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "surprised",
+      "intensity": "strong",
+      "hint": "惊叹/崇拜",
+      "keywords": ["星星眼", "崇拜", "惊叹", "好厉害", "哇"]
+    },
+    {
+      "id": "歪嘴",
+      "file": "歪嘴.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "歪嘴",
+      "keywords": ["歪嘴", "歪嘴笑", "坏笑", "得意"]
+    },
+    {
+      "id": "泪汪汪",
+      "file": "泪汪汪.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "sad",
+      "intensity": "strong",
+      "hint": "泪汪汪",
+      "keywords": ["泪汪汪", "想哭", "委屈", "难过"]
+    },
+    {
+      "id": "漂浮小狗",
+      "file": "漂浮小狗.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "装饰道具",
+      "keywords": ["小狗", "漂浮小狗", "装饰", "狗狗"]
+    },
+    {
+      "id": "爱心眼",
+      "file": "爱心眼.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "strong",
+      "hint": "爱心眼",
+      "keywords": ["爱心眼", "爱你", "喜欢你", "爱心"]
+    },
+    {
+      "id": "猫猫嘴",
+      "file": "猫猫嘴.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "猫嘴",
+      "keywords": ["猫嘴", "猫猫嘴", "可爱", "喵"]
+    },
+    {
+      "id": "眼泪",
+      "file": "眼泪.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "sad",
+      "intensity": "strong",
+      "hint": "眼泪",
+      "keywords": ["眼泪", "哭", "难过", "委屈"]
+    },
+    {
+      "id": "眼罩",
+      "file": "眼罩.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "eyewear",
+      "hint": "眼罩（slot=eyewear，参与触发）",
+      "keywords": ["眼罩", "戴眼罩", "蒙眼", "护眼"]
+    },
+    {
+      "id": "短发1",
+      "file": "短发1.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 1（slot=hair，参与触发）",
+      "keywords": ["短发", "发型1", "换发型", "短发1"]
+    },
+    {
+      "id": "短发2",
+      "file": "短发2.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 2（slot=hair，参与触发）",
+      "keywords": ["短发", "发型2", "换发型", "短发2"]
+    },
+    {
+      "id": "舌头伸出",
+      "file": "舌头伸出.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "顽皮吐舌",
+      "keywords": ["吐舌", "舌头", "顽皮", "调皮"]
+    },
+    {
+      "id": "蚊香眼",
+      "file": "蚊香眼.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "晕圈眼",
+      "keywords": ["晕", "头晕", "蚊香眼", "转圈"]
+    },
+    {
+      "id": "黑脸",
+      "file": "黑脸.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "angry",
+      "intensity": "strong",
+      "hint": "黑脸",
+      "keywords": ["黑脸", "生气", "愤怒", "不爽"]
+    }
+  ]
+}

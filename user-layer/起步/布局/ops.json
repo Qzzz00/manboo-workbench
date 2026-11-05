@@ -1,0 +1,84 @@
+{
+  "contract": 1,
+  "id": "ops",
+  "name": "自媒体运营",
+  "tagline": "选题、脚本、剪辑、发布、复盘 —— 一条内容从想法到数据。",
+  "project_word": "账号",
+  "project_empty_line": "还没有账号,引导里会问。",
+  "files_empty_line": "素材都放在上面那排文件夹里,点一下就打开;也可以把 Finder 窗口拖到这一格。",
+  "project_source": "accounts",
+  "module_titles": {
+    "projects": "账号",
+    "files": "素材管理",
+    "todo": "选题池"
+  },
+  "portrait": [
+    { "id": "slot", "order": 0, "basis_pct": 22, "row": 0 },
+    { "id": "projects", "order": 1, "basis_pct": 20, "row": 1, "col": 0, "width_pct": 100 },
+    { "id": "todo", "order": 2, "basis_pct": 14, "row": 1, "col": 0, "width_pct": 100 },
+    { "id": "today", "order": 3, "basis_pct": 8, "row": 1, "col": 0, "width_pct": 100 },
+    { "id": "publish", "order": 4, "basis_pct": 12, "row": 1, "col": 0, "width_pct": 100 },
+    { "id": "review", "order": 5, "basis_pct": 24, "row": 2, "width_pct": 34 },
+    { "id": "notes", "order": 6, "basis_pct": 24, "row": 2, "width_pct": 24 },
+    { "id": "files", "order": 7, "basis_pct": 24, "row": 2, "width_pct": 42 },
+    { "id": "usage", "order": 8, "basis_pct": 22, "row": 2, "width_pct": 25, "hidden": true },
+    { "id": "quota", "order": 9, "basis_pct": 12, "row": 2, "width_pct": 25, "hidden": true }
+  ],
+  "landscape": [
+    { "id": "slot", "order": 0, "basis_pct": 70, "row": 0, "col": 0, "width_pct": 64 },
+    { "id": "projects", "order": 1, "basis_pct": 70, "row": 0, "col": 1, "width_pct": 36, "side_pct": 22 },
+    { "id": "todo", "order": 2, "basis_pct": 30, "row": 0, "col": 1, "width_pct": 36, "region": "side", "side_pct": 39 },
+    { "id": "today", "order": 3, "basis_pct": 30, "row": 0, "col": 1, "width_pct": 36, "region": "side", "side_pct": 26 },
+    { "id": "publish", "order": 4, "basis_pct": 30, "row": 0, "col": 1, "width_pct": 36, "region": "side", "side_pct": 39 },
+    { "id": "review", "order": 5, "basis_pct": 30, "row": 1, "width_pct": 34, "region": "deck" },
+    { "id": "notes", "order": 6, "basis_pct": 30, "row": 1, "width_pct": 24, "region": "deck" },
+    { "id": "files", "order": 7, "basis_pct": 30, "row": 1, "width_pct": 42, "region": "deck" },
+    { "id": "usage", "order": 8, "basis_pct": 30, "row": 1, "width_pct": 25, "region": "deck", "hidden": true },
+    { "id": "quota", "order": 9, "basis_pct": 30, "row": 1, "width_pct": 25, "region": "deck", "hidden": true }
+  ],
+  "apps": [
+    { "kind": "native", "key": "codex", "label": "ChatGPT", "app_name": "ChatGPT", "bundle_id": "com.openai.codex" },
+    { "kind": "native", "key": "t-doubao", "label": "豆包办公", "app_name": "Doubao", "bundle_id": "com.bot.pc.doubao" },
+    {
+      "kind": "native",
+      "key": "t-jianying",
+      "label": "剪映",
+      "app_name": "剪映",
+      "bundle_note": "未查到 bundle id(这台机器上没装剪映)。装上之后把它拖进窗位槽,工作台会自己认领。"
+    },
+    { "kind": "web", "key": "t-kling", "label": "可灵", "url": "https://app.klingai.com/cn/" },
+    { "kind": "web", "key": "t-xhs", "label": "小红书", "url": "https://creator.xiaohongshu.com/" },
+    { "kind": "web", "key": "t-canva", "label": "可画", "url": "https://www.canva.cn/" }
+  ],
+  "folders": [
+    { "rel": "账号", "purpose": "一个账号一个文件夹。项目区(「账号」)读的就是这里。" },
+    { "rel": "选题", "purpose": "一条选题一个文件夹。选题池那一格里的「素材」打开的就是这里。" },
+    { "rel": "素材/选题池", "purpose": "素材管理那一格里的「选题池」" },
+    { "rel": "素材/脚本", "purpose": "素材管理那一格里的「脚本」" },
+    { "rel": "素材/图片素材", "purpose": "素材管理那一格里的「图片素材」" },
+    { "rel": "素材/视频素材", "purpose": "素材管理那一格里的「视频素材」" },
+    { "rel": "素材/文件素材", "purpose": "素材管理那一格里的「文件素材」" },
+    { "rel": "素材/设计素材", "purpose": "素材管理那一格里的「设计素材」" },
+    { "rel": "素材/成片", "purpose": "素材管理那一格里的「成片」" }
+  ],
+  "files": [
+    "素材/收藏网址.md"
+  ],
+  "board_lanes": [
+    "选题策划", "内容调研", "结构与脚本", "素材制作",
+    "后期制作", "发布包装", "发布与互动", "数据复盘"
+  ],
+  "onboarding": {
+    "projects_seed": "那我们从这个账号聊起。先用一句话说说它是做什么的、给谁看的?",
+    "projects_goals": [
+      "账号定位:这个账号是做什么的、一句话说清",
+      "内容风格:什么调性、什么形式(口播 / 图文 / 剧情 / 测评…)",
+      "目标人群:给谁看的、他们在意什么",
+      "平台:主阵地是哪个,还发到哪些地方",
+      "**一个仓库都不要扫,也不要提「读你放仓库的目录」** —— 运营这台机器上没有仓库",
+      "**先录一个账号**:她说的这一个聊完,告诉她「以后想加别的账号,随时说『再加一个 XX』就行」,**不追问还有没有别的**;她主动说还有,才再记一个(一个账号一个文件夹)"
+    ],
+    "scan_repos": false
+  },
+  "skin": "ops.css"
+}

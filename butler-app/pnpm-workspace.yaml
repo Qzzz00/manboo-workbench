@@ -1,0 +1,10 @@
+# 单包工程;这个文件只为 pnpm 11 的构建脚本白名单(esbuild 要跑 postinstall 放二进制)
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@zip.js/zip.js@2.15.0'
+  - border-beam@1.4.1
+  - voice-glow@0.2.1
+peerDependencyRules:
+  ignoreMissing:
+    - bonjour

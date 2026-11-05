@@ -1,0 +1,4 @@
+node_modules/
+lib/
+.worktrees/
+.DS_Store

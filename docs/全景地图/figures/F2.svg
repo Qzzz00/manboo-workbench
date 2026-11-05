@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 153" role="img" aria-label="连接:现状与待做"><rect width="100%" height="100%" fill="#fff"/><style>
+text{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC",system-ui,sans-serif}
+.zone rect{fill:none;stroke:#9a9a9a;stroke-width:.6}.zone text{fill:#777;font-size:12px}
+.box rect{fill:#fff;stroke:#8a8a8a;stroke-width:.8}.box text{fill:#222;font-size:14px;font-weight:600;text-anchor:middle;dominant-baseline:central}
+.box text.sub{fill:#555;font-size:12px;font-weight:400}.box.brain rect{fill:#fbf6e6;stroke:#b8962e;stroke-width:1.2}
+.box.entry rect{stroke:#666}.box.todo rect{stroke-dasharray:5 4}.box.lane rect{fill:#eee}
+line.life{stroke:#aaa;stroke-dasharray:3 4;stroke-width:1}.num circle{fill:#eee;stroke:#999;stroke-width:.8}.num text{fill:#555;font-size:11px}
+.mark circle{fill:#fff3d0;stroke:#b8962e;stroke-width:1}.mark text{fill:#8a6d1a;font-size:11px}
+text.lbl{fill:#222}rect.lblbg{fill:#fff}text.note{fill:#8a6d1a}text.sub{fill:#555}
+.arrows line,.arrows path{fill:none;stroke:#444;stroke-width:1.2}.arrows .dash{stroke-dasharray:4 3}.arrows .dot{stroke-dasharray:1.5 3}
+.arrows .thick{stroke-width:2.6}.arrows .ble{stroke-dasharray:6 3 1.5 3}
+marker path.mk{stroke:#444}
+</style><defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="mk" d="M2 1L8 5L2 9" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><g class="arrows"><g class="box brain"><rect x="40" y="30" width="250" height="65" rx="8"/><text x="165" y="44.5" style="font-size:13px">已落地</text><text class="sub" x="165" y="62.5">本机房间 / 本地签票</text><text class="sub" x="165" y="80.5">手机M4 / 双工人M6 / 零中转缺省</text></g><g class="box entry"><rect x="335" y="30" width="250" height="65" rx="8"/><text x="460" y="44.5" style="font-size:13px">已有历史真机</text><text class="sub" x="460" y="62.5">在家本机 → 断Wi-Fi回云 → 回家</text><text class="sub" x="460" y="80.5">只证明M4当次路径</text></g><g class="box todo"><rect x="630" y="30" width="250" height="65" rx="8"/><text x="755" y="44.5" style="font-size:13px">仍待实现 / 验收</text><text class="sub" x="755" y="62.5">M5听筒规格 / M8内测</text><text class="sub" x="755" y="80.5">M9通话中换路 / 最终版本真机</text></g><path class="" d="M290 62 L333 62" fill="none" marker-end="url(#arr)"/><path class="dash" d="M585 62 L628 62" fill="none" marker-end="url(#arr)"/><text class="note" x="40" y="125" text-anchor="start" style="font-size:12px">云备路依赖配置的房间/中转;模型、语音、搜索仍各走实际服务。已有局域网连接不等于新协作LAN频道已完成。</text></g></svg>

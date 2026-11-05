@@ -1,0 +1,48 @@
+{
+  "role": "shuangsheng-dj",
+  "schemaVersion": "v1",
+  "driver": "v2",
+  "motions": [
+    { "file": "blink.motion3", "kind": "idle" },
+    { "file": "idle.motion3", "kind": "idle" },
+    { "file": "idle2.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "dance.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "good_morning.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "greeting.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "happy.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "nod.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "panic.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "shake.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "shy.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "surprised.motion3", "kind": "motion", "intensity": "strong" },
+    { "file": "swing.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "think.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "blow_kiss.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "cradle.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "ear_perk.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "giggle.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "hide_face.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "look_around.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "sleepy.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "stretch.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "erduo.motion3", "kind": "idle" }
+  ],
+  "expressions": [
+    { "file": "aixin.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "changge.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "heilian.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "jiyan.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "lianhong.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "yanlei.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "yun.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "baisi.exp3", "kind": "costume", "slot": "legwear" },
+    { "file": "baowawa.exp3", "kind": "costume", "slot": "handheld" },
+    { "file": "huanzhuang.exp3", "kind": "costume", "slot": "outfit" },
+    { "file": "tousi.exp3", "kind": "costume", "slot": "headwear" },
+    { "file": "waitao.exp3", "kind": "costume", "slot": "outerwear" }
+  ],
+  "excluded": [
+    { "file": "cheer.motion3", "reason": "VTS 表现差" },
+    { "file": "pout.motion3", "reason": "VTS 表现差" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "contract": 1,
+  "id": "publish",
+  "name": "发布计划",
+  "replaces": "publish",
+  "entry": "index.js",
+  "export": "PublishModule",
+  "author": "运营同学",
+  "version": "2026-10-21"
+}

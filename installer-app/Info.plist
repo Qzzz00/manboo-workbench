@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key><string>安装工作台</string>
+  <key>CFBundleDisplayName</key><string>安装工作台</string>
+  <key>CFBundleIdentifier</key><string>ai.ben.workbench.installer</string>
+  <key>CFBundleExecutable</key><string>installer</string>
+  <key>CFBundleVersion</key><string>1</string>
+  <key>CFBundleShortVersionString</key><string>0.1.0</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
+  <!-- 与壳同一条:NSApp.activate() 无参重载是 macOS 14+。 -->
+  <key>LSMinimumSystemVersion</key><string>14.0</string>
+  <key>NSHighResolutionCapable</key><true/>
+  <!-- 界面固定中文:安装器面对的是"第一次见到这东西"的人,跟随系统语言切成英文没有意义。 -->
+  <key>CFBundleDevelopmentRegion</key><string>zh_CN</string>
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <!-- 装完那一屏要探 127.0.0.1:3080 等服务起来,ATS 默认禁明文 http。 -->
+    <key>NSAllowsLocalNetworking</key><true/>
+  </dict>
+</dict>
+</plist>

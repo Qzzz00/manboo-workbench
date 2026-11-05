@@ -1,0 +1,232 @@
+#cloud-config
+# ============================================================================
+# 树莓派 Zero 2W(座机话筒)的 cloud-init user-data —— **样例,不是卡上那一份的副本**
+# ============================================================================
+#
+# ⚠️⚠️ 先读这一段再动卡 ⚠️⚠️
+#
+# 卡上真正那一份 user-data **从来没有进过这个仓库**(它只在 SD 卡的启动分区上,
+# 以及统筹会话的 scratchpad 里)。这一份是 2026-09-22 夜里**按文档重建**出来的:
+#
+#   - docs/交接-0922-树莓派上线.md 第四节第 5 条、第六·五节第 6 条(看门狗、黑匣子、bootcmd)
+#   - docs/硬件-POP话筒与树莓派桥.md 末两节(serial-getty、四个 apt 包、那两段 runcmd)
+#   - docs/交接-0922-座机配网走App.md 第四节(wb-provision 怎么装)
+#
+# 所以:**不要拿它整份覆盖卡上那一份**。正确的用法是**对着它改**——
+# 把下面标了「★ 新增」的几处搬进卡上那一份,别的地方以卡上那一份为准。
+# 哪一行对不上,以卡上那一份为准(它是真的开过机的那一份,这一份没有)。
+#
+# 这一份里**一个真密码、一把真钥匙都没有**,占位符一律写成 <…>。
+# Wi-Fi 密码不在这儿——它在同一张卡的 `network-config` 里(这个文件不碰那一份)。
+#
+# ## 改卡的铁律(2026-09-22 用一整天换来的)
+#
+# **改了 user-data,就必须同时换 `meta-data` 与 `cmdline.txt` 里的 instance-id。**
+# 不换的话 cloud-init 认为还是同一台机器,**这份文件一次都不会重新应用** ——
+# 那就是派 9/22 一整天上不了网的病根(前一个会话早就把 Wi-Fi 密码改对了,
+# 只是 cloud-init 从没读过)。
+#
+# ============================================================================
+
+hostname: pizero
+manage_etc_hosts: true
+
+# ——— 用户 ———
+# 2026-09-22:**chpasswd 那一段已经去掉**(密码 Ben 自己知道,不再让 cloud-init 动它;
+# 第一次还因为密码全是数字被 YAML 当成整数,cloud-init 当场崩)。
+# 这里只留公钥。<…> 是占位符,照卡上那一份填。
+users:
+  - name: ben
+    groups: [adm, sudo, audio, dialout, gpio, netdev, bluetooth]
+    shell: /bin/bash
+    sudo: ALL=(ALL) ALL
+    ssh_authorized_keys:
+      - <ben 的 SSH 公钥,一行;卡上那一份里已经有了,别覆盖掉>
+
+ssh_pwauth: false
+
+# ——— apt 包 ———
+# ⚠️ **`packages:` 要联网才装得上**,没网时会把 cloud-init 拖住好几分钟、
+#    后面的 runcmd 全起不来(`avahi-daemon` 那次踩过)。
+#    所以这四个包只能在**一次能上网的开机**里装上;现在卡里存着访客网 VR_GUEST,满足这一条。
+#    一张连第一次都没网的白卡,蓝牙配网起不来 —— 已知缺口,要补得把包预装进镜像。
+packages:
+  - bluez                 # bluetoothd 与 org.bluez 的 D-Bus 接口
+  - bluez-firmware-raspi  # Zero 2W 的蓝牙固件;没有它 hci0 压根不出现
+  - python3-dbus          # provisiond 注册 GATT 应用与广播
+  - python3-gi            # GLib 主循环
+
+# ——— 开机标记 ———
+# bootcmd 比 runcmd 早得多,而且没网也一定跑得到:它回答的是「这张卡到底开过机没有」。
+# 没有串口的时候,这一行是唯一能证明「派通电之后系统真的起来了」的证据。
+bootcmd:
+  - [ sh, -c, 'echo "boot $(date -Is 2>/dev/null) $(uname -r)" >> /boot/firmware/pi-boot.txt || true' ]
+
+write_files:
+  # ==========================================================================
+  # Wi-Fi 看门狗:连不上就每 20 秒硬连一轮,并把体检报告写到启动分区
+  # ==========================================================================
+  # 它是**没有串口、ssh 也进不去**时唯一的黑匣子:拔卡插 Mac 就能读
+  # /Volumes/bootfs/pi-status.txt。
+  #
+  # ★ 新增(2026-09-22 夜,分支 chore/pi-tidy)——三样,都是这一夜真的被卡住过的问题:
+  #   1. `ss -ltn | grep :22`      sshd 到底在不在听(那一夜进不去派,一半是因为它没在听,
+  #                                 而当时的报告里看不出来,只能猜「是不是网不通」)
+  #   2. `hostname -I`             **所有**地址(原来只有 `ip -4 -br addr`;usb0 / 第二个网
+  #                                 一起看得见,而且它就是那一行「一个地址都没有」的直接答案)
+  #   3. wb-provision 活着没有      配网服务起没起来 —— 它起不来的话「App 给座机配网」整条路都不存在
+  - path: /usr/local/sbin/wifi-watchdog.sh
+    permissions: '0755'
+    owner: root:root
+    content: |
+      #!/bin/sh
+      # 每 30 秒:wlan0 没连上就 rescan,按优先级连看得见的网;有别的 nmcli 在跑(App 配网)就让路;
+      # 然后把一份体检报告整个重写到启动分区上。**不 append** —— 这份要的是「此刻怎么样」,
+      # 开机那一刻的事归 pi-boot.txt 与 pi-deploy.txt。
+      BOOT=/boot/firmware
+      STATUS="$BOOT/pi-status.txt"
+      IFACE=wlan0
+      BRIDGE_USER=ben
+
+      # ★ 2026-10-14(统筹,展会现场那张卡上先改的;决策记录 2026-10-14 11:2x 那节):
+      #   ① 有别的 nmcli 在跑(App 蓝牙配网 / 房间换网)就**让路** —— 原来这里每 20 秒 `connection up` 一轮,
+      #      把 provisiond 那一下抢掉(nmcli 报「New connection activation was enqueued」),蓝牙配网永远赢不了;
+      #   ② 只试扫描里看得见的网(标了 hidden 的照试),按 connection.autoconnect-priority 高的先,名字带空格也认;
+      #   ③ 两轮之间歇 30 秒。
+      try_one() {
+        conn="$1"
+        ssid=$(nmcli -g 802-11-wireless.ssid connection show "$conn" 2>/dev/null)
+        hidden=$(nmcli -g 802-11-wireless.hidden connection show "$conn" 2>/dev/null)
+        if [ "$hidden" != "yes" ] && ! printf '%s\n' "$seen" | grep -qxF -- "$ssid"; then
+          echo "[watchdog] 附近没有 $ssid,跳过 $conn"; return 1
+        fi
+        if pgrep -x nmcli >/dev/null 2>&1; then echo "[watchdog] 配网在跑 nmcli,停这一轮"; return 2; fi
+        echo "[watchdog] 试 $conn"
+        nmcli connection up "$conn" >/dev/null 2>&1
+      }
+      while :; do
+        state=$(nmcli -t -f GENERAL.STATE device show "$IFACE" 2>/dev/null | cut -d: -f2)
+        case "$state" in
+          100*) : ;;                       # 100 (connected) —— 没事
+          *)
+            if pgrep -x nmcli >/dev/null 2>&1; then
+              echo "[watchdog] 配网 / 换网正在跑 nmcli,这一轮让路"
+            else
+              echo "[watchdog] $IFACE 是「$state」,rescan 后按优先级连看得见的网"
+              nmcli device wifi rescan >/dev/null 2>&1
+              sleep 3
+              seen=$(nmcli -t -f SSID device wifi list 2>/dev/null)
+              nmcli -t -f NAME,TYPE connection show 2>/dev/null |
+                awk -F: '$2 ~ /wireless/ { print $1 }' |
+                while IFS= read -r conn; do
+                  prio=$(nmcli -g connection.autoconnect-priority connection show "$conn" 2>/dev/null)
+                  printf '%s %s\n' "${prio:-0}" "$conn"
+                done | sort -rn > /run/wifi-watchdog.order
+              while read -r prio conn; do
+                try_one "$conn"; rc=$?
+                [ "$rc" = 0 ] && { echo "[watchdog] 连上了 $conn"; break; }
+                [ "$rc" = 2 ] && break
+              done < /run/wifi-watchdog.order
+            fi
+            ;;
+        esac
+
+        # ——— 黑匣子:整份重写(先写 .new 再 mv,免得拔卡拔在写到一半) ———
+        {
+          echo "===== $(date -Is) ====="
+          echo "-- 地址(ip -4 -br addr) --"
+          ip -4 -br addr 2>&1
+          echo "-- 地址(hostname -I:所有地址,含 usb0 / IPv6 之外的第二个网)★新增 --"
+          hostname -I 2>&1
+          echo "-- sshd 在不在听(ss -ltn | grep :22)★新增 --"
+          ss -ltn 2>/dev/null | grep ':22' || echo "  没有在听 —— ssh 进不来,别再怀疑是网的事"
+          echo "-- NetworkManager 状态 --"
+          nmcli -t -f GENERAL.STATE,GENERAL.CONNECTION device show "$IFACE" 2>&1
+          nmcli -t -f NAME,TYPE,DEVICE connection show 2>&1
+          echo "-- 扫得到哪些 Wi-Fi --"
+          nmcli -t -f SSID,SIGNAL,SECURITY device wifi list 2>&1 | head -n 20
+          echo "-- NM 日志尾 --"
+          journalctl -u NetworkManager -n 20 --no-pager 2>&1
+          echo "-- 能不能出外网 --"
+          # **-I(只要响应头)**:`/simple/` 那个索引页有 40 多 MB,真下一遍在 Zero 2W 上
+          # 要好几分钟,而且 -m 8 会把它掐断、于是永远判成「出不去」。
+          if curl -fsSI -m 8 -o /dev/null https://pypi.org/simple/ 2>/dev/null; then
+            echo "  出得去(pypi.org 响应头拿到了)"
+          else
+            echo "  出不去"
+          fi
+          echo "-- cloud-init --"
+          cloud-init status --long 2>&1
+          echo "-- wb-provision(配网服务;system 级、跑在 root 下,这一行才是它真正的状态)★新增 --"
+          systemctl is-active wb-provision 2>&1
+          systemctl status wb-provision --no-pager -n 5 2>&1 | tail -n 6
+          echo "-- wb-provision(--user -M $BRIDGE_USER@ 那一问)★新增 --"
+          # ⚠️ wb-provision **是 system 级服务**(见 wb-provision.service 的文件头:bluez 的
+          #    org.bluez、nmcli 的 polkit、写 NM keyfile,三件都要 root)。
+          #    所以下面这一问**预期永远是 inactive/unknown**,它不是故障。
+          #    留着它只为把「问错了地方」这件事摆在报告里,免得下一个人照着它下结论。
+          systemctl --user -M "$BRIDGE_USER@" is-active wb-provision 2>&1
+          echo "-- phone-bridge(话筒守护进程;这个才是用户级的) --"
+          systemctl --user -M "$BRIDGE_USER@" is-active phone-bridge 2>&1
+          echo "-- phone-bridge 日志尾 --"
+          tail -n 20 "/home/$BRIDGE_USER/phone-bridge/popphone.log" 2>&1 | grep -av '^livekit'
+        } > "$STATUS.new" 2>&1
+        mv -f "$STATUS.new" "$STATUS" 2>/dev/null
+
+        sleep 30
+      done
+
+  - path: /etc/systemd/system/wifi-watchdog.service
+    permissions: '0644'
+    owner: root:root
+    content: |
+      [Unit]
+      Description=Wi-Fi 看门狗(连不上就硬连)+ 启动分区黑匣子
+      After=NetworkManager.service
+      Wants=NetworkManager.service
+      # 不限重启次数:开机时 NM 可能还没起来,连着失败几轮是正常的。
+      StartLimitIntervalSec=0
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/local/sbin/wifi-watchdog.sh
+      Restart=always
+      RestartSec=5
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  # ——— 串口(USB 接 Mac 时的观察口;只能看,敲不进去) ———
+  - [ systemctl, enable, --now, 'serial-getty@ttyGS0.service' ]
+
+  # ——— Wi-Fi 看门狗 ———
+  - [ systemctl, daemon-reload ]
+  # 2026-10-14:默认网优先(卡上那份写的是 Faron;名字不在就 || true):
+  #   - [ sh, -c, 'nmcli con modify "<默认网的连接名>" connection.autoconnect yes connection.autoconnect-priority 10 || true' ]
+  - [ systemctl, enable, --now, wifi-watchdog ]
+
+  # ——— 蓝牙(配网那条路的前提) ———
+  - [ systemctl, enable, --now, bluetooth ]
+
+  # ==========================================================================
+  # ★ 新增:离线部署(SD 卡那条路)
+  # 这一段由 `phone-bridge/sdcard-stage.sh <bootfs>` 生成并打印,原样贴在这儿。
+  # 前提是先跑过那个脚本、把代码铺到了卡上的 /phone-bridge/。
+  # 这几条**没网也跑得完,失败也不阻塞后面的**。
+  # ==========================================================================
+  - [ install, -d, -m, '0755', -o, ben, -g, ben, /home/ben/phone-bridge ]
+  - [ sh, -c, 'cp -f /boot/firmware/phone-bridge/*.py /boot/firmware/phone-bridge/*.service /boot/firmware/phone-bridge/requirements.txt /boot/firmware/phone-bridge/README.md /home/ben/phone-bridge/ || true' ]
+  - [ sh, -c, 'chmod 0644 /home/ben/phone-bridge/*.py /home/ben/phone-bridge/*.service /home/ben/phone-bridge/requirements.txt || true' ]
+  - [ sh, -c, 'chown -R ben:ben /home/ben/phone-bridge || true' ]
+  - [ sh, -c, 'curl -fsSI -m 8 -o /dev/null https://pypi.org/simple/ && su - ben -c "cd /home/ben/phone-bridge && python3 -m venv --system-site-packages venv && venv/bin/pip install --no-cache-dir -r requirements.txt" || echo "[stage] 这一遍没有外网(或 pip 失败),跳过依赖" ' ]
+  - [ sh, -c, 'install -m 0644 -o root -g root /home/ben/phone-bridge/wb-provision.service /etc/systemd/system/wb-provision.service || true' ]
+  - [ sh, -c, 'systemctl daemon-reload || true' ]
+  - [ sh, -c, 'systemctl enable --now wb-provision || true' ]
+  - [ sh, -c, 'install -D -m 0644 -o ben -g ben /home/ben/phone-bridge/phone-bridge.service /home/ben/.config/systemd/user/phone-bridge.service || true' ]
+  - [ sh, -c, 'loginctl enable-linger ben || true' ]
+  - [ sh, -c, 'systemctl --user -M ben@ daemon-reload && systemctl --user -M ben@ restart phone-bridge || true' ]
+  # **ssh 一定要在听**(2026-09-22 晚进不去派,一半的原因就是 sshd 没在听)。
+  - [ sh, -c, 'systemctl enable --now ssh || systemctl enable --now sshd || true' ]
+  # 黑匣子:开机那一遍做成了什么。**追加**,一次开机一段。
+  - [ sh, -c, '{ echo "--- $(date -Is) cloud-init 这一遍 ---"; echo "sshd: $(ss -ltn 2>/dev/null | grep :22 || echo 没有在听)"; echo "地址: $(hostname -I 2>/dev/null)"; echo "wb-provision: $(systemctl is-active wb-provision 2>&1)"; echo "phone-bridge: $(systemctl --user -M ben@ is-active phone-bridge 2>&1)"; } >> /boot/firmware/pi-deploy.txt 2>&1 || true' ]

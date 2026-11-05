@@ -1,0 +1,97 @@
+/* 第二套横屏展示台「环绕」(OrbitDashboard.tsx,2026-10-01)。
+   尺寸、色值全是 Pen.dev 稿「B · 可编辑主稿 · 六家账号」的原值(873 宽设计空间),缩放只在 .ob-dash 的 transform 一处。
+   色板:#0F0F0F / #151515 / #2A2A2A;字 #E8E8E8 / #B5B5B5 / #9C9C9C;琥珀等你、绿在跑、红出错。Noto Sans SC。 */
+.ob-root {
+  position: fixed; inset: 0; overflow: hidden; background: #0f0f0f; color: #e8e8e8;
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  line-height: 1.1; -webkit-font-smoothing: antialiased;
+}
+.ob-dash {
+  position: absolute; left: 0; top: 0; width: 873px; box-sizing: border-box; padding: 20px 24px;
+  display: flex; flex-direction: column; transform-origin: 0 0;
+}
+.ob-dash > * + * { margin-top: 20px; }
+
+/* ── 顶栏 ── */
+.ob-top { flex: none; height: 32px; display: flex; align-items: center; justify-content: space-between; }
+.ob-when { display: flex; align-items: center; }
+.ob-clock { font-size: 26px; font-weight: 300; color: #e8e8e8; font-variant-numeric: tabular-nums; }
+.ob-date { margin-left: 14px; font-size: 12px; color: #b5b5b5; }
+.ob-music { display: flex; align-items: center; min-width: 0; max-width: 360px; color: #b5b5b5; }
+.ob-music__text { margin-left: 10px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ob-music[data-live='false'] .ob-music__text { color: #9c9c9c; }
+.ob-icon { width: 14px; height: 14px; flex: none; fill: #b5b5b5; }
+.ob-play { flex: none; margin-left: 6px; padding: 4px; border: 0; background: transparent; cursor: pointer; display: flex; }
+.ob-play .ob-icon { width: 13px; height: 13px; }
+
+/* ── 中间:两侧会话 + 形象位 ── */
+.ob-middle { position: relative; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; }
+.ob-side { position: static; flex: none; width: 232px; display: flex; flex-direction: column; justify-content: center; z-index: 1; }
+.ob-side > * + * { margin-top: 18px; }
+.ob-center { position: relative; flex: 1 1 auto; align-self: stretch; margin: 0 24px; min-width: 0; }
+.ob-links { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 0; }
+.ob-links path { fill: none; stroke: rgba(181, 181, 181, 0.2); stroke-width: 1; }
+
+.ob-card {
+  box-sizing: border-box; padding: 10px 12px; border-radius: 9px; background: #151515; border: 1px solid #2a2a2a;
+  display: flex; flex-direction: column; min-width: 0;
+}
+.ob-card > * + * { margin-top: 5px; }
+.ob-card__head { display: flex; align-items: center; justify-content: space-between; height: 13px; }
+.ob-card__who { display: flex; align-items: center; min-width: 0; font-size: 9.5px; color: #b5b5b5; white-space: nowrap; }
+.ob-card__who .ob-mark { margin-right: 5px; }
+.ob-card__state { display: flex; align-items: center; flex: none; font-size: 9.5px; color: #3fb39c; }
+.ob-card__state i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; margin-right: 4px; }
+.ob-card[data-status='waiting'] .ob-card__state { color: #e8a838; }
+.ob-card[data-status='error'] .ob-card__state { color: #e5484d; }
+.ob-card[data-status='done'] .ob-card__state { color: #9c9c9c; }
+.ob-card[data-ringing='true'] { border-color: rgba(232, 168, 56, 0.55); }
+.ob-card__title { font-size: 12px; font-weight: 500; color: #e8e8e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ob-card__sub { font-size: 10px; color: #b5b5b5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 九个账号那一张:会话卡收紧(稿子 padding 5/10、卡间 13)。 */
+.ob-dash[data-dense='true'] .ob-card { padding: 5px 10px; }
+.ob-dash[data-dense='true'] .ob-card > * + * { margin-top: 2px; }
+.ob-dash[data-dense='true'] .ob-side > * + * { margin-top: 13px; }
+
+.ob-mark { flex: none; border-radius: 3px; object-fit: contain; display: block; }
+.ob-mark--dot { width: 7px; height: 7px; border-radius: 50%; margin: 0 2.5px; }
+
+/* 形象舞台放在中间:不压暗、圆点贴底(AvatarStage variant="center")。 */
+.ob-center .dp-avatar__wrap { position: absolute; inset: 0; }
+
+/* ── 额度 ── */
+.ob-quota { flex: none; }
+.ob-quota__head { display: flex; justify-content: space-between; font-size: 9px; color: #9c9c9c; }
+.ob-sync[data-alert='true'] { color: #e8a838; }
+.ob-accts { display: flex; flex-wrap: wrap; margin: 0 -15px; }
+.ob-accts[data-count='1'], .ob-accts[data-count='2'] { justify-content: center; }
+.ob-acct { box-sizing: border-box; width: 33.333%; padding: 10px 15px 0; display: flex; flex-direction: column; min-width: 0; }
+.ob-accts[data-count='1'] .ob-acct { width: 470px; }
+.ob-acct[data-stale='true'] { opacity: 0.55; }
+.ob-acct__head { display: flex; align-items: center; height: 15px; }
+.ob-acct__name { margin-left: 6px; font-size: 10.5px; font-weight: 500; color: #e8e8e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ob-acct__note { margin-left: auto; padding-left: 8px; font-size: 9px; color: #9c9c9c; white-space: nowrap; }
+.ob-acct__wins { display: flex; margin-top: 8px; }
+.ob-acct__wins > * + * { margin-left: 12px; }
+.ob-win { flex: 1 1 0; min-width: 0; }
+.ob-win__row { display: flex; align-items: center; justify-content: space-between; height: 14px; }
+.ob-win__label { font-size: 9.5px; color: #9c9c9c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ob-win__pct { flex: none; margin-left: 4px; font-size: 11px; font-weight: 500; color: #e8e8e8; font-variant-numeric: tabular-nums; }
+.ob-win__track { margin-top: 4px; height: 2px; border-radius: 2px; background: #2a2a2a; overflow: hidden; }
+.ob-win__track i { display: block; height: 100%; border-radius: 2px; background: #b5b5b5; }
+.ob-win[data-level='warn'] .ob-win__pct { color: #e8a838; }
+.ob-win[data-level='warn'] .ob-win__track i { background: #e8a838; }
+.ob-win[data-level='danger'] .ob-win__pct { color: #e5484d; }
+.ob-win[data-level='danger'] .ob-win__track i { background: #e5484d; }
+.ob-group { display: flex; align-items: center; justify-content: space-between; height: 11px; margin-top: 3px; }
+.ob-acct__head + .ob-group { margin-top: 4px; }
+.ob-group__name { font-size: 9px; color: #9c9c9c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ob-group__wins { flex: none; margin-left: 8px; font-size: 9.5px; color: #e8e8e8; white-space: nowrap; }
+.ob-group__wins > * + * { margin-left: 8px; }
+.ob-group__wins [data-level='warn'] { color: #e8a838; }
+.ob-group__wins [data-level='danger'] { color: #e5484d; }
+.ob-acct__value { margin-top: 8px; font-size: 11px; font-weight: 500; color: #e8e8e8; }
+.ob-acct__empty { margin: 8px 0 0; font-size: 10px; color: #9c9c9c; }
+/* 粒子球:占中间这一格,底下留出圆点的位置。 */
+.ob-orb { position: absolute; left: -24px; right: -24px; top: -36px; bottom: -22px; pointer-events: none; }

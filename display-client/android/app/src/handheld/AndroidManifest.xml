@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 掌机桌面 flavor 专属（Anbernic RG Rotate）。phone / u3 flavor 不含本文件。
+         刻意不声明 READ_MEDIA_AUDIO / POST_NOTIFICATIONS / REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+         ——那三样是电台桌面为了整日不断播才要的，掌机桌面不播音乐，多要权限只会吓到用户。 -->
+
+    <!-- 换游戏要先杀掉还跑着旧 ROM 的模拟器进程（普通权限，装上即得）。
+         这正是原厂桌面 RetroGame.apk 的做法（它 manifest 里就这一个相关权限；它另有
+         system uid 才够得着的 forceStopPackage，我们抄不了）。详见 HandheldPlugin.launchRom。 -->
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+
+    <!-- 游戏格要枚举可启动应用（Android 11+ 包可见性）。没有这段 listApps() 只能看见自己。 -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
+    <application>
+        <!-- 桌面声明：系统按 HOME 键 / 开机进入本 App。
+             掌机上原有 com.ylm.launcher（Anbernic 自家）与 com.android.launcher3 两个候选，
+             且系统未设默认桌面，所以按 HOME 会弹选择器——Aiboo 只是多一个选项，切得回去。
+
+             showWhenLocked：唤醒后直接进桌面，不停在锁屏层（配合 MainActivity.onResume 的
+             requestDismissKeyguard）。
+
+             ★launchMode 必须盖成 singleInstance（base manifest 是 singleTask）：
+             singleTask 挡不住「设为默认桌面」的瞬间系统再拉一个实例——授权 HOME 角色后
+             系统按 HOME intent 启动新桌面，会新建一个 type=home 的 task，而旧实例的 task
+             是 type=standard，框架不做跨类型复用 → 两个完整实例并存（2026-07-30 真机
+             dumpsys 实锤 t187/t188 并存）。两个实例共享一条原生 Cubism 管线（全局单例），
+             GL 视图挂在旧实例窗口上 → 可见实例里「模型加载成功、58fps、构图全对，
+             屏幕上就是没有角色」。singleInstance 让一切启动路径都复用唯一实例。
+
+             ★刻意不锁 screenOrientation：u3 锁 portrait 是因为那台没有重力方向锁、不锁会横过来；
+             掌机是 720×720 方屏，锁死方向没有意义，还会跟 Anbernic 的旋转键打架。 -->
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleInstance"
+            tools:replace="android:launchMode"
+            android:showWhenLocked="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- 侧键（F10）全局监听：按一下出底条、再按收。只在掌机 flavor 声明；
+             需用户在无障碍里启用（或 adb settings put secure enabled_accessibility_services）。 -->
+        <service
+            android:name=".AibooKeyService"
+            android:exported="false"
+            android:label="Aiboo 按键"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/aiboo_key_service" />
+        </service>
+    </application>
+</manifest>

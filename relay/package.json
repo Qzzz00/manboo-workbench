@@ -1,0 +1,21 @@
+{
+  "name": "@ben/model-relay",
+  "version": "0.1.0",
+  "private": true,
+  "description": "「我们提供的模型服务」:装在自家服务器上的 OpenAI 兼容中转。上游 api.deepseek.com,上游 Key 只在服务器上;每个账号一个中转令牌,按上游官方价折成元计量、按天限额(元)。",
+  "type": "commonjs",
+  "main": "server/index.cjs",
+  "scripts": {
+    "start": "node server/index.cjs",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.8"
+  }
+}

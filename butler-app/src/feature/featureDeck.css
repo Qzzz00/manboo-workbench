@@ -1,0 +1,38 @@
+/* 需求卡页(2026-09-23)。底座用 .ba-sheet / .ba-btn 那几条(styles.css),这里只加它自己那几样。 */
+.ba-fd { gap: 10px; }
+.ba-fd__where { color: var(--ba-fg-2); font-size: var(--ba-fs-min); word-break: break-all; }
+.ba-fd__route { color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-fd__stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; list-style: none; margin: 0; padding: 0; }
+.ba-fd__stage {
+  width: 100%; padding: 10px 2px; border-radius: 10px; font-size: var(--ba-fs-sub);
+  border: 1px solid var(--ba-line); background: transparent; color: var(--ba-fg-2);
+}
+.ba-fd__stage[data-shown="true"] { border-color: var(--ba-fg-2); color: var(--ba-fg); }
+.ba-fd__stage[data-current="true"] { border-color: var(--ba-accent); color: var(--ba-accent); font-weight: 600; }
+.ba-fd__now { font-size: var(--ba-fs-body); font-weight: 500; }
+.ba-fd__badge { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); }
+.ba-fd__badge[data-badge="失败"] { color: var(--ba-danger); }
+.ba-fd__flash { font-size: var(--ba-fs-sub); color: var(--ba-fg); }
+.ba-fd__error { font-size: var(--ba-fs-sub); color: var(--ba-danger); }
+.ba-fd__tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.ba-fd__tab {
+  padding: 8px 12px; border-radius: 999px; font-size: var(--ba-fs-sub);
+  border: 1px solid var(--ba-line); background: transparent; color: var(--ba-fg-2);
+}
+.ba-fd__tab[data-on="true"] { border-color: var(--ba-accent); color: var(--ba-accent); }
+.ba-fd__doc { display: grid; gap: 6px; }
+.ba-fd__docmeta { display: flex; gap: 8px; color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+/* 只读的正文。手机上不改长文,所以这里是 <pre> 不是 <textarea>。 */
+.ba-fd__text {
+  margin: 0; max-height: 40vh; overflow: auto; white-space: pre-wrap; word-break: break-word;
+  background: var(--ba-bg); border-radius: 10px; padding: 10px; font-size: var(--ba-fs-sub); line-height: 1.5;
+}
+.ba-fd__diff ul { margin: 6px 0 0; padding-left: 16px; font-size: var(--ba-fs-min); }
+.ba-fd__diff li[data-kind="add"] { color: var(--ba-accent); }
+.ba-fd__diff li[data-kind="del"] { color: var(--ba-danger); text-decoration: line-through; }
+.ba-fd__keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.ba-fd__revise { display: grid; gap: 6px; }
+.ba-fd__revise textarea {
+  width: 100%; border-radius: 10px; padding: 8px; font-size: var(--ba-fs-body);
+  background: var(--ba-bg); color: var(--ba-fg); border: 1px solid var(--ba-line);
+}

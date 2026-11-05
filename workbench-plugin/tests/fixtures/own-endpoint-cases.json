@@ -1,0 +1,79 @@
+{
+  "note": "「事务官换Key」own 档的唯一源对照夹具(2026-10-23,Codex 退修):三处消费方(插件 modelConfig / 通话工人 modelChoice / DSH 设置)的解析结果都必须与此处的 expect 一致。两个包各自的测试**从盘上读这一份**,不许再手抄配置;改契约时只改这里。expect.base_url 是「原样使用」语义(不自动补 /v1)。",
+  "cases": [
+    {
+      "name": "老配置没有 own 字段 = DeepSeek 官方 + 缺省模型名,行为一字不变",
+      "model_json": "{\"mode\":\"own\",\"relay_url\":\"https://relay.test\",\"device_id\":\"d\"}",
+      "credentials_json": "{\"keys\":{\"deepseek\":\"sk-his-own-key\"}}",
+      "env": {},
+      "expect": {
+        "base_url": "https://api.deepseek.com/v1",
+        "model": "deepseek-v4-flash",
+        "key_plugin": "sk-his-own-key",
+        "key_worker": "sk-his-own-key"
+      }
+    },
+    {
+      "name": "火山方舟 Agent Plan(真实路径,不补 /v1)",
+      "model_json": "{\"mode\":\"own\",\"relay_url\":\"https://relay.test\",\"own\":{\"base_url\":\"https://ark.cn-beijing.volces.com/api/plan/v3/\",\"model\":\"deepseek-v4-flash\"},\"device_id\":\"d\"}",
+      "credentials_json": "{\"keys\":{\"deepseek\":\"sk-his-own-key\"}}",
+      "env": {},
+      "expect": {
+        "base_url": "https://ark.cn-beijing.volces.com/api/plan/v3",
+        "model": "deepseek-v4-flash",
+        "key_plugin": "sk-his-own-key",
+        "key_worker": "sk-his-own-key"
+      }
+    },
+    {
+      "name": "已带 /v1 的兼容口(不拼成 /v1/v1)",
+      "model_json": "{\"mode\":\"own\",\"relay_url\":\"https://relay.test\",\"own\":{\"base_url\":\"https://api.moonshot.cn/v1/\",\"model\":\"kimi-k2\"},\"device_id\":\"d\"}",
+      "credentials_json": "{\"keys\":{\"deepseek\":\"sk-his-own-key\"}}",
+      "env": {},
+      "expect": {
+        "base_url": "https://api.moonshot.cn/v1",
+        "model": "kimi-k2",
+        "key_plugin": "sk-his-own-key",
+        "key_worker": "sk-his-own-key"
+      }
+    },
+    {
+      "name": "官方根地址(DeepSeek 认这个写法,原样过)",
+      "model_json": "{\"mode\":\"own\",\"relay_url\":\"https://relay.test\",\"own\":{\"base_url\":\"https://api.deepseek.com\",\"model\":\"deepseek-v4-flash\"},\"device_id\":\"d\"}",
+      "credentials_json": "{\"keys\":{\"deepseek\":\"sk-his-own-key\"}}",
+      "env": {},
+      "expect": {
+        "base_url": "https://api.deepseek.com",
+        "model": "deepseek-v4-flash",
+        "key_plugin": "sk-his-own-key",
+        "key_worker": "sk-his-own-key"
+      }
+    },
+    {
+      "name": "地址保持官方缺省、只换模型名:地址照旧,模型名照他填的",
+      "model_json": "{\"mode\":\"own\",\"relay_url\":\"https://relay.test\",\"own\":{\"model\":\"my-finetune-1\"},\"device_id\":\"d\"}",
+      "credentials_json": "{\"keys\":{\"deepseek\":\"sk-his-own-key\"}}",
+      "env": {},
+      "expect": {
+        "base_url": "https://api.deepseek.com/v1",
+        "model": "my-finetune-1",
+        "key_plugin": "sk-his-own-key",
+        "key_worker": "sk-his-own-key"
+      }
+    },
+    {
+      "name": "Key 在环境变量时优先(工人那一家的老规矩)",
+      "model_json": "{\"mode\":\"own\",\"relay_url\":\"https://relay.test\",\"own\":{\"base_url\":\"https://ark.cn-beijing.volces.com/api/plan/v3\",\"model\":\"deepseek-v4-flash\"},\"device_id\":\"d\"}",
+      "credentials_json": "{\"keys\":{\"deepseek\":\"sk-from-file\"}}",
+      "env": {
+        "DEEPSEEK_API_KEY": "sk-from-env"
+      },
+      "expect": {
+        "base_url": "https://ark.cn-beijing.volces.com/api/plan/v3",
+        "model": "deepseek-v4-flash",
+        "key_plugin": "sk-from-file",
+        "key_worker": "sk-from-env"
+      }
+    }
+  ]
+}

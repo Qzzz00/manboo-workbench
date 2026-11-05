@@ -1,0 +1,96 @@
+[
+  {
+    "at": "2026-10-23T17:57:00.951Z",
+    "name": "1a-s1-record",
+    "passed": true,
+    "items": [
+      {
+        "kind": "记",
+        "title": "周四下午把样片发给客户",
+        "risk": "none",
+        "status": "done",
+        "card_id": "t-c71f19fb"
+      }
+    ],
+    "say": {
+      "screen": "记下了「周四下午把样片发给客户」。",
+      "spoken": "记下了「周四下午把样片发给客户」。"
+    }
+  },
+  {
+    "at": "2026-10-23T17:57:00.961Z",
+    "name": "1a-s8-content-not-risk",
+    "passed": false,
+    "hold": null,
+    "say": "记下了「待办:下周二把合同发给客户」。"
+  },
+  {
+    "at": "2026-10-23T17:57:00.969Z",
+    "name": "1a-s5-three-notes",
+    "passed": false,
+    "titles": [
+      "三条:周四发样片、周五交发票、下周一约 B 客户"
+    ],
+    "say": "记下了「三条:周四发样片、周五交发票、下周一约 B 客户」。"
+  },
+  {
+    "at": "2026-10-23T17:57:00.989Z",
+    "name": "1a-s4-mixed-three",
+    "passed": true,
+    "items": [
+      [
+        "记",
+        "done",
+        "周四下午给客户发样片",
+        ""
+      ],
+      [
+        "办",
+        "failed",
+        "把样片剪一版",
+        "没派成"
+      ],
+      [
+        "改",
+        "failed",
+        "换个女声",
+        "这一条这会儿还不支持"
+      ]
+    ],
+    "say": "记下了「周四下午给客户发样片」;「把样片剪一版」没派成(没派成);「换个女声」没办成(这一条这会儿还不支持)。"
+  },
+  {
+    "at": "2026-10-23T17:57:00.990Z",
+    "name": "1a-s7-addressed",
+    "passed": true,
+    "say": "刚才那句是跟我说的吗?"
+  },
+  {
+    "at": "2026-10-23T17:57:01.016Z",
+    "name": "1a-say-dispatch-kimi",
+    "passed": true,
+    "items": [
+      [
+        "办",
+        "failed",
+        "没派成"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T18:01:03.556Z",
+    "name": "1a-kimi-dispatch-receipt",
+    "passed": false,
+    "dispatch": null
+  },
+  {
+    "at": "2026-10-23T18:01:03.558Z",
+    "name": "run-1a-end",
+    "checksFailed": [
+      "1a-s8-content-not-risk",
+      "1a-s5-three-notes",
+      "1a-kimi-dispatch-receipt"
+    ],
+    "limitation": "假上游钉 say 清单行为;真实模型轮与真手机未验(见报告);电话列是 1b"
+  }
+]

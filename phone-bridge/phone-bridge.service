@@ -1,0 +1,35 @@
+# POP 话筒守护进程的开机自启（用户级 systemd，装在派上 ~/.config/systemd/user/）。
+#
+# 为什么是用户级而不是 /etc/systemd/system：派上 sudo 要密码，而 Claude 不经手 Ben 的密码。
+# 用户级配合 `loginctl enable-linger ben`（用户可自助开启，无需 root）同样能开机自启。
+#
+# 2026-08-24 之前这个进程一直是手工 nohup 起的，派一重启就永久没了——
+# 8/21 21:04 重启后按 POP 按键就再没反应，直到 8/24 才查出来。这个 unit 就是为了根治那个。
+[Unit]
+Description=POP 话筒守护进程（来电链 v0）
+# 不限重启次数：下面那种「等硬件枚举」的失败可能连着好几轮，被限流反而彻底不起来。
+# 注意这个键属于 [Unit]，写进 [Service] 会被 systemd 当未知键忽略掉。
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ben/phone-bridge
+# 地址走主机名而不是 IP：热点是 DHCP，Mac 的地址会变。改地址只改这一行，不动代码。
+Environment=WORKBENCH_WS=ws://MacBook-Air-1864.local:8791
+# 声卡（2026-09-21）。按名字选，不用序号——热插拔之后序号会变。
+Environment=AUDIO_DEV=plughw:CARD=Phone
+# 中转（出了局域网、Mac 关着时领进房凭证的第二条路）。**没配就留空**：
+# 空着只是不走那条路，填一个猜的域名会让每次领凭证都多等一个超时。
+# 2026-10-21 起缺省留空(零服务器是缺省):手机配网会把中转地址写进 device.json 的 `relay`,
+# `--relay-login` 写在 `relay_base`,两处都比这一行好用(换中转不用重装 unit)。自建中转要手填时填这里。
+# **有 relay_token 才会走这条**;没令牌时这一行不产生任何请求。
+Environment=WORKBENCH_RELAY=
+ExecStart=/home/ben/phone-bridge/venv/bin/python /home/ben/phone-bridge/popphone.py
+# 开机时 POP 可能还没枚举出来，find_pop_input 会抛错退出；靠重试等它上来。
+Restart=always
+RestartSec=3
+StandardOutput=append:/home/ben/phone-bridge/popphone.log
+StandardError=append:/home/ben/phone-bridge/popphone.log
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>壳网页能力 · 真引擎测试页</title>
+<!--
+  run-web-tests.sh 用的测试页(2026-09-25,卡 fix/shell-web-capabilities)。每一块都照着工作台网页里
+  真实的写法摆,出处写在旁边;Tests/web/main.swift 在真 WKWebView 里点它、往它上面拖文件、读结果。
+-->
+<style>
+  html, body { margin: 0; height: 100%; font: 14px -apple-system, sans-serif; }
+  /* 统一输入框的落点(workbench-plugin/src/client/composer/Composer.tsx 的 .wb-cmp) */
+  #zone { position: absolute; left: 40px; top: 40px; width: 320px; height: 180px; border: 1px solid #888; }
+  #zchild { position: absolute; left: 20px; top: 20px; width: 140px; height: 70px; background: #ddd; }
+  /* 页面上没人接拖放的地方(首页的球、项目区……) */
+  #outside { position: absolute; left: 420px; top: 40px; width: 320px; height: 180px; }
+  #links { position: absolute; left: 40px; top: 260px; }
+  #links a { display: block; margin: 4px 0; }
+  /* DSH 上游 DropOverlay 的替身(pointer-events:none,整屏) */
+  #dsh-overlay { position: fixed; inset: 0; pointer-events: none; display: none; }
+</style>
+</head>
+<body>
+<div id="zone"><div id="zchild"></div></div>
+<div id="outside"></div>
+
+<!-- 输入框的 +:hidden + multiple,不限类型(Composer.tsx) -->
+<input id="multi" type="file" multiple hidden>
+<!-- 粒子设置「导入配置 JSON」(ParticleSettings.tsx) -->
+<input id="json" type="file" accept=".json,application/json">
+<!-- 选文件夹(webkitdirectory):工作台现在没用,测一下壳接得住 -->
+<input id="dir" type="file" webkitdirectory>
+
+<div id="links">
+  <!-- DockTabBar 网页型应用 / ButlerInbox 资讯 / DSH WebBlock 与 markdown 外链 -->
+  <a id="blank" href="https://example.com/blank" target="_blank" rel="noopener noreferrer">blank</a>
+  <!-- 没写 target 的外链 -->
+  <a id="plain" href="https://example.com/plain">plain</a>
+  <a id="mail" href="mailto:ben@example.com">mail</a>
+  <a id="custom" href="weixin://dl/chat">custom</a>
+  <!-- 同源 -->
+  <a id="same" href="/second.html">same</a>
+  <!-- 服务端回「附件」 -->
+  <a id="attach" href="/attach/report">attach</a>
+  <a id="attach-text" href="/attach-text/notes">attach-text</a>
+</div>
+<div id="dsh-overlay">当前无法添加图片</div>
+
+<script>
+window.marker = 'index'
+window.results = {}
+const rec = (k, v) => { window.results[k] = v }
+
+// 选文件:change 里把名字、大小、相对路径、内容(小文件)记下来 —— 证明文件真的交到了网页手里、读得出来。
+// 读完清空 value(同 Composer.tsx / ParticleSettings.tsx:不清的话再选同一个文件不会再有 change)。
+for (const id of ['multi', 'json', 'dir']) {
+  const el = document.getElementById(id)
+  el.addEventListener('change', async () => {
+    const files = Array.from(el.files)
+    el.value = ''
+    const out = []
+    for (const f of files) out.push({ name: f.name, size: f.size, rel: f.webkitRelativePath || '', text: f.size < 2000 ? await f.text() : '' })
+    rec(id, out)
+  })
+  el.addEventListener('cancel', () => rec(id + ':cancel', true))
+}
+
+// 输入框落点:同 Composer.tsx —— dragover 只在带文件时接(并说明是「复制进来」,光标出绿色加号);
+// drop 读 dataTransfer.files。
+const zone = document.getElementById('zone')
+window.zoneEvents = []
+const idOf = n => (n === null ? null : (n.id || n.nodeName))
+zone.addEventListener('dragenter', e => zoneEvents.push(['enter', idOf(e.target), idOf(e.relatedTarget)]))
+zone.addEventListener('dragleave', e => zoneEvents.push(['leave', idOf(e.target), idOf(e.relatedTarget)]))
+zone.addEventListener('dragover', e => {
+  window.lastTypes = Array.from(e.dataTransfer.types)
+  if (!window.lastTypes.includes('Files')) return
+  e.preventDefault()
+  e.dataTransfer.dropEffect = 'copy'
+})
+zone.addEventListener('drop', e => {
+  const files = Array.from(e.dataTransfer.files)
+  if (files.length === 0) return
+  e.preventDefault()
+  rec('drop', files.map(f => f.name))
+})
+
+// DSH 上游 ui-attachment ComposerAttachments 的替身(canAcceptDrop=false 那种:模型不看图):
+// 挂在 document 上,dragenter 盖整屏「当前无法添加图片」,dragover 把 dropEffect 压成 none。
+window.dsh = { overlay: 0, drops: 0 }
+const dshFiles = e => e.dataTransfer !== null && Array.from(e.dataTransfer.types).includes('Files')
+const dshEnter = e => { if (!dshFiles(e)) return; e.preventDefault(); window.dsh.overlay += 1; document.getElementById('dsh-overlay').style.display = 'block' }
+const dshOver = e => { if (!dshFiles(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'none' }
+const dshDrop = e => { if (!dshFiles(e)) return; e.preventDefault(); window.dsh.drops += 1 }
+window.installDshMimic = () => { document.addEventListener('dragenter', dshEnter); document.addEventListener('dragover', dshOver); document.addEventListener('drop', dshDrop); return true }
+window.removeDshMimic = () => { document.removeEventListener('dragenter', dshEnter); document.removeEventListener('dragover', dshOver); document.removeEventListener('drop', dshDrop); return true }
+
+// 粒子设置「导出配置 JSON」原样(ParticleSettings.tsx):blob + <a download> + 微任务里立刻 revoke。
+window.exportPreset = () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify({ v: 4, name: '粒子' })], { type: 'application/json' }))
+  const link = document.createElement('a'); link.href = url; link.download = 'butler-swarm-v4.json'; link.click()
+  queueMicrotask(() => URL.revokeObjectURL(url))
+  return true
+}
+
+window.rect = id => { const r = document.getElementById(id).getBoundingClientRect(); return [r.left, r.top, r.width, r.height] }
+</script>
+<script type="module">
+// 插件那道「文件拖放归工作台」的真代码(run-web-tests.sh 从 fileDropGuard.ts 去掉类型生成 guard.js)。
+import { installFileDropGuard } from '/guard.js'
+window.installGuard = () => { window.uninstallGuard = installFileDropGuard(document); return true }
+window.guardReady = true
+</script>
+</body>
+</html>

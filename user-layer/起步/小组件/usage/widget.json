@@ -1,0 +1,13 @@
+{
+  "contract": 1,
+  "id": "usage",
+  "name": "消耗数据",
+  "replaces": "usage-panel",
+  "entry": "index.js",
+  "export": "UsagePanel",
+  "templates": [
+    "ops"
+  ],
+  "author": "运营同学",
+  "version": "2026-10-21"
+}

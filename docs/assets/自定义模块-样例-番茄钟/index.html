@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>番茄钟</title>
+<!--
+  自定义模块样例(2026-09-21)。这一份是**照着交给 DSH 的那条产出规范做出来的**:
+  单文件、样式与脚本都在里面、一个外网地址都没引、铺满整个窗口、深色。
+
+  它用到了给模块的那几件接口里的两件:
+    GET  /state         —— 读工作台此刻的快照(这里只用了 now,证明接口真的通)
+    POST /note/add      —— 一轮走完往随手记里落一行
+  凭据与 shell 一个都没有,也不需要。
+
+  2026-09-22(C7「自定义模块真边界」)之后这一份**一个字都没改还是照跑**:
+  模块页面现在挂在自己的来源上、要带模块令牌才打得动那七条接口,而这两件事都由容器
+  注入的那段前言接管了(它包了一层 fetch)。所以下面写的还是 `fetch('/state')`。
+  要自己发请求就用 `window.WB_API_BASE` + `Authorization: Bearer ${window.WB_MODULE_TOKEN}`。
+-->
+<style>
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px;
+    background: #0b0d10;
+    color: #e8edf5;
+    font: 14px/1.5 -apple-system, "PingFang SC", system-ui, sans-serif;
+    user-select: none;
+  }
+  .ring { position: relative; width: 210px; height: 210px; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 10; stroke-linecap: round; }
+  .track { stroke: rgba(255, 255, 255, 0.08); }
+  .arc { stroke: #e2705f; transition: stroke-dashoffset 0.4s linear; }
+  .time {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px;
+  }
+  .mmss { font-size: 42px; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+  .phase { font-size: 12px; color: rgba(232, 237, 245, 0.55); }
+  .acts { display: flex; gap: 10px; }
+  button {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    color: inherit;
+    font-size: 13px;
+    padding: 6px 16px;
+    cursor: pointer;
+  }
+  button:hover { background: rgba(255, 255, 255, 0.12); }
+  .foot { font-size: 11px; color: rgba(232, 237, 245, 0.4); min-height: 16px; }
+  .rounds { font-size: 12px; color: rgba(232, 237, 245, 0.55); }
+</style>
+</head>
+<body>
+  <div class="ring">
+    <svg width="210" height="210" viewBox="0 0 210 210">
+      <circle class="track" cx="105" cy="105" r="94"></circle>
+      <circle class="arc" id="arc" cx="105" cy="105" r="94" stroke-dasharray="590.6" stroke-dashoffset="0"></circle>
+    </svg>
+    <div class="time">
+      <div class="mmss" id="mmss">25:00</div>
+      <div class="phase" id="phase">专注</div>
+    </div>
+  </div>
+
+  <div class="acts">
+    <button id="toggle">开始</button>
+    <button id="reset">重来</button>
+  </div>
+
+  <div class="rounds" id="rounds">今天走完 0 轮</div>
+  <div class="foot" id="foot"></div>
+
+<script>
+'use strict'
+const FOCUS = 25 * 60
+const BREAK = 5 * 60
+const CIRCUMFERENCE = 2 * Math.PI * 94
+
+let phase = 'focus'
+let left = FOCUS
+let running = false
+let rounds = 0
+
+const el = id => document.getElementById(id)
+
+// 今天走完几轮。**2026-09-22 起 localStorage 在模块里用不了**(那块 iframe 加了 sandbox,
+// 是不透明来源,碰它会抛 SecurityError)——所以这两处都包着 try/catch:抛了就退回内存,
+// 计数在这一次工作台开着的期间照样是对的,关掉才从头。要留得住就落一条随手记。
+// 键里带日期——换一天自然从 0 开始,不用另写一段"跨日清零"。
+const key = () => 'pomodoro-' + new Date().toLocaleDateString('sv')
+try { rounds = Number(localStorage.getItem(key()) || '0') } catch { rounds = 0 }
+
+function render() {
+  const total = phase === 'focus' ? FOCUS : BREAK
+  const m = String(Math.floor(left / 60)).padStart(2, '0')
+  const s = String(left % 60).padStart(2, '0')
+  el('mmss').textContent = m + ':' + s
+  el('phase').textContent = phase === 'focus' ? '专注' : '休息'
+  el('arc').style.strokeDashoffset = String(CIRCUMFERENCE * (1 - left / total))
+  el('arc').style.stroke = phase === 'focus' ? '#e2705f' : '#5fa8e2'
+  el('toggle').textContent = running ? '暂停' : '开始'
+  el('rounds').textContent = '今天走完 ' + rounds + ' 轮'
+}
+
+async function finished() {
+  if (phase === 'focus') {
+    rounds += 1
+    try { localStorage.setItem(key(), String(rounds)) } catch {}
+    // 一轮走完往随手记里落一行。**不带任何凭据**(令牌由容器注入的前言加,页面里看不见)。
+    try {
+      await fetch('/note/add', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text: '番茄钟:走完一轮 25 分钟' }),
+      })
+      el('foot').textContent = '已经往随手记里落了一行'
+    } catch {
+      el('foot').textContent = '随手记没落上(工作台服务没应答)'
+    }
+    phase = 'break'
+    left = BREAK
+  } else {
+    phase = 'focus'
+    left = FOCUS
+  }
+  running = false
+  render()
+}
+
+setInterval(() => {
+  if (!running) return
+  left -= 1
+  if (left <= 0) { void finished(); return }
+  render()
+}, 1000)
+
+el('toggle').onclick = () => { running = !running; render() }
+el('reset').onclick = () => {
+  running = false
+  left = phase === 'focus' ? FOCUS : BREAK
+  render()
+}
+
+// /state 真的通不通,开页面就验一次——通了就说一句实话,不通也说一句实话(D13)。
+;(async () => {
+  try {
+    const res = await fetch('/state')
+    const state = await res.json()
+    el('foot').textContent = '工作台时间 ' + String(state.now || '').slice(11, 16) + ' · 接口是通的'
+  } catch {
+    el('foot').textContent = '读不到工作台状态(这一格照样能计时)'
+  }
+})()
+
+render()
+</script>
+</body>
+</html>

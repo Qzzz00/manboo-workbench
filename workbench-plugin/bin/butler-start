@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# 事务官本机后端(butler-server)启动脚本(launchd: ~/Library/LaunchAgents/ai.deepseek.butler.plist 调用)。
+# 安装位置:~/.dsh/bin/butler-start(cp 本文件过去并 chmod 755)。仿 dsh-start。
+#
+# 服务代码从哪跑:缺省 ~/.dsh/butler-server(统筹会话发版时把仓库 butler-server/ 的
+# server/、admin-ui/dist/、node_modules/、package.json 复制过去);开发/灰度可用
+# BUTLER_SERVER_DIR 指到仓库目录直接跑。
+#
+# 为什么用自有 node(~/.dsh/node):与 dsh-start 同一条理由——macOS 文件夹授权认二进制。
+# butler-server 用 Node 内置 sqlite,不需要原生模块,换 node 不用重编。
+set -euo pipefail
+
+export DSH_HOME="$HOME/.dsh"
+export DSH_NODE="$DSH_HOME/node/bin/node"
+export PATH="$DSH_HOME/node/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+BUTLER_SERVER_DIR="${BUTLER_SERVER_DIR:-$DSH_HOME/butler-server}"
+# 只监听本机;热点网段以后再开(设计-事务官完整材料 §1)。
+export BUTLER_HOST=127.0.0.1
+
+if [ ! -f "$BUTLER_SERVER_DIR/server/index.cjs" ]; then
+  echo "[butler-start] 找不到 $BUTLER_SERVER_DIR/server/index.cjs:先把仓库 butler-server/ 发到 ~/.dsh/butler-server(见交接文档)" >&2
+  exit 1
+fi
+if [ ! -x "$DSH_NODE" ]; then
+  # 自有 node 不在(比如刚重装),退回 PATH 里的 node,至少让服务起得来。
+  DSH_NODE="$(command -v node)"
+fi
+
+cd "$BUTLER_SERVER_DIR"
+exec "$DSH_NODE" "$BUTLER_SERVER_DIR/server/index.cjs"

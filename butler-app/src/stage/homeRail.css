@@ -1,0 +1,105 @@
+/*
+ * 首页球下面那一排小图标 + 未接来电那一块(2026-10-03 傍晚,卡「首页两卡 + 一排图标」,方案 B)。
+ *
+ * 独占 `ba-rail-` 前缀、单独一个文件(同 stageCards.css / recentSessions.css 的理由):
+ * `styles.css` 那一大份是好几张卡同时在改的地方。字号一律用 styles.css 顶上那几个变量,不写 px 字号。
+ * 这一排的样子**整个借顶上那两颗 icon 的**(`.ba-scene__icon--sm`,44px、透明底、fg-2),
+ * 组件里就是把那两个类一起写上 —— 维护者要的是「与顶部那两颗同一套」,不是另画一种。
+ */
+
+/*
+ * ── 这一排摆在哪 ──
+ *
+ * 球那一栏(`.ba-scene__stage`)**最后一格**:球 / 字幕在上,这一排在它们下面、卡片区上面。
+ * 在流里(`flex: 0 0 auto`),横竖同一份 —— `homeRail.css` 里一个 `@media` 都没有,有一条用例钉着。
+ *
+ * **为什么这一版不再绝对定位**:上一版(当天下午「首页侧边小图标」)它是球那一栏右上角一列
+ * 绝对定位的图标,理由是主列里挂着五张卡、球那一格(`flex: 1`)只剩 162px(412×915 真机),
+ * 再占 44px 就更没球可看了。方案 B 把三张卡换成这一排:卡片区从三行网格掉到一行,
+ * 省下来的那一大截全归球那一格(它自己吃掉),这一排这 44px 是零头。量数在交接里。
+ *
+ * 横屏下身子是横排(球那一栏左边 42%、卡片在右),这一排在球那一栏里、跟着它走 ——
+ * 不会跑到卡片区身上去。横屏首页其实是展示台 iframe,StagePage 横屏只在通话 / 引导里出现,
+ * 那两种状态这一排压根不画;这一条是为了「哪天改了也不会突然盖住卡片」。
+ */
+/*
+ * `padding-bottom` 是**这一排与下面两张卡之间的距离**(2026-10-04,维护者:「那排小按钮离下面的两张卡片太近了」):
+ * 原来是 2px,图标下沿到卡片上沿就那么点,看着是一块东西。数写在 styles.css 顶上那份变量里
+ * (`--ba-gap-rail-cards`),那儿有为什么与量数。卡片区自己的 `padding-top` 是 0,所以这一处就是那个距离;
+ * 横竖同一份,这个文件里照旧**一个 `@media` 都没有**(有一条用例钉着)。
+ */
+.ba-rail {
+  position: relative;
+  flex: 0 0 auto; min-width: 0;
+  display: flex; flex-direction: row; align-items: center; justify-content: center;
+  gap: 2px; padding: 0 8px var(--ba-gap-rail-cards);
+}
+.ba-rail__btn { position: relative; flex: 0 0 auto; }
+.ba-rail__btn:active { background: color-mix(in srgb, var(--ba-fg) 10%, transparent); }
+.ba-rail__btn:focus-visible { outline: 2px solid var(--ba-fg-2); outline-offset: -2px; }
+/*
+ * 角标:数字贴在图标右上角。琥珀(同未接那一块的标题色)、黑字 —— 这两颗是「要你处理」那一档,不是错误,不用红。
+ * 等宽数字:2 → 12 不许让这一颗左右跳。
+ */
+.ba-rail__badge {
+  position: absolute; top: 1px; right: 1px;
+  min-width: 1.25em; padding: 0 4px; border-radius: 999px;
+  background: var(--ba-amber); color: var(--ba-btn-fg);
+  font-size: var(--ba-fs-min); font-weight: 600; line-height: 1.35; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+/*
+ * 资讯那颗的小点(2026-10-03 晚):今天那期播客能听。贴在角标那个位置,但只是一个点、不写数。
+ * 白的(`--ba-accent`)不是琥珀:琥珀是「要你处理」那一档,播客是「有东西可听」,不催她。
+ * 一圈底色描边:压在耳机线条上也看得出是一个单独的点。
+ */
+.ba-rail__dot {
+  position: absolute; top: 9px; right: 9px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ba-accent); box-shadow: 0 0 0 2px var(--ba-bg);
+  pointer-events: none;
+}
+/*
+ * 长按飘出来的名字:**整排正上方居中**,一行不换行。
+ * 挂在这一排上(而不是那一颗上)有两个理由:
+ *   · 横排里第一颗的左边、最后一颗的右边都是屏幕边缘,挂在单颗上的 `nowrap` 名字会溢出去
+ *     (壳那一列是 `minmax(0, 1fr)`、`.ba-pane` 是 `min-width: 0`,撑不宽整页,但会多一条横向滚动);
+ *   · 它绝对定位、不占地方,一来一走都不许动版面。
+ */
+.ba-rail__name {
+  position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+  z-index: 9; white-space: nowrap; max-width: calc(100% - 16px); overflow: hidden; text-overflow: ellipsis;
+  padding: 4px 10px; border-radius: 999px;
+  background: rgba(15, 15, 15, .82); border: 1px solid var(--ba-line);
+  color: var(--ba-fg); font-size: var(--ba-fs-sub); line-height: 1.3;
+  pointer-events: none;
+}
+
+/*
+ * ── 未接来电那一块(点了这一排里那颗话筒才挂上来)──
+ *
+ * **参照物是球那一栏**(`.ba-scene__stage`,它那条 `position: relative` 在 stageCards.css 里),
+ * 理由是横屏:挂在 `.ba-scene__body` 上的话它会按整屏宽铺开、整个压在卡片区身上
+ * (873×393 上量过:铺到 x=821,卡片从 372 起)。挂在球那一栏上,横竖两向它都待在球那一栏里,
+ * **不用为横屏另写一段媒体查询**。
+ *
+ * 维护者的硬条件是「不遮内容、不盖输入框」:
+ *   · 上不盖顶上那一排 —— `top: 0` 是球那一栏的上沿,顶格在它前面;
+ *   · 下不盖输入框 —— 封顶 40vh(同 `.ba-missed` 竖屏那一档的数,styles.css 里那条),
+ *     而底下那一条连安全区约 110–125px。量过的三档数在 docs/交接-1003-手机首页两卡一排图标.md。
+ *     (这个仓库在「算出来的像素到真机上差一截」上摔过几次,所以这一条宁可封得保守、自己滚。)
+ *   · 左右各留 8px。上一版还要给右边那一列让出 `--ba-rail-w`;这一版那一列并进了球下那一排,
+ *     球那一栏右边没有常驻的东西了,所以两边同宽。
+ * 球那一栏矮的时候它会盖住球与字幕 —— 那是她**刚点开**的一块,不是常驻的东西,点「收起」就没。
+ *
+ * `z-index: 8`:压得过卡片区与形象区(都是 auto)与这一排(本身在流里、名字那一层是 9,
+ * 但名字只在长按那 1.6 秒里有),又低于记录面板那一层(`.ba-scene__scrim` 24 /
+ * `.ba-scene__log` 25 / `.ba-scene__picker` 26)—— 记录拉开时它不该浮在前面。
+ * 本身**不画边框、不上底色**:里面那张卡(`.ba-missed`)自己有;清空之后那张卡自己收掉,
+ * 这一层就什么都不剩,不会留一个空盒子在屏上。
+ */
+.ba-rail-sheet {
+  position: absolute; z-index: 8;
+  top: 0; left: 8px; right: 8px;
+  max-height: calc(40 * var(--ba-vh, 1vh)); overflow-y: auto; overscroll-behavior: contain;
+}

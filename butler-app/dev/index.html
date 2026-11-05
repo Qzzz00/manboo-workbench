@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>假的事务官工人(只为本机跑通手机那一侧)</title>
+<style>
+  body { font: 14px/1.6 system-ui, -apple-system, sans-serif; margin: 16px; background: #111; color: #ddd; }
+  button, input { font: inherit; padding: 6px 10px; }
+  #log { white-space: pre-wrap; background: #000; padding: 10px; border: 1px solid #333; height: 60vh; overflow: auto; }
+  .row { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<h1>假的事务官工人</h1>
+<p>
+  它做的事和 <code>channel-worker/src/rpc.ts</code> 一样:以身份 <code>wb-channel-worker</code> 进房,
+  在 <code>wb.rpc</code> 文本流上收请求 → 替手机去打工作台的 HTTP → 把回包发回去;字幕与文件也在这条通道上。
+  <b>它不接话、不做 ASR/TTS</b> —— 那是真工人的事,这一页只为把手机那一侧跑通。
+</p>
+<div class="row">
+  <label>工作台 <input id="workbench" size="28" value="http://127.0.0.1:8797" /></label>
+  <button id="join">进房</button>
+  <span id="state">没进房</span>
+</div>
+<div class="row">
+  <input id="caption" size="30" value="记一下,明天上午十点开会" />
+  <button id="say-interim">推一条没定稿的字幕(我)</button>
+  <button id="say-me">推一条定稿的(我)</button>
+  <button id="say-butler">推一条定稿的(事务官)</button>
+</div>
+<div class="row">
+  <button id="send-file">发一个文件给手机</button>
+</div>
+<div id="log"></div>
+
+<script type="module">
+import { Room, RoomEvent } from 'livekit-client';
+
+const RPC_TOPIC = 'wb.rpc';
+const FILE_TOPIC = 'wb.file';
+const LEGACY_FILE_TOPIC = 'wb-file';
+
+const logEl = document.getElementById('log');
+const stateEl = document.getElementById('state');
+function log(line) {
+  logEl.textContent += `${new Date().toLocaleTimeString()} ${line}\n`;
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+let room = null;
+const base = () => document.getElementById('workbench').value.replace(/\/$/, '');
+
+document.getElementById('join').onclick = async () => {
+  try {
+    const res = await fetch(`${base()}/channel/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ worker: true, name: '假工人' }),
+    });
+    const ticket = await res.json();
+    if (!res.ok) { log(`取凭证失败:${JSON.stringify(ticket)}`); return; }
+    log(`凭证到手:${ticket.url} / 房间 ${ticket.room} / 身份 ${ticket.identity}`);
+
+    room = new Room();
+    room.on(RoomEvent.ParticipantConnected, (p) => log(`有人进房:${p.identity}`));
+    room.on(RoomEvent.ParticipantDisconnected, (p) => log(`有人离房:${p.identity}`));
+    room.on(RoomEvent.TrackSubscribed, (t, _pub, p) => log(`订到 ${p.identity} 的 ${t.kind} 轨`));
+    room.on(RoomEvent.Disconnected, () => { stateEl.textContent = '断开了'; log('断开了'); });
+
+    // ——— wb.rpc:替手机去打工作台的 HTTP ———
+    room.registerTextStreamHandler(RPC_TOPIC, (reader, info) => {
+      void (async () => {
+        const text = await reader.readAll();
+        let msg;
+        try { msg = JSON.parse(text); } catch { log(`读不懂的一条:${text.slice(0, 80)}`); return; }
+        if (msg.type === 'renew') {
+          const r = await fetch(`${base()}/channel/token`, {
+            method: 'POST', headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ name: '手机(续期)' }),
+          });
+          const body = await r.json();
+          const reply = r.ok
+            ? { id: msg.id, type: 'token', token: body.token, expires_at: body.expires_at }
+            : { id: msg.id, type: 'error', error: body.error ?? '续不了' };
+          await room.localParticipant.sendText(JSON.stringify(reply), { topic: RPC_TOPIC, destinationIdentities: [info.identity] });
+          log(`代办 ${info.identity}:renew → ${r.status}`);
+          return;
+        }
+        if (msg.type !== 'http') { log(`不认识这种请求:${msg.type}`); return; }
+        let status = 502;
+        let body = { error: '工作台连不上' };
+        try {
+          const r = await fetch(`${base()}${msg.path}`, {
+            method: msg.method,
+            headers: msg.body === null || msg.body === undefined ? {} : { 'content-type': 'application/json' },
+            ...(msg.body === null || msg.body === undefined ? {} : { body: JSON.stringify(msg.body) }),
+          });
+          status = r.status;
+          const raw = await r.text();
+          body = raw === '' ? null : JSON.parse(raw);
+        } catch (e) { log(`代办出错:${e?.message ?? e}`); }
+        await room.localParticipant.sendText(
+          JSON.stringify({ id: msg.id, type: 'http', status, body }),
+          { topic: RPC_TOPIC, destinationIdentities: [info.identity] },
+        );
+        log(`代办 ${info.identity}:${msg.method} ${msg.path} → ${status}`);
+      })();
+    });
+
+    // ——— 收文件 ———
+    for (const topic of [FILE_TOPIC, LEGACY_FILE_TOPIC]) {
+      room.registerByteStreamHandler(topic, (reader, info) => {
+        void (async () => {
+          const chunks = await reader.readAll();
+          const size = chunks.reduce((n, c) => n + c.byteLength, 0);
+          log(`收到 ${info.identity} 发来的文件(topic ${topic}):「${reader.info.name}」${size} 字节`);
+        })();
+      });
+    }
+
+    await room.connect(ticket.url, ticket.token);
+    stateEl.textContent = `进房了(${ticket.identity})`;
+    log('进房了');
+  } catch (e) {
+    log(`进不去:${e?.message ?? e}`);
+  }
+};
+
+function caption(role, final) {
+  const text = document.getElementById('caption').value;
+  void room?.localParticipant.sendText(JSON.stringify({ type: 'caption', role, text, final }), { topic: RPC_TOPIC });
+  log(`推字幕 ${role} final=${final}:${text}`);
+}
+document.getElementById('say-interim').onclick = () => caption('me', false);
+document.getElementById('say-me').onclick = () => caption('me', true);
+document.getElementById('say-butler').onclick = () => caption('butler', true);
+
+document.getElementById('send-file').onclick = async () => {
+  const file = new File(['这是电脑发给手机的一个文件\n'], '电脑发来的.txt', { type: 'text/plain' });
+  await room?.localParticipant.sendFile(file, { topic: FILE_TOPIC, name: file.name, mimeType: file.type });
+  log('发了一个文件给房里的人:电脑发来的.txt');
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "file": "ringtone.m4a",
+  "bytes": 17537,
+  "seconds": 6,
+  "来源": "本脚本用 ffmpeg 现合成的正弦波,不是任何现成录音;参数照北美 Precise Ring Tone 的公开技术规格",
+  "参数": {
+    "tone_hz": [
+      440,
+      480
+    ],
+    "on_seconds": 2,
+    "off_seconds": 4,
+    "gain_db": -6,
+    "bitrate": "64k",
+    "sample_rate": 24000
+  },
+  "生成于": "2026-09-21",
+  "脚本": "scripts/render-ringtone.mjs"
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "at": "2026-10-24T01:11:19.662Z",
+    "name": "run-error",
+    "error": "BUSY_19893"
+  },
+  {
+    "at": "2026-10-24T01:11:20.257Z",
+    "name": "cleanup-result",
+    "passed": false,
+    "remainingPorts": [
+      19893,
+      19994,
+      19995
+    ]
+  }
+]

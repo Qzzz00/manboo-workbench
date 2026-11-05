@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "id": "tool-pomodo",
+  "name": "番茄钟",
+  "created_at": "2026-09-21T12:40:00+08:00",
+  "source": "dsh",
+  "entry": "index.html"
+}

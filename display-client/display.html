@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      ★这里保持 device-width，不要改成 width=1200。
+
+      试过 `width=1200`：**Android WebView 直接忽略它**。真机实测 meta 写着 width=1200，
+      而 `innerWidth` 仍是 788、`devicePixelRatio` 仍是 1.625——因为 Capacitor 的 WebView
+      默认 `useWideViewPort=false`，这个开关不打开时 meta 里的 width 根本不参与计算。
+      打开它要改 MainActivity，而这个 Android 工程是六个 flavor 共用的
+      （handheld / display / holo / pet / radio / screensaver），为展示台一家的版式
+      去动全局 WebView 设置不划算。
+
+      所以「按 1200 出稿、按 1200 写 CSS」这件事改在 CSS 侧做：
+      .dp-dash 固定成 1200 宽的设计盒子，再整体 scale 到实际视口（见 display.css 与 DisplayApp）。
+      效果与 width=1200 等价，但只影响展示台，别的 flavor 一行不动。
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>桌面工作台 · 展示台</title>
+    <style>
+      /* 展示台是深色面板，先铺底避免加载瞬间闪白 */
+      html, body { margin: 0; background: #0f1512; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Live2D Cubism Core 必须在模块脚本前加载 -->
+    <script src="/live2dcubismcore.min.js"></script>
+    <script type="module" src="/src/display/main.tsx"></script>
+  </body>
+</html>

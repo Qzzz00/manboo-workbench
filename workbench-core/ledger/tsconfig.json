@@ -1,0 +1,10 @@
+{
+  // 根 tsconfig 归卡 A(只含 src / tests);账的源码与用例在这里单独查一遍:
+  //   pnpm exec tsc --noEmit -p ledger
+  // erasableSyntaxOnly:账要能被 node 直接以类型剥离方式运行(用例里的子进程写手就是这么跑的)。
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "erasableSyntaxOnly": true
+  },
+  "include": ["./**/*.ts"]
+}

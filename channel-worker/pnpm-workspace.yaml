@@ -1,0 +1,9 @@
+allowBuilds:
+  '@livekit/local-inference': true
+  onnxruntime-node: true
+# pnpm 11 把设置从 package.json 的 "pnpm" 字段搬到了这里。
+# Silero VAD 的原生依赖(onnxruntime-node / @livekit/local-inference)要跑 postinstall
+# 才能把 .node 二进制放到位;不放行的话 VAD 一加载就报找不到模块。
+onlyBuiltDependencies:
+  - '@livekit/local-inference'
+  - onnxruntime-node

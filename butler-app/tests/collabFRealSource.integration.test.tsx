@@ -1,0 +1,45 @@
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { expect, it } from 'vitest';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { createApiClient } from '../src/api/client';
+import { collabClient } from '../src/api/collab';
+import { LanChannelPanel } from '../src/collab/LanChannelPanel';
+import { startOriginalFMobileQa } from './helpers/collabFRealSource.mjs';
+it('真实FeedService正常入口/程序报告→LAN持久快照→生产手机阅读/筛选/失效保留/重启', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'mobile-original-f-'));
+  const qa = await startOriginalFMobileQa({ root });
+  try {
+    const messages = qa.initial.receiver.messages;
+    expect(messages.flatMap(message => message.category === undefined ? [] : [message.category]).sort()).toEqual(['daily', 'news', 'weekly']);
+    const actualNews = messages.find(message => message.category === 'news')!;
+    const actualDaily = messages.find(message => message.category === 'daily')!;
+    expect(qa.initial.sender.messages.filter(message => message.category !== undefined).every(message => message.deliveries?.[0]?.status === 'delivered')).toBe(true);
+    expect(actualDaily.text.length).toBeGreaterThan(2000);
+    const original = qa.initial.sender.messages.find(message => message.client_msg_id === 'qa-f-legacy')!;
+    expect(original.deliveries?.[0]?.receipt?.message_id).toBe(original.id);
+    const client = createApiClient({ pairing: { token: 'test-only', host: '127.0.0.1', port: qa.receiver.port, deviceId: 'f-qa' }, onUnauthorized() {} });
+    const ui = render(<LanChannelPanel client={client} projects={[{ id: qa.project, name: '真实受控项目' }]} refreshToken={1} now="2026-10-19T02:00:00Z" />);
+    await screen.findByText(/本机资讯来源未接入/);
+    expect(screen.getByText(/本轮来源公告材料/, { selector: '.ba-collab__acttext' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /^原链接:/ }).getAttribute('href')).toBe(actualNews.source!.url);
+    fireEvent.change(screen.getByRole('combobox', { name: '频道内容分类' }), { target: { value: 'daily' } });
+    fireEvent.click(screen.getByText(/展开日报正文/));
+    const article = screen.getByText(/展开日报正文/).closest('article')!;
+    expect(within(article).getByText(/无执行源开工\/交回证据/)).toBeTruthy();
+    expect(article.textContent).toContain(actualDaily.source!.period!.from);
+    expect(article.querySelectorAll('button').length).toBe(0);
+    expect(screen.queryByRole('textbox')).toBeNull();
+    await act(async () => { await qa.stopOrigin(); });
+    const senderClient = createApiClient({ pairing: { token: 'test-only', host: '127.0.0.1', port: qa.sender.port, deviceId: 'f-qa' }, onUnauthorized() {} });
+    const retained = await collabClient(senderClient).lanChannel(qa.project);
+    expect(retained.ok && retained.data.source_scope?.news).toBe('unknown');
+    expect(retained.ok && retained.data.messages.filter(message => message.category !== undefined)).toHaveLength(3);
+    ui.unmount();
+    await qa.restartReceiver();
+    const reconnected = createApiClient({ pairing: { token: 'test-only', host: '127.0.0.1', port: qa.receiver.port, deviceId: 'f-qa' }, onUnauthorized() {} });
+    const readback = await collabClient(reconnected).lanChannel(qa.project);
+    expect(readback.ok && readback.data.messages).toEqual(messages);
+  } finally { cleanup(); await qa.close(); rmSync(root, { recursive: true, force: true }); }
+}, 30000);

@@ -1,0 +1,70 @@
+{
+  "name": "huashu-mac-use",
+  "repo": "https://github.com/alchaincyf/huashu-mac-use",
+  "commit": "95892a0d5df7547ccc6b53a6074287a49acfcfb6",
+  "license": "MIT",
+  "kept": [
+    "LICENSE",
+    "SKILL.md",
+    "references/about-author.md",
+    "references/app档案.md",
+    "references/取证规范.md",
+    "references/控制面详解.md",
+    "references/权限与故障.md",
+    "references/踩坑实录.md",
+    "scripts/build.sh",
+    "scripts/cdp.js",
+    "scripts/mac.swift",
+    "scripts/probe.sh"
+  ],
+  "dropped": [
+    {
+      "path": "assets/",
+      "why": "宣传图、动图、二维码与出图脚本,不入库"
+    },
+    {
+      "path": "README.md",
+      "why": "仓库介绍,执行 Agent 不读"
+    },
+    {
+      "path": ".gitignore",
+      "why": "上游仓库配置"
+    }
+  ],
+  "patches": [],
+  "reviewed": [
+    {
+      "file": "scripts/build.sh",
+      "network": "none",
+      "writes": "在 skill 目录内编译产出 mac 可执行文件（写进 third_party 目录）。",
+      "subprocess": "swiftc（需 Xcode / Command Line Tools）。",
+      "env": "none",
+      "note": "会在仓库 vendored 目录里留下未签名的本地编译二进制，审计未提这条写入。"
+    },
+    {
+      "file": "scripts/cdp.js",
+      "network": "http/ws 到 127.0.0.1:<port>（/json/list 与 target 自报的 webSocketDebuggerUrl）。",
+      "writes": "只写 shot 指定的截图路径；但会给目标页面元素写 data-hs-ref 属性（改动被控 app 的 DOM）。",
+      "subprocess": "none",
+      "env": "读并改写 NO_PROXY。",
+      "note": "eval/act/insert 可在目标 app 页面内执行任意 JS 并读整页 HTML，等于拿到已登录桌面应用的全部前端权限——审计未列这条能力面。"
+    },
+    {
+      "file": "scripts/mac.swift",
+      "network": "只连本机：curl http://127.0.0.1:<port>/json/version 探活 CDP。",
+      "writes": "写指定截图与 see 的 .json；另在 NSTemporaryDirectory 写 see-*/opbg-*/macop-before-*/shotfg-* 截图、huashu-mac-synthetic.trail、huashu-mac-focus.lock。",
+      "subprocess": "/usr/sbin/screencapture、/bin/ps、pgrep、lsof、curl、mdfind、defaults、open、自身（hud 子进程）、NSAppleScript activate。",
+      "env": "MAC_HUD、MAC_HUD_CAPTURABLE、MAC_HUD_STYLE。",
+      "note": "需辅助功能+屏幕录制权限；合成全局键鼠事件、open --cdp --relaunch 会 terminate 目标 app（丢未保存内容）、--force 拆掉「终端窗口回车=执行命令」等全部闸、HUD 默认对屏幕捕获隐身。"
+    },
+    {
+      "file": "scripts/probe.sh",
+      "network": "只连本机：对目标 app 进程族所有 LISTEN 端口 curl http://127.0.0.1:<port>/json/version，不像 CDP 就再 POST 一条 JSON-RPC initialize。",
+      "writes": "only to output path given（只打印，不落盘）",
+      "subprocess": "mdfind、mdls、defaults、plutil、python3、sdef、osascript、lsappinfo、pgrep、lsof、curl、find、ps、同目录 mac。",
+      "env": "读写 LANG、LC_ALL、PATH（覆盖 PATH 前缀）。",
+      "note": "osascript 查 System Events 需自动化权限；会主动向目标 app 的任意本地端口 POST 请求。"
+    }
+  ],
+  "reviewed_at": "2026-10-21"
+}

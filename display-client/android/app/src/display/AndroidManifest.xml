@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 展示台 flavor 专属：由系统在开机和 HOME 键事件中直接拉起。 -->
+    <application>
+        <activity
+            android:name=".MainActivity"
+            android:showWhenLocked="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          维护/测试时才由 ADB 临时启用的零渲染 HOME。默认禁用，不进入正常启动链；
+          它让 MainActivity 可以完全停掉，又不会触发小米 fallbackhome 的 CPU/Swap 失控循环。
+        -->
+        <activity
+            android:name=".MaintenanceHomeActivity"
+            android:enabled="false"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBarLaunch">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

@@ -1,0 +1,333 @@
+/*
+ * 展示台的卡片区与它带来的横竖两套排布(2026-09-21,运营同事白板第三节)。
+ *
+ * 独占 `ba-cards-` 前缀 + 单独一个文件(同 workbench-plugin 那边 templateStyle.ts 的理由):
+ * `styles.css` 那一大份是好几张卡同时在改的地方。**只有 `.ba-scene__body` /
+ * `.ba-scene__stage` 两个新容器和横屏那一段媒体查询会碰到既有的 `ba-scene-` 类**,
+ * 都写在这儿,不去改那份文件。
+ *
+ * 白板:横版形象在左、右侧几块卡片;竖版形象居中、下方卡片。形象是我们的粒子球
+ * (决策记录 2026-09-21「运营白板三件」第 3 条),不是白板上那个人形。
+ */
+
+/*
+ * ── 球不许被它自己那一格裁掉 ──
+ *
+ * `styles.css` 里那条 `min(60vw, 46vh)` 算的是**视口**,而球那一格的高度是
+ * "这一栏减掉字幕、减掉说明那几行剩下的" —— 两个数没有任何关系。393×873 的竖屏上
+ * 实测格子高 183px、球算出来 227px,**上下各被切掉一截**(Ben:「手机横屏页面可视化
+ * 也有不小的问题」;竖屏上其实也有,只是没那么明显)。
+ *
+ * 所以这里改成**只给一个方向定尺寸 + `aspect-ratio` 保圆**,两个 `max-*` 各自兜住
+ * 容器的那一边:哪一边先到头就由哪一边说了算,球始终是一个完整的圆。
+ * 选择器多带一层 `.ba-scene` 只为压过 styles.css 里那一条,不是为了别的。
+ */
+/*
+ * 那一格改成 flex 居中,不再是 grid:**grid 行是按内容撑的**,里面那颗球的
+ * `max-height: 100%` 于是按"球自己撑出来的那一行"算 —— 等于没有上限,球照样溢出
+ * (实测 873×393 横屏:格子 362×134,球 181×181,上下各出去 23px)。
+ * flex 容器的高度是定的,百分比上限才真的兜得住。
+ */
+.ba-scene .ba-scene__orb { display: flex; align-items: center; justify-content: center; }
+.ba-scene .ba-scene__orb > * {
+  width: auto; height: min(60vw, calc(46 * var(--ba-vh, 1vh))); aspect-ratio: 1 / 1;
+  max-width: 100%; max-height: 100%;
+}
+
+/* ── 两个新容器:身子(球 + 卡片)与球那一栏(球 + 字幕)── */
+/*
+ * `.ba-scene__stage` 的 `position: relative` 是 2026-10-03(卡「首页侧边小图标」)加的:
+ * 侧边那一列小图标(`.ba-rail`)与它点开的那一块(`.ba-rail-sheet`)都拿它当参照物 ——
+ * 于是横竖两向它们都待在球那一栏里,不会跑到卡片区或输入框身上(理由与量过的三档数在 stage/homeRail.css)。
+ * 这一层本来就不和别人重叠,定位只是给绝对定位的那两个孩子一个框。
+ */
+.ba-scene__body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.ba-scene__stage { position: relative; flex: 1 1 auto; min-height: 0; min-width: 0; display: flex; flex-direction: column; }
+
+/* ── 卡片本身。横竖同一份 DOM,差别只在这里 ── */
+/*
+ * **行数固定,但一个像素都不写死**(2026-09-25 夜,卡 fix/phone-home-orb-first)。
+ *
+ * 上一版(fix/phone-home-card-fit)用 em 算出每一行、每张卡的高度,再用定高 + overflow 裁 —— 无头 Chrome 里量得正好,
+ * 到小米(MIUI 系统字体、系统字号)上字形比那一格高,**每一行的下沿都被切掉一截**。现在:
+ *   - 行高一律用倍数(1.5),卡片里不写任何 height / max-height;
+ *   - 每张卡标题下面垫一份看不见的 `rows` 行(`.ba-cards__space`,每行一个不换行空格),真内容压在同一格里 ——
+ *     这一格的高度是**真字体排出来的** `rows` 行,换字体、放大字都跟着长;
+ *   - 截断:一行的用「不换行 + 省略号」,几行的用 line-clamp;不再用定高 + overflow;
+ *   - 几张一样高:网格的行用 1fr(在不定高的卡片区里 = 最高那张的内容高)。
+ * 行数(3 / 2)照旧由 StageCards 按舞台高度定、写在 `data-rows` 上。
+ *
+ * **2026-10-03 傍晚(方案 B):主列上只剩两张,并排各占一半。**
+ * 维护者:「只保留正在办和待确认两个是卡片,其他都和前面一样做成 icon 就 OK……中间的球球还是要大的。」
+ * 两列(`repeat(2, minmax(0, 1fr))`)这一条一个字没改 —— 它本来就是半宽那一档;变的是
+ * ① 不再有占整行的那一张(`homeCards` 把 `wide` 收了),于是网格只剩**一行**;
+ * ② 另三张搬成球下那一排图标。卡片区从三行掉到一行,省下来的高度全归球那一格(它是 `flex: 1`)。
+ * 窄屏 375:14px 外边距 ×2 + 8px gap 之后每张约 169px,照旧 `minmax(0, 1fr)` + 省略号兜着,不退成上下两张。
+ */
+.ba-cards {
+  --ba-card-rows: 3;
+  /* 「一句话摘要」那种能折两行的,比总行数少一行(下面还有附注那一行)。 */
+  --ba-card-rows-less: 2;
+  flex: 0 0 auto; overflow: hidden;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 8px;
+  padding: 0 14px 8px;
+  font-size: var(--ba-fs-sub); line-height: 1.5;
+}
+.ba-cards[data-rows="2"] { --ba-card-rows: 2; --ba-card-rows-less: 1; }
+/* 「正在办」占整行(`data-wide`)。border-beam 的外壳(.ba-fx__beam)会包在卡片外面,所以整行要跟着外壳走。 */
+.ba-cards > .ba-cards__card[data-wide="true"],
+.ba-cards > .ba-fx:has(> .ba-fx__beam > .ba-cards__card[data-wide="true"]) > .ba-fx__beam { grid-column: 1 / -1; }
+.ba-cards > .ba-fx > .ba-fx__beam { min-width: 0; min-height: 0; display: flex; border-radius: 12px; }
+.ba-cards > .ba-fx > .ba-fx__beam > .ba-cards__card { flex: 1 1 auto; }
+.ba-cards__card {
+  position: relative;
+  display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow: hidden;
+  padding: 10px 12px; border: 1px solid var(--ba-line); border-radius: 12px; background: var(--ba-bg-2);
+}
+/*
+ * 整张卡都能点(2026-09-25):铺满的那颗透明按钮在最底下接点击,字画在它上面但不接点击(pointer-events: none),
+ * 于是点在哪都落到那颗按钮上;读屏读到的是「打开「今天要做」」。按下去压一档底色。
+ */
+.ba-cards__tap {
+  position: absolute; inset: 0; z-index: 0; margin: 0; padding: 0; border: 0; border-radius: inherit;
+  background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.ba-cards__tap:active { background: color-mix(in srgb, var(--ba-fg) 7%, transparent); }
+.ba-cards__tap:focus-visible { outline: 2px solid var(--ba-fg-2); outline-offset: -2px; }
+.ba-cards__card[data-openable="true"] > :not(.ba-cards__tap) { position: relative; z-index: 1; pointer-events: none; }
+/*
+  「等你确认」里一行一颗自己的按钮(2026-09-28,卡 UX):盖在这一行上、看不见,
+  `pointer-events: auto` 把这一行的点击从整张卡那颗手里抢过来(祖先 none 不影响自己声明 auto 的后代)。
+*/
+.ba-cards__line { position: relative; }
+.ba-cards__linetap { position: absolute; inset: -2px -4px; border: 0; border-radius: 8px; background: transparent; padding: 0; pointer-events: auto; z-index: 2; }
+.ba-cards__linetap:active { background: color-mix(in srgb, var(--ba-fg) 9%, transparent); }
+.ba-cards__linetap:focus-visible { outline: 2px solid var(--ba-fg-2); outline-offset: -2px; }
+/* 标题那一行:卡名、数、「›」挤不下时卡名自己截断。 */
+.ba-cards__head { flex: none; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ba-cards__title {
+  flex: 1 1 auto; min-width: 0; margin: 0; font-size: var(--ba-fs-sub); line-height: 1.5; font-weight: 600; color: var(--ba-fg);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-block: .2em; margin-block: -.2em;
+}
+.ba-cards__count {
+  flex: none; min-width: 1.6em; padding: 0 6px; border-radius: 999px; text-align: center; line-height: 1.4;
+  background: var(--ba-bg); color: var(--ba-fg-2); font-size: var(--ba-fs-sub); font-variant-numeric: tabular-nums;
+}
+.ba-cards__chev { flex: none; color: var(--ba-fg-3); font-size: var(--ba-fs-sub); line-height: 1; margin-left: 2px; }
+/* 标题下面那一格:垫着的 `rows` 行与真内容叠在同一格(grid-area 1 / 1),高度 = 两者里高的那个 = 真字体排的 `rows` 行。 */
+.ba-cards__body { flex: none; display: grid; min-width: 0; }
+/* `align-self: start`:叠在上面的真内容按自己的行数高,不被拉到整格高 —— 被拉高的话,截到第 N 行的那句会露出第 N+1 行的上沿。 */
+.ba-cards__body > * { grid-area: 1 / 1; min-width: 0; align-self: start; }
+/*
+ * 垫行写的是「国」字而不是空格:安卓上中文与西文是两套字体(Noto Sans CJK / Roboto),中文那套更高;
+ * 垫行要按真正会出现在卡片里的那套字排,才和真内容一样高。
+ */
+.ba-cards__space { display: block; visibility: hidden; }
+.ba-cards__space::before { content: '国\A国\A国'; white-space: pre; }
+.ba-cards[data-rows="2"] .ba-cards__space::before { content: '国\A国'; }
+.ba-cards__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+/*
+ * 一行一件、**标题优先**:附注(几点、截止日、多长)跟在标题后面同一行(前面一个「·」),整行不换行、多了省略号 ——
+ * 地方不够时先没的是附注,标题长了标题自己截。截断了的完整标题在「事项」页里。
+ *
+ * 一行截断要 `overflow: hidden`:上下各垫 .2em 内边距、再用负外边距收回,字形比行高高的字体(小米系统字体)
+ * 下沿落在内边距里,不被切。不换行,所以没有「下一行露出半截」的问题。
+ */
+.ba-cards__line { min-width: 0; }
+.ba-cards__text {
+  display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding-block: .2em; margin-block: -.2em; color: var(--ba-fg); font-size: var(--ba-fs-sub);
+}
+.ba-cards__note { color: var(--ba-fg-3); }
+.ba-cards__text > .ba-cards__note::before { content: '·'; margin: 0 .35em; }
+.ba-cards__more {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding-block: .2em; margin-block: -.2em; color: var(--ba-fg-3);
+}
+/*
+ * **占整行那一张**反过来:右边那格是**哪一家在办**(Claude / Codex / Kimi / 事务官),一眼就要看到,
+ * 标题太长就标题自己截断,那一家一直在(统筹:「正在办那行右侧『Claude』不截、不挤」)。
+ *
+ * 2026-10-03 傍晚(方案 B)这几条从 `[data-card="doing"]` 改挂到 `[data-wide="true"]` 上:
+ * 「正在办」现在是**半宽**(两张卡并排各一半),175px 上这一格会把标题挤成一个省略号 ——
+ * 半宽就该走上面那条「标题优先、附注跟在后面、不够先没附注」的老规矩。
+ * 画它的那一处(StageCards.tsx 的 `noteBeside`)同样认 `wide`,一个概念一个开关。
+ */
+.ba-cards__card[data-wide="true"] .ba-cards__line { display: flex; align-items: baseline; gap: 8px; }
+.ba-cards__card[data-wide="true"] .ba-cards__text { flex: 1 1 auto; }
+/*
+ * 2026-09-26(卡 LG3):这一格原来是 `flex: none`,**装不下时从卡的右边直接切掉半个字**。
+ * 小米 10S 上量到(经 adb forward 用 WebView 的 DevTools):那一行宽 339px,光这一格就 345px ——
+ * 在这张卡之前就已经溢出 6px 了,只是切得少不容易看见;这一格里又多了一张 logo,就成了 38px。
+ * 改成「装不下才让,让也是省略号」:标题那一格是 `flex: 1 1 auto`,**先缩的永远是标题**,
+ * 所以上面那句「那一家不截、不挤」在装得下时一个像素都没变。
+ */
+.ba-cards__card[data-wide="true"] .ba-cards__line > .ba-cards__note {
+  flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/*
+ * 几行的截断(line-clamp)一律 `line-height: normal`:行盒按字体自己的上下伸展排,字形永远在行盒里 ——
+ * 截在第 N 行的底边上,不会切掉第 N 行的下沿,也不会露出第 N+1 行的上沿(换了更高的字体实测过)。
+ * 一行的截断用的是上面那种「内边距垫 .2em」的办法。
+ */
+/* 没有内容时那句话(「资讯」说为什么没有,那句可能很长):最多 `rows` 行,多了省略号(line-clamp)。 */
+.ba-cards__empty {
+  margin: 0; color: var(--ba-fg-3); font-size: var(--ba-fs-sub); line-height: normal; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--ba-card-rows); overflow: hidden;
+}
+/*
+ * 附注另起一行的那种(`data-stacked`,「最近一次通话」):那句摘要最多占 rows-1 行、多了省略号(line-clamp),
+ * 「几点 · 多长」在它下面自己一行。
+ */
+.ba-cards__card[data-stacked="true"] .ba-cards__text {
+  white-space: normal; overflow-wrap: anywhere; padding-block: 0; margin-block: 0; line-height: normal;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--ba-card-rows-less);
+}
+.ba-cards__card[data-stacked="true"] .ba-cards__line > .ba-cards__note {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-block: .2em; margin-block: -.2em;
+}
+/* 电脑没连上、点开看上次的数据时:那一条「上次的数据」自己一行,按内容高,不跟卡片一样高。 */
+.ba-cards[data-stale="open"] { grid-template-rows: auto; }
+/* 「去看」那颗键 2026-09-25 去掉了:整张卡就是那颗键(上面 .ba-cards__tap)。 */
+
+/*
+ * 横屏下那颗「展开/收起字幕区」(2026-09-22)。**竖屏下整个不画** ——
+ * 竖屏本来就摆得下两三行字幕,多一颗按钮只是噪音。组件不读屏幕尺寸,藏它的是这一条。
+ */
+.ba-scene__capstoggle { display: none; }
+
+/*
+ * ── 横屏(= 展示台)──
+ *
+ * 白板横版:形象在左、右侧几块卡片。横屏下屏高很矮(2400×1080 的机器在 CSS 里只有
+ * 约 390px 高),所以这一段做的事全是**把纵向的东西压扁、把横向的空间让出来**:
+ * 球那一栏收到 42%、字幕跟着球走(不再占满整屏宽)、顶上那排 icon 与底部那条都缩一号。
+ * 折叠屏展开是「宽竖屏」,`orientation: landscape` 认的是真横屏,不做机型特判。
+ */
+@media (orientation: landscape) {
+  .ba-scene__body { flex-direction: row; gap: 10px; padding: 0 12px 0 0; }
+  .ba-scene__stage { flex: 0 0 42%; }
+  .ba-cards {
+    flex: 1 1 auto; min-width: 0; max-height: 100%; height: 100%;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    padding: 0 0 6px; gap: 6px;
+  }
+  /* 球在左栏里居中,**按左栏的宽算**,不按整屏宽 —— 按 60vw 算会被左栏裁掉一半。 */
+  .ba-scene .ba-scene__orb > * { height: min(36vw, 52vh); }
+  /* 字幕在球下面那一小块里滚,不把底部那条顶出屏幕。 */
+  /* 字幕退成球下面一小块自己滚:横屏下球与字幕抢的是同一段高度,球先。 */
+  .ba-scene__captions { flex: 0 1 auto; min-height: 0; max-height: 32%; overflow-y: auto; padding: 0 10px 4px; }
+  .ba-scene__caption[data-role="butler"] { max-height: none; }
+
+  /*
+   * ── 字幕区可折叠(2026-09-22,交接-0921 横屏问题清单第 5 条)──
+   *
+   * 那一条说的是:横屏下球只有 101–153px,**再大只能动字幕**,而字幕是这一页的产品核心
+   * (2026-09-17 Ben 定的「Grok 那种字幕形式」),压没它换一个大球是拿产品换视觉。
+   *
+   * 折叠**不是压没**:默认剩最新那一行(一行之内截断),点一下就回原样。
+   * 于是两头都有:没展开时球拿得到 220px 以上,想看全字幕永远只差一下。
+   */
+  .ba-scene__capstoggle {
+    display: inline-block; align-self: center; flex: none; margin: 0 0 2px;
+    padding: 2px 12px; border-radius: 999px; border: 1px solid var(--ba-line);
+    background: transparent; color: var(--ba-fg-3); font-size: var(--ba-fs-sub); cursor: pointer;
+  }
+  .ba-scene__captions[data-open="false"] {
+    /* 折叠 = **最新那一句、一行**。`flex: none` + 按行高定死高度,免得它把球顶上去。 */
+    flex: none; max-height: none; height: 1.6em; line-height: 1.6; overflow: hidden; padding-bottom: 0;
+  }
+  .ba-scene__captions[data-open="false"] .ba-scene__caption {
+    /* `width: 100%` 是必须的:这一栏是 flex column,`nowrap` 的那一句不铺满就按内容撑宽,
+       于是它会从左栏两头溢出去(第一版实测:字幕左边被屏幕切掉、右边压在卡片上)。 */
+    width: 100%; max-width: 100%; align-self: stretch; box-sizing: border-box;
+    margin: 0; line-height: 1.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  /*
+   * 折叠着的时候**只留她那一句**(最新的那一句)。
+   * 两句叠在一个一行高的框里的话,上面那句只露出半行 —— 那看起来像画坏了,不像"折起来了"。
+   * 他那一句(`data-role="me"`)是他自己刚说的,展开一下就在。
+   */
+  .ba-scene__captions[data-open="false"] .ba-scene__caption[data-role="me"] { display: none; }
+  .ba-scene__captions[data-open="false"] .ba-scene__more { display: none; }
+  /*
+   * 展开时它吃掉球让出来的那一段(球回到 `min(36vw, 52vh)`),**自己滚** ——
+   * 他这会儿看的就是字幕。`min-height: 0` 是 flex 里能滚的前提。
+   */
+  .ba-scene__captions[data-open="true"] { flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto; }
+  /*
+   * 折叠着的时候球放大到**至少 220px**(卡上那条)。`max-height: none` 是必须的:
+   * 基线那条 `max-height: 100%` 会把它压回容器剩下的高度,于是 220 这个下限永远兑现不了。
+   * 上下那点溢出由 `.ba-scene__stage` 的 overflow 兜住,球本身照旧是个完整的圆。
+   */
+  .ba-scene__body[data-captions="collapsed"] .ba-scene__orb {
+    /* **那一格自己就是 220px 高**,而不是让里面那颗球撑出格子:撑出去会压到字幕
+       (第一版实测就是球盖住了字幕的上半行)。格子定高,球填满它,两边都不越界。 */
+    flex: 0 0 auto; height: max(220px, min(36vw, 46vh));
+  }
+  .ba-scene .ba-scene__body[data-captions="collapsed"] .ba-scene__orb > * {
+    height: 100%; max-height: 100%;
+  }
+  .ba-scene__stage { overflow: hidden; }
+
+  /*
+   * ── 卡片区可纵向滚(2026-09-22,横屏问题清单第 6 条)──
+   *
+   * 上一版是**两行两列的固定格子、整块不滚**,于是每张卡片只有半屏高:
+   * 「今日要做」一次只摆得下 2 行(竖屏 3 行)。那一条当时的结论是「想一屏看全只能减字号
+   * 或减卡片数,两件都要 Ben 定」—— 这一版给的是第三条路:**卡片保持看得清的高度,
+   * 装不下的往下滚**。于是「今日要做」那四行是真看得见的四行,「还有 N 件」也就不是猜的。
+   *
+   * `align-content: start` + `grid-auto-rows: minmax(146px, auto)`:每张卡片至少 146px
+   * (四行 + 标题 + 「还有 N 件」摆得下),多出来的整块往下滚。
+   */
+  .ba-cards {
+    overflow-y: auto; overscroll-behavior: contain;
+    grid-template-rows: none; grid-auto-rows: minmax(210px, auto); align-content: start;
+  }
+  /*
+   * 卡片**自己不再滚**:滚的是整块卡片区。
+   *
+   * 上一版每张卡片里那几行自己 `overflow-y: auto`,于是「今日要做」列了四行、
+   * 卡片只画得下两行 —— 第三四行躺在一个没人会去滚的小框里,而「还有 3 件」写在下面,
+   * 屏幕上就成了「2 行 + 还有 3 件」而总数是 7。**一个数、一份清单、一处滚动**。
+   */
+  .ba-cards__list { flex: 0 0 auto; overflow: visible; }
+  /* 顶上那排与底下那条都缩一号:390px 的高度里,56px 的圆键上下各占一截就没剩多少了。 */
+  /*
+   * 状态行那一格不用在这里改(2026-09-26,卡 QH):它的高度由 styles.css 里那份看不见的垫子
+   * (`.ba-scene__topspace`)按真字体排出来,横屏竖屏、放大字都自己跟着走 —— 这里写一个数反而会写错。
+   */
+  .ba-scene__top { padding: calc(4px + var(--ba-safe-top)) 10px 0; }
+  .ba-scene__icon { width: 46px; height: 46px; }
+  .ba-scene__icon--sm { width: 38px; height: 38px; }
+  .ba-scene__dock { padding: 6px 16px calc(8px + var(--ba-safe-bottom)); gap: 10px; }
+  /* 对话记录 2026-09-24 起是整屏的下一级页(styles.css `.ba-scene__log`),横屏不再单独给高度。 */
+}
+
+/*
+ * ── 很矮的横屏(≤ 420px 高)──
+ * 真机上 2400×1080 与 1920×1080 都落在这一档。球再压一点,字幕退成一行。
+ */
+@media (orientation: landscape) and (max-height: 420px) {
+  .ba-scene .ba-scene__orb > * { height: min(32vw, 46vh); }
+  .ba-scene__captions[data-open="true"] { max-height: 42%; }
+  .ba-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /*
+   * 这一档(2400×1080 与 1920×1080 都落在这儿)正是「球只有 101–153px」那一条量出来的地方。
+   * 折叠着的时候照样给足 220px —— 这是卡上那条数的落点。
+   */
+  .ba-scene__body[data-captions="collapsed"] .ba-scene__orb { height: max(220px, min(32vw, 46vh)); }
+}
+
+/*
+ * ── 上次的数据(2026-09-23 第二轮从零重装)──
+ * 电脑没连上时卡片收起成一行;点开看的时候整块压暗,一眼看得出不是「现在」。
+ */
+.ba-cards__stalebar {
+  grid-column: 1 / -1; justify-self: center;
+  background: none; border: 0; padding: 4px 8px;
+  color: var(--ba-fg-2); font-size: var(--ba-fs-sub); text-decoration: underline; text-underline-offset: 3px;
+}
+.ba-cards--stale { grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; }
+.ba-cards[data-stale="open"] .ba-cards__card { opacity: .55; }

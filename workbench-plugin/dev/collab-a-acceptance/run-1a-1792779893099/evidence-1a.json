@@ -1,0 +1,106 @@
+[
+  {
+    "at": "2026-10-23T18:24:53.130Z",
+    "name": "1a-s1-record",
+    "passed": true,
+    "items": [
+      {
+        "kind": "记",
+        "title": "周四下午把样片发给客户",
+        "risk": "none",
+        "status": "done",
+        "card_id": "t-100b96ff"
+      }
+    ],
+    "say": {
+      "screen": "记下了「周四下午把样片发给客户」。",
+      "spoken": "记下了「周四下午把样片发给客户」。"
+    }
+  },
+  {
+    "at": "2026-10-23T18:24:53.139Z",
+    "name": "1a-s8-content-not-risk",
+    "passed": true,
+    "hold": null,
+    "items": [
+      {
+        "kind": "记",
+        "title": "下周二把合同发给客户",
+        "risk": "none",
+        "status": "done",
+        "card_id": "t-8db62b90"
+      }
+    ],
+    "say": "记下了「下周二把合同发给客户」。"
+  },
+  {
+    "at": "2026-10-23T18:25:02.297Z",
+    "name": "1a-s5-three-notes",
+    "passed": false,
+    "titles": [
+      "周四发样片、周五交发票、下周一约 B 客户"
+    ],
+    "say": "记下了「周四发样片、周五交发票、下周一约 B 客户」。"
+  },
+  {
+    "at": "2026-10-23T18:25:14.160Z",
+    "name": "1a-s4-mixed-three",
+    "passed": false,
+    "items": [
+      [
+        "办",
+        "asked",
+        "把样片派给 Claude 剪一版",
+        ""
+      ]
+    ],
+    "say": "。"
+  },
+  {
+    "at": "2026-10-23T18:25:14.162Z",
+    "name": "1a-s7-addressed",
+    "passed": true,
+    "say": "刚才那句是跟我说的吗?"
+  },
+  {
+    "at": "2026-10-23T18:25:14.196Z",
+    "name": "1a-say-dispatch-kimi",
+    "passed": true,
+    "items": [
+      [
+        "办",
+        "failed",
+        "没派成"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T18:25:17.294Z",
+    "name": "1a-kimi-dispatch-receipt",
+    "passed": true,
+    "dispatch": {
+      "family": "kimi",
+      "status": "done",
+      "hand": "cli",
+      "cwd": "/Users/example/.cache/collab-a-acceptance/serve-1792779602727/instance/iso/home/.dsh/workbench/worktrees/collab-a-qa/QA1a真实派活-da9a",
+      "pid": 91107,
+      "started_at": "2026-10-23T18:25:14.250Z",
+      "ended_at": "2026-10-23T18:25:16.768Z",
+      "reply": "QA_1A_DONE",
+      "output_file": "/Users/example/.cache/collab-a-acceptance/serve-1792779602727/instance/iso/home/.dsh/workbench/dispatch/t-bba7da9a-2026-10-23T18-25-14-249Z.txt",
+      "session_id": "session_78d9eccb-c63c-47ef-92fd-32ad00c6431c",
+      "kind": "code",
+      "branch": "workbench/QA1a真实派活-da9a",
+      "budget_minutes": 120
+    }
+  },
+  {
+    "at": "2026-10-23T18:25:17.295Z",
+    "name": "run-1a-end",
+    "checksFailed": [
+      "1a-s5-three-notes",
+      "1a-s4-mixed-three"
+    ],
+    "limitation": "假上游钉 say 清单行为;真实模型轮与真手机未验(见报告);电话列是 1b"
+  }
+]

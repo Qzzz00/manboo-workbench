@@ -1,0 +1,58 @@
+{
+  "sourceCommit": "09e06a25b97429a0c099bc8449b89f19b1872e3c",
+  "assets": [
+    {
+      "file": "device-dock.webp",
+      "source": "site/assets/scenes/device-dock.webp",
+      "sha256": "446d3fe172802d1d7531208a7cf2e9d6f9713ad62f7e02ea6faafb605c86e318",
+      "usage": "current-site-illustration"
+    },
+    {
+      "file": "scene-call.webp",
+      "source": "site/media/scene-call.webp",
+      "sha256": "adc19eb474210e49420dfac5fb391e804c99b45663c63c811f4c186de535983e",
+      "usage": "current-site-illustration-based-on-prototype-photo"
+    },
+    {
+      "file": "scene-dock.webp",
+      "source": "site/media/scene-dock.webp",
+      "sha256": "3a102879b50f3caf699cc50949eb80d0ec275b0bbf3aa2ab7afb63f867bdc82a",
+      "usage": "current-site-illustration-based-on-prototype-photo"
+    },
+    {
+      "file": "scene-inside.webp",
+      "source": "site/media/scene-inside.webp",
+      "sha256": "c3f48cfe36c52b7a5e7178fda557b04299615d46f4827f3832acdd286cb7d979",
+      "usage": "current-site-illustration-based-on-prototype-photo"
+    }
+  ],
+  "diagrams": [
+    {
+      "file": "task-mechanism.svg",
+      "sha256": "322266d91eabc4569d4bceb19946267bfd09292628213e46f7d6cdd54fae1009",
+      "implementationReferences": [
+        "workbench-plugin/src/server/deckRun.ts",
+        "workbench-plugin/src/server/topicRun.ts",
+        "workbench-plugin/src/server/featureRun.ts",
+        "workbench-plugin/src/server/engine/engine.ts",
+        "workbench-plugin/src/server/engine/registry.ts",
+        "workbench-plugin/src/server/jobLog.ts",
+        "workbench-plugin/src/server/rules.ts"
+      ]
+    },
+    {
+      "file": "evolution-loop.svg",
+      "sha256": "b150cf61a6eff6d0c959300c856cbc9608e43241373d984f314985c5cc5c91ad",
+      "status": "behavior-and-decision-habits-implemented-style-and-ui-in-development",
+      "designReferences": [
+        "docs/设计-事务官从她的行为里学-2026-10-09.md"
+      ],
+      "implementationReferences": [
+        "workbench-plugin/src/server/behaviorLog.ts",
+        "workbench-plugin/src/server/habits.ts",
+        "workbench-plugin/src/server/rules.ts",
+        "workbench-plugin/src/server/evolve.ts"
+      ]
+    }
+  ]
+}

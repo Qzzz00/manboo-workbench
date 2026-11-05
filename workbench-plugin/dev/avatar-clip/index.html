@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><title>卡上的小头像会不会被切</title>
+<script>
+const mm = window.matchMedia.bind(window)
+window.matchMedia = q => String(q).includes('prefers-reduced-motion')
+  ? { matches: false, media: String(q), onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent: () => false }
+  : mm(q)
+</script>
+<style>
+html,body{margin:0;background:#0b0b0c;color:#ddd;font:13px -apple-system,"PingFang SC"}
+#root{padding:16px}
+#report{white-space:pre-wrap;font:12px ui-monospace,monospace;color:#9ad;margin:12px 0}
+#strip{image-rendering:pixelated;background:#000;border:1px solid #333}
+</style>
+</head><body><div id="root"></div><script type="module" src="./main.tsx"></script></body></html>

@@ -1,0 +1,186 @@
+{
+  "role": "shuangsheng-dj",
+  "kind": "expression",
+  "version": "v3",
+  "items": [
+    {
+      "id": "aixin",
+      "file": "aixin.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "爱心",
+      "keywords": [
+        "爱心",
+        "心心",
+        "喜欢你",
+        "我喜欢",
+        "爱你",
+        "么么哒",
+        "亲亲"
+      ]
+    },
+    {
+      "id": "baisi",
+      "file": "baisi.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "legwear",
+      "hint": "白丝",
+      "defaultWorn": true,
+      "keywords": [
+        "白丝",
+        "换白丝",
+        "丝袜"
+      ]
+    },
+    {
+      "id": "baowawa",
+      "file": "baowawa.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hand_prop",
+      "hint": "抱娃娃",
+      "keywords": [
+        "娃娃",
+        "抱娃",
+        "棉花",
+        "小熊",
+        "小兔子",
+        "布偶"
+      ]
+    },
+    {
+      "id": "changge",
+      "file": "changge.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "唱歌手势",
+      "keywords": [
+        "唱歌",
+        "唱一首",
+        "唱一段",
+        "唱一下"
+      ]
+    },
+    {
+      "id": "heilian",
+      "file": "heilian.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "angry",
+      "intensity": "medium",
+      "hint": "黑脸",
+      "keywords": [
+        "生气",
+        "讨厌",
+        "烦",
+        "不理你",
+        "哼",
+        "无语"
+      ]
+    },
+    {
+      "id": "huanzhuang",
+      "file": "huanzhuang.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "outfit",
+      "hint": "换装",
+      "keywords": [
+        "换装",
+        "换衣服",
+        "换一套"
+      ]
+    },
+    {
+      "id": "jiyan",
+      "file": "jiyan.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "眼睛变 >_< 的开心眯眼",
+      "keywords": [
+        "眼睛亮",
+        "好棒",
+        "好厉害",
+        "太酷了",
+        "崇拜"
+      ]
+    },
+    {
+      "id": "lianhong",
+      "file": "lianhong.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "shy",
+      "intensity": "strong",
+      "hint": "脸红",
+      "keywords": [
+        "脸红",
+        "害羞",
+        "不好意思",
+        "好害羞"
+      ]
+    },
+    {
+      "id": "tousi",
+      "file": "tousi.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headwear",
+      "triggerEnabled": false,
+      "hint": "换装型全量替换，仅走 admin-ui 手动，不参与触发",
+      "keywords": []
+    },
+    {
+      "id": "waitao",
+      "file": "waitao.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "outerwear",
+      "hint": "外套",
+      "keywords": [
+        "外套",
+        "穿外套",
+        "披外套",
+        "披上"
+      ]
+    },
+    {
+      "id": "yanlei",
+      "file": "yanlei.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "sad",
+      "intensity": "strong",
+      "hint": "眼泪",
+      "keywords": [
+        "哭",
+        "眼泪",
+        "委屈",
+        "难过",
+        "想哭"
+      ]
+    },
+    {
+      "id": "yun",
+      "file": "yun.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "晕（转圈眼）",
+      "keywords": [
+        "头晕",
+        "晕",
+        "转圈",
+        "好累"
+      ]
+    }
+  ]
+}

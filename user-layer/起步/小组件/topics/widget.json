@@ -1,0 +1,10 @@
+{
+  "contract": 1,
+  "id": "topics",
+  "name": "选题池",
+  "replaces": "todo",
+  "entry": "index.js",
+  "export": "TodoModule",
+  "author": "运营同学",
+  "version": "2026-10-21"
+}

@@ -1,0 +1,48 @@
+# 座机配网服务(2026-09-22)。**system 级,跑在 root 下** —— 与用户级的
+# phone-bridge.service 并存,互不打扰。
+#
+# 装在派上的 /etc/systemd/system/wb-provision.service:
+#
+#     sudo cp ~/phone-bridge/wb-provision.service /etc/systemd/system/
+#     sudo systemctl daemon-reload && sudo systemctl enable --now wb-provision
+#
+# **deploy.sh 不装它**(那个脚本的老规矩是不 sudo:派上 sudo 要密码,Claude 不经手)。
+# 正常的路是 cloud-init 首次开机时以 root 落盘,见 docs/交接-0922-座机配网走App.md 第四节。
+#
+# 为什么不跟 phone-bridge 一样挂在 ben 下面(三条,缺一条就跑不起来):
+#   1. bluez 的 org.bluez(注册 GATT 应用 + 发广播)在 Debian 默认 D-Bus 策略下
+#      只对 root 与 bluetooth 组放行;
+#   2. nmcli 改系统连接要 polkit 的 …settings.modify.system,而派上没人登录、
+#      只有 linger,用户级服务拿不到活动 seat;
+#   3. Wi-Fi 密码要落成 /etc/NetworkManager/system-connections/ 下的 keyfile(0600 root)。
+[Unit]
+Description=工作台座机配网(BLE)
+# 要 NetworkManager 与 bluez 都在。不是 Requires:它们晚起来几秒不该让这条服务算失败,
+# 状态机本来就有 60 秒的开机等待窗口。
+After=NetworkManager.service bluetooth.service dbus.service
+Wants=NetworkManager.service bluetooth.service
+# 不限重启次数:开机时蓝牙固件可能还没加载完,连着失败几轮是正常的
+# (同 phone-bridge.service 那条「等硬件枚举」的理由)。这个键属于 [Unit]。
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ben/phone-bridge
+# nmcli 的输出要是英文:provision.classify_connect 认的是 "Secrets were required" 这几句,
+# 中文 locale 下一条都匹配不上,于是密码错和连不上分不开,界面只会说「没连上」。
+Environment=LC_ALL=C
+Environment=LANG=C
+# 这几样可以改而不动代码:网卡名、要重启谁的 phone-bridge、device.json 在哪。
+Environment=WB_WIFI_IFACE=wlan0
+Environment=WB_BRIDGE_USER=ben
+Environment=WB_BRIDGE_UID=1000
+ExecStart=/usr/bin/python3 /home/ben/phone-bridge/provisiond.py
+Restart=always
+RestartSec=5
+# 日志走 journal(`journalctl -u wb-provision`),不另开一个文件:
+# phone-bridge 那个 append: 文件是它自己的,两个进程写同一个文件迟早串行。
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

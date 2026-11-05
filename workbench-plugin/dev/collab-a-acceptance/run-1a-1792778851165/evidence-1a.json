@@ -1,0 +1,117 @@
+[
+  {
+    "at": "2026-10-23T18:07:31.198Z",
+    "name": "1a-s1-record",
+    "passed": true,
+    "items": [
+      {
+        "kind": "记",
+        "title": "周四下午把样片发给客户",
+        "risk": "none",
+        "status": "done",
+        "card_id": "t-7a82b3ab"
+      }
+    ],
+    "say": {
+      "screen": "记下了「周四下午把样片发给客户」。",
+      "spoken": "记下了「周四下午把样片发给客户」。"
+    }
+  },
+  {
+    "at": "2026-10-23T18:07:31.208Z",
+    "name": "1a-s8-content-not-risk",
+    "passed": true,
+    "hold": null,
+    "items": [
+      {
+        "kind": "记",
+        "title": "下周二把合同发给客户",
+        "risk": "none",
+        "status": "done",
+        "card_id": "t-5f43f9c0"
+      }
+    ],
+    "say": "记下了「下周二把合同发给客户」。"
+  },
+  {
+    "at": "2026-10-23T18:07:31.219Z",
+    "name": "1a-s5-three-notes",
+    "passed": true,
+    "titles": [
+      "周四发样片",
+      "周五交发票",
+      "下周一约 B 客户"
+    ],
+    "say": "记了 3 条。"
+  },
+  {
+    "at": "2026-10-23T18:07:31.238Z",
+    "name": "1a-s4-mixed-three",
+    "passed": true,
+    "items": [
+      [
+        "记",
+        "done",
+        "周四下午给客户发样片",
+        ""
+      ],
+      [
+        "办",
+        "failed",
+        "把样片剪一版",
+        "没派成"
+      ],
+      [
+        "改",
+        "failed",
+        "换个女声",
+        "这一条这会儿还不支持"
+      ]
+    ],
+    "say": "记下了「周四下午给客户发样片」;「把样片剪一版」没派成(没派成);「换个女声」没办成(这一条这会儿还不支持)。"
+  },
+  {
+    "at": "2026-10-23T18:07:31.239Z",
+    "name": "1a-s7-addressed",
+    "passed": true,
+    "say": "刚才那句是跟我说的吗?"
+  },
+  {
+    "at": "2026-10-23T18:07:31.266Z",
+    "name": "1a-say-dispatch-kimi",
+    "passed": true,
+    "items": [
+      [
+        "办",
+        "failed",
+        "没派成"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T18:07:37.398Z",
+    "name": "1a-kimi-dispatch-receipt",
+    "passed": true,
+    "dispatch": {
+      "family": "kimi",
+      "status": "done",
+      "hand": "cli",
+      "cwd": "/Users/example/.cache/collab-a-acceptance/serve-1792778562925/instance/iso/home/.dsh/workbench/worktrees/collab-a-qa/QA1a真实派活-fd7f",
+      "pid": 76707,
+      "started_at": "2026-10-23T18:07:31.320Z",
+      "ended_at": "2026-10-23T18:07:34.374Z",
+      "reply": "QA_1A_DONE\n\n做完:按要求未改任何文件，仅回复确认。",
+      "output_file": "/Users/example/.cache/collab-a-acceptance/serve-1792778562925/instance/iso/home/.dsh/workbench/dispatch/t-554ffd7f-2026-10-23T18-07-31-319Z.txt",
+      "session_id": "session_1b33d685-a3da-4cd6-8280-ba3603c738a2",
+      "kind": "code",
+      "branch": "workbench/QA1a真实派活-fd7f",
+      "budget_minutes": 120
+    }
+  },
+  {
+    "at": "2026-10-23T18:07:37.398Z",
+    "name": "run-1a-end",
+    "checksFailed": [],
+    "limitation": "假上游钉 say 清单行为;真实模型轮与真手机未验(见报告);电话列是 1b"
+  }
+]

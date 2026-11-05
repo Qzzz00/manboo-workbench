@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "about": "1b 电话真实红例的 ASR 形态原句(2026-10-24 phone-truth):workers/1b/artifacts/phone-acceptance-full 的逐字输入,验当前 say 模型/清洗链;ASR 变字(样品/代办/简易版)按真链如实,不冒认。",
+  "sentences": [
+    {
+      "id": "p2", "name": "1b s2 音频原句(ASR 逗号+样品)",
+      "turns": ["不用，现在发，帮我建一个待办事项，周四下午给客户发样品。"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [{"type": "todo", "must": ["周四", "客户"], "mustNot": ["帮我", "建一个待办", "待办事项", "不用现在发"]}],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "建了"]], "none": ["收不回", "撤不回", "现在就办吗", "派给哪"]}
+      }
+    },
+    {
+      "id": "p5", "name": "1b s5 音频原句(记3条逗号分隔)",
+      "turns": ["记3条，周四发样片，周五交发票，下周一约 b 客户。"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片"], "mustNot": ["记3条", "发票", "客户"]},
+          {"type": "todo", "must": ["周五", "发票"], "mustNot": ["记3条", "样片", "客户"]},
+          {"type": "todo", "must": ["下周一"], "mustNot": ["记3条", "样片", "发票"]}
+        ],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "三条", "三件"]], "none": ["收不回", "撤不回"]}
+      }
+    },
+    {
+      "id": "p6", "name": "1b s6 音频原句(哦对顺便,逗号)",
+      "turns": ["周四发样片。哦，对，顺便再记一下，周五交发票。"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片"], "mustNot": ["发票", "哦", "顺便"]},
+          {"type": "todo", "must": ["周五", "发票"], "mustNot": ["样片", "哦", "顺便"]}
+        ],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "两条", "两件"]], "none": ["收不回", "撤不回"]}
+      }
+    },
+    {
+      "id": "p4", "name": "1b s4 音频原句(ASR 把 Claude 剪一版听成客户简易版——记那件必须干净)",
+      "turns": ["帮我建一个代办，周四下午给客户发样品，再把样片派给客户简易版，然后换个女声。"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四"], "mustNot": ["帮我", "代办", "女声", "派给"]}
+        ],
+        "reply": {"groups": [["记下", "记好", "记上", "建好"]], "none": ["收不回", "撤不回"]}
+      }
+    }
+  ]
+}

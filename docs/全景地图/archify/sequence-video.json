@@ -1,0 +1,371 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "做视频 · 从一句话到进入生成(场景一)",
+    "subtitle": "电话里说「帮我做一个 XXX 的视频」→ 豆包出参考图 → 可灵生成;10-23最终重钉:全部source按main@c55ff4c1取证(0.4.148热修已发布,本机已更新;稳定0.4.142)",
+    "output": "docs/梳理-全景地图-2026-10-21/archify/sequence-video.html",
+    "quality_profile": "showcase",
+    "locale": "zh-CN",
+    "repository": {
+      "url": "https://github.com/BeeeeeeeeeeeeeeenY/workbench.git",
+      "revision": "c55ff4c1ab07bf3b8c7760a64653f21ce6fe2aa6",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "participants": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "用户",
+      "sublabel": "拿起座机或手机",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/demoPlaybook.ts",
+          "line": 1,
+          "end_line": 14,
+          "label": "四个演示场景的固定流程表"
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "type": "backend",
+      "label": "通话工人",
+      "sublabel": "channel-worker",
+      "sources": [
+        {
+          "path": "channel-worker/src/workbench.ts",
+          "line": 1888,
+          "end_line": 1903,
+          "label": "每句终稿 POST /butler/understand"
+        },
+        {
+          "path": "channel-worker/src/understand.ts",
+          "line": 53,
+          "end_line": 58,
+          "label": "400ms 预算"
+        }
+      ]
+    },
+    {
+      "id": "plugin",
+      "type": "backend",
+      "label": "工作台插件",
+      "sublabel": ":8791",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/understand.ts",
+          "line": 34,
+          "end_line": 40,
+          "label": "固定顺序,前三条演示档"
+        },
+        {
+          "path": "workbench-plugin/src/server/videoChain.ts",
+          "line": 1,
+          "end_line": 14,
+          "label": "两步接力"
+        },
+        {
+          "path": "workbench-plugin/src/server/dispatchRun.ts",
+          "line": 1588,
+          "end_line": 1664,
+          "label": "4 秒一拍 tick():各家一圈并行"
+        }
+      ]
+    },
+    {
+      "id": "shell",
+      "type": "backend",
+      "label": "桌面壳",
+      "sublabel": "工作台.app",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/helperChannel.ts",
+          "line": 561,
+          "end_line": 585,
+          "label": "插件发 op 等回执"
+        },
+        {
+          "path": "workbench-app/Sources/HelperSocket.swift",
+          "line": 333,
+          "end_line": 338,
+          "label": "runOp 的 switch"
+        }
+      ]
+    },
+    {
+      "id": "doubao",
+      "type": "external",
+      "label": "豆包窗口",
+      "sublabel": "出参考图",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/dispatchTargets.ts",
+          "line": 94,
+          "end_line": 112,
+          "label": "窗口是一只手"
+        },
+        {
+          "path": "workbench-plugin/src/server/doubaoImage.ts",
+          "line": 1,
+          "end_line": 13,
+          "label": "从 Chromium 缓存取原图"
+        }
+      ]
+    },
+    {
+      "id": "kling",
+      "type": "external",
+      "label": "可灵窗口",
+      "sublabel": "图 + 提示词 → 生成",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/klingStep.ts",
+          "line": 1,
+          "end_line": 12,
+          "label": "只走这一条路"
+        },
+        {
+          "path": "workbench-plugin/src/server/klingStep.ts",
+          "line": 564,
+          "end_line": 570,
+          "label": "runKlingStep"
+        }
+      ]
+    },
+    {
+      "id": "phone",
+      "type": "frontend",
+      "label": "手机 App",
+      "sublabel": "响铃 / 显示",
+      "sources": [
+        {
+          "path": "butler-app/src/channel/roomLink.ts",
+          "line": 484,
+          "end_line": 491,
+          "label": "收 ring 的文本流处理器"
+        }
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "from": 166,
+      "to": 304,
+      "label": "听懂(电话这条路)"
+    },
+    {
+      "from": 316,
+      "to": 508,
+      "label": "第一步:豆包出参考图(普通派活)"
+    },
+    {
+      "from": 512,
+      "to": 650,
+      "label": "第二步:交给可灵,按下生成"
+    },
+    {
+      "from": 654,
+      "to": 735,
+      "label": "收卡与回电"
+    }
+  ],
+  "messages": [
+    {
+      "id": "say",
+      "from": "user",
+      "to": "worker",
+      "y": 180,
+      "label": "「帮我做一个 XXX 的视频」",
+      "variant": "emphasis",
+      "note": "座机或手机在房间里,ASR 成句后才到这里"
+    },
+    {
+      "id": "understand",
+      "from": "worker",
+      "to": "plugin",
+      "y": 235,
+      "label": "POST /butler/understand(source: call,最多等 400ms)"
+    },
+    {
+      "id": "understood",
+      "from": "plugin",
+      "to": "worker",
+      "y": 265,
+      "label": "② 做视频:演示档,不确认",
+      "variant": "return"
+    },
+    {
+      "id": "ack",
+      "from": "worker",
+      "to": "user",
+      "y": 295,
+      "label": "口头应一句(固定话术)",
+      "variant": "return"
+    },
+    {
+      "id": "send-doubao",
+      "from": "plugin",
+      "to": "shell",
+      "y": 330,
+      "label": "派活:send_text 到豆包(「生成参考图」)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ax-doubao",
+      "from": "shell",
+      "to": "doubao",
+      "y": 360,
+      "label": "辅助功能:找输入框、粘贴、发送"
+    },
+    {
+      "id": "watch",
+      "from": "plugin",
+      "to": "shell",
+      "y": 390,
+      "label": "4 秒一拍 read_reply 盯窗(一家一条通道)",
+      "variant": "dashed"
+    },
+    {
+      "id": "doubao-reply",
+      "from": "doubao",
+      "to": "shell",
+      "y": 420,
+      "label": "回话出现,图显示出来",
+      "variant": "return"
+    },
+    {
+      "id": "fetch-image",
+      "from": "plugin",
+      "to": "doubao",
+      "y": 450,
+      "label": "读 Chromium 缓存取原图(只读文件,不经壳)",
+      "variant": "dashed",
+      "note": "取不到就如实说「图出来了但没取到」,不截屏凑一张"
+    },
+    {
+      "id": "send-kling",
+      "from": "plugin",
+      "to": "shell",
+      "y": 520,
+      "label": "open_app 可灵 → paste_image → send_text 提示词",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ax-kling",
+      "from": "shell",
+      "to": "kling",
+      "y": 550,
+      "label": "按角色和名字找「生成」键(agent_press)"
+    },
+    {
+      "id": "kling-working",
+      "from": "kling",
+      "to": "shell",
+      "y": 580,
+      "label": "页面出现「生成中」/ 日志里新文件",
+      "variant": "return",
+      "note": "进入生成就算完成;页面改版找不到键,30 秒内停下并写明停在哪"
+    },
+    {
+      "id": "queue-call",
+      "from": "plugin",
+      "to": "worker",
+      "y": 660,
+      "label": "收卡,排来电(confirm / failed);工人 2 秒后领走"
+    },
+    {
+      "id": "ring",
+      "from": "worker",
+      "to": "phone",
+      "y": 690,
+      "label": "广播 ring(文本流),手机响铃"
+    },
+    {
+      "id": "tell",
+      "from": "worker",
+      "to": "user",
+      "y": 720,
+      "label": "电话里说一句:进入生成了 / 卡在哪了",
+      "variant": "return"
+    }
+  ],
+  "activations": [
+    {
+      "participant": "worker",
+      "from": 175,
+      "to": 725,
+      "type": "backend"
+    },
+    {
+      "participant": "plugin",
+      "from": 230,
+      "to": 665,
+      "type": "backend"
+    },
+    {
+      "participant": "shell",
+      "from": 325,
+      "to": 585,
+      "type": "backend"
+    },
+    {
+      "participant": "doubao",
+      "from": 355,
+      "to": 455,
+      "type": "external"
+    },
+    {
+      "participant": "kling",
+      "from": 545,
+      "to": 585,
+      "type": "external"
+    },
+    {
+      "participant": "phone",
+      "from": 685,
+      "to": 695,
+      "type": "frontend"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "这条路靠什么",
+      "items": [
+        "听懂是固定顺序的规则匹配,「做视频」排第 ②,属演示档,不走确认;实验开关「视频」关着时只回「这一类还在内测」",
+        "豆包那一步就是普通派活:送字、盯窗、读回话,一样不少;原图从豆包自己的缓存里取",
+        "可灵那一步按辅助功能角色 + 名字找键,不写死坐标;进入生成就收卡"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "历史展会故障与后续边界",
+      "items": [
+        "豆包处在别的工作模式时,送字落不进对话,盯窗等到超时",
+        "可灵页面更新后键名 / 结构变了,agent_press 找不到键;现场由 Codex 改了演示机上的文件,改动没回源码(10-21 起找不到就快速失败)",
+        "盯窗串行:前一扇窗卡住,后面的派活都在等(10-21 起按家隔离,一家卡住不再拖别家)"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "图里的省略",
+      "items": [
+        "没画 DSH:这条路的每一步都在插件自己的规则里,不开 DSH 会话",
+        "网页入口也能走同一条路(POST /butler/item),只是没有前四条电话消息",
+        "手机进房间、工人领票等前置条件见「一通来电」那张图",
+        "本轮Graphify是代码图谱,不是视频接力的一步;没有因图谱验绿就重新声称视频窗口链真机通过。1a统一中枢仍待,不把/butler/say画成此链现状。"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "本轮证据边界(10-23 最终重钉)",
+      "items": [
+        "全部 source 已按 main@c55ff4c1 取证重钉(13 引用全部未变)。",
+        "0.4.148 热修已发布并本机更新(exec10863 exit0);隔离 QA 45 项与整包九阶段全部 exit0;稳定仍 0.4.142。"
+      ]
+    }
+  ]
+}

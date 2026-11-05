@@ -1,0 +1,10 @@
+{
+  "contract": 1,
+  "id": "notes",
+  "name": "随手记",
+  "replaces": "notes",
+  "entry": "index.js",
+  "export": "NotesModule",
+  "author": "运营同学",
+  "version": "2026-10-21"
+}

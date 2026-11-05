@@ -1,0 +1,69 @@
+{
+  "source_sha256": "3659534c0a8dc0ffb44a9b054c22a1ac9dab5fb3bc307a1fd7f65e1e11a95da0",
+  "case_id": "s4",
+  "items": [
+    {
+      "kind": "记",
+      "title": "周四下午给客户发样片",
+      "risk": "none",
+      "status": "done",
+      "card_id": "t-1644e30e"
+    },
+    {
+      "kind": "办",
+      "title": "把样片派给 Claude 剪一版",
+      "risk": "none",
+      "status": "failed",
+      "card_id": "t-6c250e22",
+      "detail": "派给 Claude 没派出去:命令行:不知道在哪个项目里做(这件事没归到项目)"
+    },
+    {
+      "kind": "改",
+      "title": "换个女声",
+      "risk": "none",
+      "status": "failed",
+      "detail": "语音后端没回话,音色这会儿换不了"
+    }
+  ],
+  "say": {
+    "screen": "记下了「周四下午给客户发样片」;「把样片派给 Claude 剪一版」没派成(派给 Claude 没派出去:命令行:不知道在哪个项目里做(这件事没归到项目));「换个女声」没办成(语音后端没回话,音色这会儿换不了)。",
+    "spoken": "「把样片派给 Claude 剪一版」没派成,派给 Claude 没派出去:命令行:不知道在哪个项目里做(这件事没归到项目);「换个女声」没办成,语音后端没回话,音色这会儿换不了。"
+  },
+  "observation": {
+    "column": "callText",
+    "sentence": "s4",
+    "entrance": "call",
+    "turns": [
+      {
+        "said": "帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换个女声",
+        "reply": "「把样片派给 Claude 剪一版」没派成,派给 Claude 没派出去:命令行:语音后端这会儿有点问题,我先用字幕跟你说,你照样说话就行。不知道在哪个项目里做(这件事没归到项目);「换个女声」没办成,语音后端没回话,音色这会儿换不了。Ben,我在。",
+        "tools": [],
+        "ms": 90002
+      }
+    ],
+    "newCards": [
+      {
+        "id": "t-1644e30e",
+        "title": "周四下午给客户发样片",
+        "status": "todo",
+        "session": false,
+        "dispatched": false
+      },
+      {
+        "id": "t-6c250e22",
+        "title": "把样片派给 Claude 剪一版",
+        "status": "blocked",
+        "assignee": "claude",
+        "session": false,
+        "dispatched": true
+      }
+    ],
+    "notes": [
+      "文字回合测试口:字塞在识别定稿那一格,识别 / 收音那一段没走",
+      "第 4 句之前换男声没成(503)"
+    ],
+    "voice": {
+      "after": "vivi 2.0·女·zh_female_vv_uranus_bigtts"
+    }
+  }
+}

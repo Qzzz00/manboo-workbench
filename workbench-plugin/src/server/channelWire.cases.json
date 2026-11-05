@@ -1,0 +1,26 @@
+{
+  "_说明": "8791 通道接口与房间协议里「票、状态、找回、续期、配对、领电话」这几处的字段表(2026-10-21,局域网主路 M2)。接缝主人:统筹(8791 接口 + 房间协议)。8791 的用例拿真回包比对 fields(多一格少一格都红);工人 channel-worker、手机 butler-app、听筒 phone-bridge 的用例都读这一份 examples 喂给自己的解析,读不懂哪一端红哪一端。改字段先改这里。",
+  "fields": {
+    "token": ["url", "room", "identity", "token", "expires_at", "route"],
+    "status": ["configured", "url", "room", "mode", "token_ttl_seconds", "server", "worker", "participants", "note", "source", "route", "needs_login", "process", "tts_backend", "local_room", "workers"],
+    "route": ["mac_id", "room", "lan_url", "mode", "lan_addresses", "relay"],
+    "renew": ["id", "type", "token", "expires_at", "url", "room", "route"],
+    "pair_claim": ["ok", "device_id", "token", "mac_id"],
+    "call_claim_room": ["calls", "answered_elsewhere"],
+    "call_answered": ["ok", "first", "room", "device_id"]
+  },
+  "modes": ["local", "lan", "remote"],
+  "routes": ["lan", "relay"],
+  "examples": {
+    "token_worker": { "url": "ws://127.0.0.1:7880", "room": "wb-local-3f9c0a1b", "identity": "wb-channel-worker", "token": "eyJ.worker.sig", "expires_at": 1792573200, "route": "lan" },
+    "token_lan": { "url": "ws://192.168.31.8:7880", "room": "wb-local-3f9c0a1b", "identity": "wb-phone-d1", "token": "eyJ.phone.sig", "expires_at": 1792573200, "route": "lan" },
+    "token_relay": { "url": "wss://lk.example.cn", "room": "wb-acc0123456789abc", "identity": "wb-phone-d1", "token": "eyJ.relay.sig", "expires_at": 1793091600, "route": "relay" },
+    "status_lan": { "configured": true, "url": "ws://192.168.31.8:7880", "room": "wb-local-3f9c0a1b", "mode": "lan", "token_ttl_seconds": 86400, "source": "local", "route": "lan", "server": true, "worker": true, "participants": ["wb-channel-worker", "wb-phone-d1"] },
+    "route_lan": { "mac_id": "3f9c0a1b22223333444455556666777a", "room": "wb-local-3f9c0a1b", "lan_url": "ws://192.168.31.8:7880", "mode": "lan", "lan_addresses": ["192.168.31.8", "10.0.0.5"], "relay": { "configured": true } },
+    "renew_lan": { "id": "r1", "type": "token", "token": "eyJ.renewed.sig", "expires_at": 1792573200, "url": "ws://192.168.31.8:7880", "room": "wb-local-3f9c0a1b", "route": "lan" },
+    "renew_old": { "id": "r1", "type": "token", "token": "eyJ.renewed.sig", "expires_at": 1792573200 },
+    "pair_claim": { "ok": true, "device_id": "d1", "token": "wbt_example_not_a_real_token", "mac_id": "3f9c0a1b22223333444455556666777a" },
+    "call_claim_room": { "calls": [], "answered_elsewhere": [{ "id": "call-1", "room": "wb-acc0123456789abc" }] },
+    "call_answered": { "ok": true, "first": false, "room": "wb-acc0123456789abc", "device_id": "phone-1" }
+  }
+}

@@ -1,0 +1,167 @@
+[
+  {
+    "at": "2026-10-23T21:28:00.249Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": true
+  },
+  {
+    "at": "2026-10-23T21:28:36.013Z",
+    "name": "model-pointed-own",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T21:28:36.141Z",
+    "name": "relay-test-account",
+    "ok": true,
+    "registered": true
+  },
+  {
+    "at": "2026-10-23T21:28:36.150Z",
+    "name": "phone-paired",
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T21:28:37.157Z",
+    "name": "butler-voice",
+    "up": true
+  },
+  {
+    "at": "2026-10-23T21:28:37.187Z",
+    "name": "upstream-real-understand",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我"
+  },
+  {
+    "at": "2026-10-23T21:28:41.766Z",
+    "name": "upstream-real-reply",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"who\":\"客户\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"原话明说「建个待办」,只记不派;又明说「建之前你问过我」,挂起等确认\",\"confirm\":true}],\"chit\":null}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-23T21:28:44.715Z",
+    "name": "upstream-real-understand",
+    "said": "行,去建吧"
+  },
+  {
+    "at": "2026-10-23T21:28:48.853Z",
+    "name": "upstream-real-reply",
+    "said": "行,去建吧",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"办\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"risk\":\"external\",\"confidence\":0.95,\"why\":\"她点头确认,挂起的建单可以落地\"}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-23T21:29:00.061Z",
+    "name": "cell-v3-desk",
+    "status": "fail",
+    "reasons": [
+      "没建成卡",
+      "回话没说到「记下」:「已建下,。」"
+    ],
+    "cards": []
+  },
+  {
+    "at": "2026-10-23T21:29:00.085Z",
+    "name": "upstream-real-understand",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我"
+  },
+  {
+    "at": "2026-10-23T21:29:07.359Z",
+    "name": "upstream-real-reply",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"明说「建个待办」是只记不派,且「建之前问过我」需等她点头\",\"confirm\":true,\"carry\":\"merge\"}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-23T21:29:18.600Z",
+    "name": "upstream-real-understand",
+    "said": "行,去建吧"
+  },
+  {
+    "at": "2026-10-23T21:29:29.363Z",
+    "name": "upstream-real-reply",
+    "said": "行,去建吧",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"办\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"risk\":\"external\",\"confidence\":0.93,\"why\":\"她对挂起的确认点头「行,去建吧」,这条从待确认转为去办\"}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-23T21:29:48.931Z",
+    "name": "cell-v3-phone",
+    "status": "fail",
+    "reasons": [
+      "没建成卡",
+      "回话没说到「记下」:「。」"
+    ],
+    "cards": []
+  },
+  {
+    "at": "2026-10-23T21:29:48.953Z",
+    "name": "upstream-real-understand",
+    "said": "记一下周四发样片……对了,再帮我记一笔周五交发票"
+  },
+  {
+    "at": "2026-10-23T21:29:52.520Z",
+    "name": "upstream-real-reply",
+    "said": "记一下周四发样片……对了,再帮我记一笔周五交发票",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"她明说「记一下」,只记不派\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"「再帮我记一笔」,是第二件要记的事\"}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-23T21:30:03.784Z",
+    "name": "cell-v6-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T21:30:03.822Z",
+    "name": "upstream-real-understand",
+    "said": "记一下周四发样片……对了,再帮我记一笔周五交发票"
+  },
+  {
+    "at": "2026-10-23T21:30:09.467Z",
+    "name": "upstream-real-reply",
+    "said": "记一下周四发样片……对了,再帮我记一笔周五交发票",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"「记一下…样片」是只记不派\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"「再帮我记一笔」引出第二件，单独记\"}]}\n\n"
+  },
+  {
+    "at": "2026-10-23T21:30:28.970Z",
+    "name": "cell-v6-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T21:30:28.993Z",
+    "name": "matrix-end",
+    "checksFailed": [
+      "v3-desk",
+      "v3-phone"
+    ],
+    "limitation": "电话两列是 1b 未跑;真手机未验;真云模型=真 Kimi 桥"
+  },
+  {
+    "at": "2026-10-23T21:30:30.762Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

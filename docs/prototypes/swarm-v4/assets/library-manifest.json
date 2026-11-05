@@ -1,0 +1,2464 @@
+{
+  "source": {
+    "name": "Tabler Icons",
+    "version": "3.46.0",
+    "style": "mixed",
+    "license": "MIT",
+    "copyright": "Copyright (c) 2020-2026 Paweł Kuna",
+    "repository": "https://github.com/tabler/tabler-icons",
+    "archiveUrl": "https://codeload.github.com/tabler/tabler-icons/tar.gz/refs/tags/v3.46.0",
+    "archiveSha256": "ebb50a676311f16390c0a13cc5a102e010a3d082b3dc315bc0273ded0bd1cbf8",
+    "licenseUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/LICENSE",
+    "localLicense": "../THIRD_PARTY_LICENSES.txt",
+    "modifications": "None. Raw filled and legacy outline SVG files are preserved byte-for-byte. Chinese catalog metadata is local; sourceId records explicit semantic mappings."
+  },
+  "icons": [
+    {
+      "id": "mood-smile",
+      "label": "微笑",
+      "category": "表情",
+      "tags": [
+        "开心",
+        "友善",
+        "确认"
+      ],
+      "style": "filled",
+      "sourceId": "mood-smile",
+      "file": "library/mood-smile.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-smile.svg",
+      "sha256": "98e103f6a16fc48701d43c7d350c9569738c1741625055541a2645484e1d74f8"
+    },
+    {
+      "id": "mood-happy",
+      "label": "开心大笑",
+      "category": "表情",
+      "tags": [
+        "高兴",
+        "愉快",
+        "喜悦"
+      ],
+      "style": "filled",
+      "sourceId": "mood-happy",
+      "file": "library/mood-happy.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-happy.svg",
+      "sha256": "b7a3e9156085b96affe2f5c335a59c8534026cec2a65fe2a2c75eb376d220158"
+    },
+    {
+      "id": "mood-sad",
+      "label": "难过",
+      "category": "表情",
+      "tags": [
+        "伤心",
+        "低落",
+        "失落"
+      ],
+      "style": "filled",
+      "sourceId": "mood-sad",
+      "file": "library/mood-sad.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-sad.svg",
+      "sha256": "10685f7644cc4d9d0bb9e2dd18b3a281324c34e3faf596fa7296932269bb507a"
+    },
+    {
+      "id": "mood-angry",
+      "label": "生气",
+      "category": "表情",
+      "tags": [
+        "愤怒",
+        "不满",
+        "恼火"
+      ],
+      "style": "filled",
+      "sourceId": "mood-angry",
+      "file": "library/mood-angry.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-angry.svg",
+      "sha256": "10b7634a8cf16cb7993266f2c21426f2c718d3ce0553094d3ab52ff03af51d93"
+    },
+    {
+      "id": "mood-confused",
+      "label": "困惑",
+      "category": "表情",
+      "tags": [
+        "疑惑",
+        "不解",
+        "迷茫"
+      ],
+      "style": "filled",
+      "sourceId": "mood-confused",
+      "file": "library/mood-confused.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-confused.svg",
+      "sha256": "1ef73d8986b2c41d24ebd2dc1e344ae15b3e12da024192b52215270edf006374"
+    },
+    {
+      "id": "mood-empty",
+      "label": "无语",
+      "category": "表情",
+      "tags": [
+        "沉默",
+        "尴尬",
+        "无言"
+      ],
+      "style": "filled",
+      "sourceId": "mood-empty",
+      "file": "library/mood-empty.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-empty.svg",
+      "sha256": "8dde8da8a7d5cdc5e6ecc830a83444d19d5a4bb4dd1ad329860066aad6bc36d3"
+    },
+    {
+      "id": "mood-neutral",
+      "label": "平静",
+      "category": "表情",
+      "tags": [
+        "中性",
+        "淡定",
+        "平常"
+      ],
+      "style": "filled",
+      "sourceId": "mood-neutral",
+      "file": "library/mood-neutral.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-neutral.svg",
+      "sha256": "f28455c3208908c84017b5a381771999f085980e5121e862cbba7d5015d568f3"
+    },
+    {
+      "id": "mood-crazy-happy",
+      "label": "狂喜",
+      "category": "表情",
+      "tags": [
+        "疯狂",
+        "兴奋",
+        "大笑"
+      ],
+      "style": "filled",
+      "sourceId": "mood-crazy-happy",
+      "file": "library/mood-crazy-happy.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-crazy-happy.svg",
+      "sha256": "02d7733af2f86a7129dc5d40d602775ab996c5b14146761d6a72644943a00790"
+    },
+    {
+      "id": "mood-kid",
+      "label": "童真",
+      "category": "表情",
+      "tags": [
+        "孩子",
+        "天真",
+        "稚气"
+      ],
+      "style": "filled",
+      "sourceId": "mood-kid",
+      "file": "library/mood-kid.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-kid.svg",
+      "sha256": "7855c558bc1d5373cc40b5e50fc8852268f838dfd50db6015b7f6ebeb6946f3d"
+    },
+    {
+      "id": "heart",
+      "label": "喜爱",
+      "category": "表情",
+      "tags": [
+        "喜欢",
+        "爱心",
+        "感谢"
+      ],
+      "style": "filled",
+      "sourceId": "heart",
+      "file": "library/heart.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/heart.svg",
+      "sha256": "be7ffd75a014bb5199a7f8d9e25ffe1dd01ac3c865aa75641d04570fd2556f13"
+    },
+    {
+      "id": "thumb-up",
+      "label": "赞同",
+      "category": "表情",
+      "tags": [
+        "点赞",
+        "同意",
+        "认可"
+      ],
+      "style": "filled",
+      "sourceId": "thumb-up",
+      "file": "library/thumb-up.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/thumb-up.svg",
+      "sha256": "28c8be247ddd9c502dc9cdf43a3e2a3757f9d5ba35dea238b0a52344ad176180"
+    },
+    {
+      "id": "thumb-down",
+      "label": "不赞同",
+      "category": "表情",
+      "tags": [
+        "反对",
+        "不满",
+        "否定"
+      ],
+      "style": "filled",
+      "sourceId": "thumb-down",
+      "file": "library/thumb-down.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/thumb-down.svg",
+      "sha256": "72e70e8902532ab5b7ef06f9de27ddcf83445904d0b2f21723a0610f8e658315"
+    },
+    {
+      "id": "mood-wrrr",
+      "label": "龇牙",
+      "category": "表情",
+      "tags": [
+        "不耐烦",
+        "咬牙",
+        "表情"
+      ],
+      "style": "filled",
+      "sourceId": "mood-wrrr",
+      "file": "library/mood-wrrr.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mood-wrrr.svg",
+      "sha256": "8b05556e0ab6c68b05fd4a8bd3d18dd3f6c68687f8ab14be686d21806cef02d5"
+    },
+    {
+      "id": "heart-broken",
+      "label": "心碎",
+      "category": "表情",
+      "tags": [
+        "伤心",
+        "失望",
+        "难过"
+      ],
+      "style": "filled",
+      "sourceId": "heart-broken",
+      "file": "library/heart-broken.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/heart-broken.svg",
+      "sha256": "f7807ecf5b225035a3598bd64df553259e9108299fd34c12b2d4a323d3873774"
+    },
+    {
+      "id": "phone",
+      "label": "电话",
+      "category": "沟通",
+      "tags": [
+        "通话",
+        "来电",
+        "联系"
+      ],
+      "style": "filled",
+      "sourceId": "phone",
+      "file": "library/phone.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/phone.svg",
+      "sha256": "96179a8bc71247de8a980f38de338bcd1283c56dafcc04e38eb6a6028a557f2d"
+    },
+    {
+      "id": "phone-call",
+      "label": "通话中",
+      "category": "沟通",
+      "tags": [
+        "拨号",
+        "交谈",
+        "呼叫"
+      ],
+      "style": "filled",
+      "sourceId": "phone-call",
+      "file": "library/phone-call.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/phone-call.svg",
+      "sha256": "62a44d3da2b925d055220f50636015e6f5beeb698b86c8868e02d97b35f63b06"
+    },
+    {
+      "id": "phone-off",
+      "label": "挂断电话",
+      "category": "沟通",
+      "tags": [
+        "结束通话",
+        "静音",
+        "拒接"
+      ],
+      "style": "filled",
+      "sourceId": "phone-x",
+      "file": "library/phone-off.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/phone-x.svg",
+      "sha256": "90f60fb81c62cef9e58ff36999c2b142758cf53672c8276ec7c0157842c27fab"
+    },
+    {
+      "id": "message",
+      "label": "消息",
+      "category": "沟通",
+      "tags": [
+        "留言",
+        "对话",
+        "信息"
+      ],
+      "style": "filled",
+      "sourceId": "message",
+      "file": "library/message.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/message.svg",
+      "sha256": "4cc45570f3179529dc47da8f73b4d8e6da8d4ca4accdeb36424fcc42428920d8"
+    },
+    {
+      "id": "message-circle",
+      "label": "聊天",
+      "category": "沟通",
+      "tags": [
+        "交流",
+        "沟通",
+        "对话"
+      ],
+      "style": "filled",
+      "sourceId": "message-circle",
+      "file": "library/message-circle.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/message-circle.svg",
+      "sha256": "081d71c0224e4723a50e37c61a36495c95a04893408574b92a358ac429e43cd8"
+    },
+    {
+      "id": "mail",
+      "label": "邮件",
+      "category": "沟通",
+      "tags": [
+        "收件箱",
+        "信件",
+        "通知"
+      ],
+      "style": "filled",
+      "sourceId": "mail",
+      "file": "library/mail.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mail.svg",
+      "sha256": "f3f57c9d6a4dd51a0de02dad4754ef094d5e2385d601943fee22ec726494f09d"
+    },
+    {
+      "id": "mail-opened",
+      "label": "打开邮件",
+      "category": "沟通",
+      "tags": [
+        "已读邮件",
+        "阅读",
+        "信件"
+      ],
+      "style": "filled",
+      "sourceId": "mail-opened",
+      "file": "library/mail-opened.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mail-opened.svg",
+      "sha256": "d0784b6c7713d526b76e81af7a6867689b94edc5d05e31425badf996c39f9f5b"
+    },
+    {
+      "id": "send",
+      "label": "发送",
+      "category": "沟通",
+      "tags": [
+        "发出",
+        "传递",
+        "提交"
+      ],
+      "style": "filled",
+      "sourceId": "send",
+      "file": "library/send.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/send.svg",
+      "sha256": "4f16cb4b1a677cacb56d801274a3b1ee5976fa60857805ca306d986e747f6d7a"
+    },
+    {
+      "id": "microphone",
+      "label": "麦克风",
+      "category": "沟通",
+      "tags": [
+        "录音",
+        "语音",
+        "讲话"
+      ],
+      "style": "filled",
+      "sourceId": "microphone",
+      "file": "library/microphone.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/microphone.svg",
+      "sha256": "05dda71d27415c3b3d8bee103fb3e89339188a1a00b4aa9c7e8529e932bfc7e9"
+    },
+    {
+      "id": "headphones",
+      "label": "耳机",
+      "category": "沟通",
+      "tags": [
+        "聆听",
+        "倾听",
+        "收听"
+      ],
+      "style": "filled",
+      "sourceId": "headphones",
+      "file": "library/headphones.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/headphones.svg",
+      "sha256": "605a41489697fdea824d009f2cc69c3dfdaca707a8245136a51c8ae0d03680df"
+    },
+    {
+      "id": "bell",
+      "label": "通知铃",
+      "category": "沟通",
+      "tags": [
+        "提醒",
+        "消息",
+        "提示"
+      ],
+      "style": "filled",
+      "sourceId": "bell",
+      "file": "library/bell.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bell.svg",
+      "sha256": "ec37b8be3d9e5b2a65bf3ac1e92bc346d1d32e467b95242b2a0598f9f74e2336"
+    },
+    {
+      "id": "bell-ringing",
+      "label": "响铃提醒",
+      "category": "沟通",
+      "tags": [
+        "提醒",
+        "告警",
+        "铃声"
+      ],
+      "style": "filled",
+      "sourceId": "bell-ringing",
+      "file": "library/bell-ringing.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bell-ringing.svg",
+      "sha256": "c4b74438c63048916962415f1f3727b89676d78248a52c4e0f21e4c1dea26cfa"
+    },
+    {
+      "id": "video",
+      "label": "视频通话",
+      "category": "沟通",
+      "tags": [
+        "摄像头",
+        "会议",
+        "录像"
+      ],
+      "style": "filled",
+      "sourceId": "video",
+      "file": "library/video.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/video.svg",
+      "sha256": "6f97e72c20d4ae49d49457dcc49389ced5df37f2295fc04c790ec8ff55779de7"
+    },
+    {
+      "id": "phone-calling",
+      "label": "呼叫响铃",
+      "category": "沟通",
+      "tags": [
+        "电话",
+        "呼叫",
+        "等待接通"
+      ],
+      "style": "filled",
+      "sourceId": "phone-calling",
+      "file": "library/phone-calling.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/phone-calling.svg",
+      "sha256": "54b0ef61070c273694fcdeabfc5a952d8cc3b4733d66dd1283ca4aebb9943f68"
+    },
+    {
+      "id": "phone-check",
+      "label": "通话确认",
+      "category": "沟通",
+      "tags": [
+        "电话",
+        "确认",
+        "已联系"
+      ],
+      "style": "filled",
+      "sourceId": "phone-check",
+      "file": "library/phone-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/phone-check.svg",
+      "sha256": "d4f1c0710cdd5c6ef3ebbe6317a4b737e1fb4f20e394bc89f2cf1b60f7eca09a"
+    },
+    {
+      "id": "message-2",
+      "label": "对话消息",
+      "category": "沟通",
+      "tags": [
+        "聊天",
+        "答复",
+        "沟通"
+      ],
+      "style": "filled",
+      "sourceId": "message-2",
+      "file": "library/message-2.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/message-2.svg",
+      "sha256": "05e6ad0d6a313f47268e20dd7bdc540794254db7798bdb03f02edd9122d47f78"
+    },
+    {
+      "id": "message-chatbot",
+      "label": "聊天助手",
+      "category": "沟通",
+      "tags": [
+        "机器人",
+        "助手",
+        "问答"
+      ],
+      "style": "filled",
+      "sourceId": "message-chatbot",
+      "file": "library/message-chatbot.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/message-chatbot.svg",
+      "sha256": "9c93057f227aa862504d299984b2f8949bf7aff1927b9773f569b5b09a17aa00"
+    },
+    {
+      "id": "message-report",
+      "label": "消息提醒",
+      "category": "沟通",
+      "tags": [
+        "消息",
+        "注意",
+        "报告"
+      ],
+      "style": "filled",
+      "sourceId": "message-report",
+      "file": "library/message-report.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/message-report.svg",
+      "sha256": "c6f04816a6105a95d1015c3ca586852c519e9b232047f8aeed3cc93274c04e70"
+    },
+    {
+      "id": "messages",
+      "label": "多条消息",
+      "category": "沟通",
+      "tags": [
+        "对话",
+        "消息记录",
+        "聊天"
+      ],
+      "style": "filled",
+      "sourceId": "messages",
+      "file": "library/messages.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/messages.svg",
+      "sha256": "845bb066809a1616e23650d20f9f7f749d27bd959feb64691d1489a60b83fd71"
+    },
+    {
+      "id": "user",
+      "label": "联系人",
+      "category": "沟通",
+      "tags": [
+        "用户",
+        "个人",
+        "联络"
+      ],
+      "style": "filled",
+      "sourceId": "user",
+      "file": "library/user.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/user.svg",
+      "sha256": "2fe9acc2804369ed71f56a4e3919e742ceeca52557d080eca5dcff0330687749"
+    },
+    {
+      "id": "headset",
+      "label": "语音客服",
+      "category": "沟通",
+      "tags": [
+        "耳麦",
+        "客服",
+        "通话"
+      ],
+      "style": "filled",
+      "sourceId": "headset",
+      "file": "library/headset.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/headset.svg",
+      "sha256": "63d208a26688d0de668037ebe04c1d1fc28009b1249df2d581b6fb052aca5f08"
+    },
+    {
+      "id": "circle-check",
+      "label": "任务完成",
+      "category": "任务",
+      "tags": [
+        "完成",
+        "成功",
+        "确认"
+      ],
+      "style": "filled",
+      "sourceId": "circle-check",
+      "file": "library/circle-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/circle-check.svg",
+      "sha256": "c97f7118e8eea509624430c767b1dfdfdb3b63b08f22b31a1957d5a350e6afca"
+    },
+    {
+      "id": "checkbox",
+      "label": "勾选任务",
+      "category": "任务",
+      "tags": [
+        "待办",
+        "选中",
+        "完成"
+      ],
+      "style": "filled",
+      "sourceId": "square-check",
+      "file": "library/checkbox.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/square-check.svg",
+      "sha256": "6892724d3caaec89434855276db11ba73408bb5b36d1a341baf837a20be98143"
+    },
+    {
+      "id": "list-check",
+      "label": "待办列表",
+      "category": "任务",
+      "tags": [
+        "清单",
+        "任务",
+        "逐项完成"
+      ],
+      "style": "filled",
+      "sourceId": "list-check",
+      "file": "library/list-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/list-check.svg",
+      "sha256": "f2a29163b3377e921f5ecb5b9d440dc675bdcbbf0b32ee89befc5d7fc91b046f"
+    },
+    {
+      "id": "clipboard-check",
+      "label": "验收通过",
+      "category": "任务",
+      "tags": [
+        "完成",
+        "检查通过",
+        "交付"
+      ],
+      "style": "filled",
+      "sourceId": "clipboard-check",
+      "file": "library/clipboard-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/clipboard-check.svg",
+      "sha256": "708e2ca65fea8be92b4b26b45cc5d06aeac4e5f2cf8c7ba1b3d8f6c24c2d0138"
+    },
+    {
+      "id": "flag",
+      "label": "里程碑",
+      "category": "任务",
+      "tags": [
+        "标记",
+        "节点",
+        "阶段"
+      ],
+      "style": "filled",
+      "sourceId": "flag",
+      "file": "library/flag.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/flag.svg",
+      "sha256": "c8507af772e540e2dafcaf1c148cdfdb9dff510ebc82f6d970405c0095550c87"
+    },
+    {
+      "id": "bolt",
+      "label": "立即处理",
+      "category": "任务",
+      "tags": [
+        "紧急",
+        "快速",
+        "优先"
+      ],
+      "style": "filled",
+      "sourceId": "bolt",
+      "file": "library/bolt.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bolt.svg",
+      "sha256": "2b9fa1d1a35d3c02f79c51b36a0c7e8aeaffd14609d12b7a5dba4bb6df62ff7d"
+    },
+    {
+      "id": "bulb",
+      "label": "灵感",
+      "category": "任务",
+      "tags": [
+        "想法",
+        "方案",
+        "创意"
+      ],
+      "style": "filled",
+      "sourceId": "bulb",
+      "file": "library/bulb.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bulb.svg",
+      "sha256": "5836a64262bcb23fc45fe0fe3323685a426cb8e37a7acaa59df28f57b8f806df"
+    },
+    {
+      "id": "search",
+      "label": "查找",
+      "category": "任务",
+      "tags": [
+        "搜索",
+        "检索",
+        "调查"
+      ],
+      "style": "filled",
+      "sourceId": "search",
+      "file": "library/search.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/search.svg",
+      "sha256": "1f249efa531f1bf72a09d12282c9d59451170c026d53879c8274bf57376a5915"
+    },
+    {
+      "id": "filter",
+      "label": "筛选",
+      "category": "任务",
+      "tags": [
+        "过滤",
+        "条件",
+        "整理"
+      ],
+      "style": "filled",
+      "sourceId": "filter",
+      "file": "library/filter.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/filter.svg",
+      "sha256": "ed000dc619a6b7396a6cb72172e45f574874574732ebd06f2039811617112731"
+    },
+    {
+      "id": "settings",
+      "label": "设置",
+      "category": "任务",
+      "tags": [
+        "配置",
+        "调整",
+        "参数"
+      ],
+      "style": "filled",
+      "sourceId": "settings",
+      "file": "library/settings.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/settings.svg",
+      "sha256": "551b0c242b49f9051cbdb8340cd1f66ff41def571460e9cb489564f742b8d37b"
+    },
+    {
+      "id": "bug",
+      "label": "缺陷",
+      "category": "任务",
+      "tags": [
+        "问题",
+        "错误",
+        "调试"
+      ],
+      "style": "filled",
+      "sourceId": "bug",
+      "file": "library/bug.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bug.svg",
+      "sha256": "2ce7765678c912108deebc1d995be61f7fbe9338ff271b6ac9f33b531b428a07"
+    },
+    {
+      "id": "alert-triangle",
+      "label": "风险警告",
+      "category": "任务",
+      "tags": [
+        "警告",
+        "异常",
+        "注意"
+      ],
+      "style": "filled",
+      "sourceId": "alert-triangle",
+      "file": "library/alert-triangle.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/alert-triangle.svg",
+      "sha256": "f4d8e84488a46bcdd7936f693581a289cda0ce62dc124189552e8b44241a0181"
+    },
+    {
+      "id": "help-circle",
+      "label": "需要帮助",
+      "category": "任务",
+      "tags": [
+        "求助",
+        "疑问",
+        "说明"
+      ],
+      "style": "filled",
+      "sourceId": "help-circle",
+      "file": "library/help-circle.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/help-circle.svg",
+      "sha256": "c5e96997a609f9168b4257cf42f732d3988ce10232a3dff24db7d57624809a35"
+    },
+    {
+      "id": "circle-x",
+      "label": "任务失败",
+      "category": "任务",
+      "tags": [
+        "失败",
+        "取消",
+        "错误"
+      ],
+      "style": "filled",
+      "sourceId": "circle-x",
+      "file": "library/circle-x.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/circle-x.svg",
+      "sha256": "28dab774923eaee40e5ec9692bc558a43b949e98217d32cc5c09a1f178d14df0"
+    },
+    {
+      "id": "shield-check",
+      "label": "安全通过",
+      "category": "任务",
+      "tags": [
+        "检查",
+        "安全",
+        "通过"
+      ],
+      "style": "filled",
+      "sourceId": "shield-check",
+      "file": "library/shield-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/shield-check.svg",
+      "sha256": "c40eef564211090062c8331b538350e54cb418258c199e2c85b741011fb1343f"
+    },
+    {
+      "id": "lock",
+      "label": "已锁定",
+      "category": "任务",
+      "tags": [
+        "锁定",
+        "保护",
+        "权限"
+      ],
+      "style": "filled",
+      "sourceId": "lock",
+      "file": "library/lock.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/lock.svg",
+      "sha256": "6fe00677330957224bbba458c0dc653b2bb017db6903ace113ce927532383a27"
+    },
+    {
+      "id": "key",
+      "label": "访问权限",
+      "category": "任务",
+      "tags": [
+        "钥匙",
+        "授权",
+        "解锁"
+      ],
+      "style": "filled",
+      "sourceId": "key",
+      "file": "library/key.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/key.svg",
+      "sha256": "038af65850d3f00b8ae8c83f4b0409401a0f954551eefa0afd03044e73616ee3"
+    },
+    {
+      "id": "trophy",
+      "label": "达成奖励",
+      "category": "任务",
+      "tags": [
+        "完成",
+        "成就",
+        "奖励"
+      ],
+      "style": "filled",
+      "sourceId": "trophy",
+      "file": "library/trophy.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/trophy.svg",
+      "sha256": "4b0441f8a336da2205934061281876df637e704a2fddbfa1437d8663893492af"
+    },
+    {
+      "id": "puzzle",
+      "label": "组合任务",
+      "category": "任务",
+      "tags": [
+        "拼图",
+        "组合",
+        "配合"
+      ],
+      "style": "filled",
+      "sourceId": "puzzle",
+      "file": "library/puzzle.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/puzzle.svg",
+      "sha256": "e57cb49a544bc20faf82ffc4822788aa41c738a08b741377d03d7a68a6e97b25"
+    },
+    {
+      "id": "pin",
+      "label": "标记重点",
+      "category": "任务",
+      "tags": [
+        "标记",
+        "重点",
+        "提醒"
+      ],
+      "style": "filled",
+      "sourceId": "pin",
+      "file": "library/pin.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/pin.svg",
+      "sha256": "085872f56463a7b5975f600b01b34af68f81c7a0f97f85e2387b20b998599ec0"
+    },
+    {
+      "id": "briefcase",
+      "label": "工作事项",
+      "category": "任务",
+      "tags": [
+        "工作",
+        "业务",
+        "项目"
+      ],
+      "style": "filled",
+      "sourceId": "briefcase",
+      "file": "library/briefcase.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/briefcase.svg",
+      "sha256": "e8bb39a81467a3ee402b996869efb8ff97fa4c9372711f412c20a215a5349c8d"
+    },
+    {
+      "id": "clipboard-plus",
+      "label": "新建任务",
+      "category": "任务",
+      "tags": [
+        "新增",
+        "待办",
+        "创建"
+      ],
+      "style": "filled",
+      "sourceId": "clipboard-plus",
+      "file": "library/clipboard-plus.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/clipboard-plus.svg",
+      "sha256": "ffe5bbd07b79af49560c8b73dbcf9955f8dcc1b52fe954192b16aee8040f5472"
+    },
+    {
+      "id": "clipboard-x",
+      "label": "驳回任务",
+      "category": "任务",
+      "tags": [
+        "拒绝",
+        "退回",
+        "未通过"
+      ],
+      "style": "filled",
+      "sourceId": "clipboard-x",
+      "file": "library/clipboard-x.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/clipboard-x.svg",
+      "sha256": "186f17b13e4e6f56a71a7358ed33115b125ee98c6148f81d1d38e72f54c65ad7"
+    },
+    {
+      "id": "file",
+      "label": "文件",
+      "category": "文件",
+      "tags": [
+        "文档",
+        "附件",
+        "资料"
+      ],
+      "style": "filled",
+      "sourceId": "file",
+      "file": "library/file.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file.svg",
+      "sha256": "48e5909ec799b544ba307e7c26fd870df0cc6ae78c0e42dc774f8385fe8fd968"
+    },
+    {
+      "id": "file-text",
+      "label": "文本文件",
+      "category": "文件",
+      "tags": [
+        "文字",
+        "文稿",
+        "记录"
+      ],
+      "style": "filled",
+      "sourceId": "file-text",
+      "file": "library/file-text.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-text.svg",
+      "sha256": "087a3830505495565caf49430b1464f1c6bd550f4d0bb29114012f869684279b"
+    },
+    {
+      "id": "file-description",
+      "label": "说明文档",
+      "category": "文件",
+      "tags": [
+        "说明",
+        "报告",
+        "资料"
+      ],
+      "style": "filled",
+      "sourceId": "file-description",
+      "file": "library/file-description.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-description.svg",
+      "sha256": "6e6915fa6f3b9e7311d5d53865feae2ec0dcbd85304ec6806cfeb24e59f118a3"
+    },
+    {
+      "id": "file-code",
+      "label": "代码文件",
+      "category": "文件",
+      "tags": [
+        "代码",
+        "脚本",
+        "程序"
+      ],
+      "style": "filled",
+      "sourceId": "file-code",
+      "file": "library/file-code.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-code.svg",
+      "sha256": "a262d361169ff3a84fd5eaa2bb80bbf095202962cd38e82a10a2391d0e9e97ae"
+    },
+    {
+      "id": "folder",
+      "label": "文件夹",
+      "category": "文件",
+      "tags": [
+        "目录",
+        "归类",
+        "资料夹"
+      ],
+      "style": "filled",
+      "sourceId": "folder",
+      "file": "library/folder.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/folder.svg",
+      "sha256": "ab5483785164f8df172e7ca0c4b47ed567915d8bde9eef025f571a82bd54886b"
+    },
+    {
+      "id": "folder-open",
+      "label": "打开文件夹",
+      "category": "文件",
+      "tags": [
+        "浏览目录",
+        "展开",
+        "资料"
+      ],
+      "style": "filled",
+      "sourceId": "folder-open",
+      "file": "library/folder-open.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/folder-open.svg",
+      "sha256": "b79eeae8c61161645b893bec7e08ceb66ba859ed1377aed6bd27c61317e87e41"
+    },
+    {
+      "id": "files",
+      "label": "多个文件",
+      "category": "文件",
+      "tags": [
+        "批量",
+        "文档集",
+        "附件"
+      ],
+      "style": "filled",
+      "sourceId": "files",
+      "file": "library/files.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/files.svg",
+      "sha256": "2cbbe40e2d987a02cda83348c20f6f659e9f13b4c58a497048b4fb49483751a0"
+    },
+    {
+      "id": "copy",
+      "label": "复制",
+      "category": "文件",
+      "tags": [
+        "副本",
+        "拷贝",
+        "复用"
+      ],
+      "style": "filled",
+      "sourceId": "copy",
+      "file": "library/copy.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/copy.svg",
+      "sha256": "f9e4a4c376be69cea99e51ea4fa0d4b21689c11f78dd9413c55da810ad969f1c"
+    },
+    {
+      "id": "download",
+      "label": "下载",
+      "category": "文件",
+      "tags": [
+        "保存",
+        "获取",
+        "导出"
+      ],
+      "style": "filled",
+      "sourceId": "download",
+      "file": "library/download.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/download.svg",
+      "sha256": "853df56425c4d14b9f44a5ba951f57c9e10c8cd0450896826e9f68dad7062a03"
+    },
+    {
+      "id": "upload",
+      "label": "上传",
+      "category": "文件",
+      "tags": [
+        "发送文件",
+        "提交",
+        "导入"
+      ],
+      "style": "filled",
+      "sourceId": "file-upload",
+      "file": "library/upload.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-upload.svg",
+      "sha256": "e61a2b5c3fc6370ab7bc74c2f1d639af36a153cff87bafc90b109c8445ce60cb"
+    },
+    {
+      "id": "archive",
+      "label": "归档",
+      "category": "文件",
+      "tags": [
+        "存档",
+        "收纳",
+        "备份"
+      ],
+      "style": "filled",
+      "sourceId": "archive",
+      "file": "library/archive.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/archive.svg",
+      "sha256": "13defafd1fe2cc10697790ff146441533050897c8b838c74b955b01b713adef2"
+    },
+    {
+      "id": "trash",
+      "label": "删除",
+      "category": "文件",
+      "tags": [
+        "回收站",
+        "移除",
+        "清理"
+      ],
+      "style": "filled",
+      "sourceId": "trash",
+      "file": "library/trash.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/trash.svg",
+      "sha256": "dcb8e44b143d88efbfc742068cfbb1abdd2fc1af8d66d865acf7d2fa6b2a6ade"
+    },
+    {
+      "id": "link",
+      "label": "链接",
+      "category": "文件",
+      "tags": [
+        "网址",
+        "关联",
+        "引用"
+      ],
+      "style": "filled",
+      "sourceId": "link",
+      "file": "library/link.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/link.svg",
+      "sha256": "ac6d996ee593a670b4710d77f3e51d8b5063885cdc65b1ad4d1d86dd0b63d4df"
+    },
+    {
+      "id": "photo",
+      "label": "图片",
+      "category": "文件",
+      "tags": [
+        "照片",
+        "图像",
+        "素材"
+      ],
+      "style": "filled",
+      "sourceId": "photo",
+      "file": "library/photo.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/photo.svg",
+      "sha256": "b949b8732abc47eea140d1784131da5b4ce505532f07e2be9b62e4e23cea8529"
+    },
+    {
+      "id": "file-analytics",
+      "label": "数据报告",
+      "category": "文件",
+      "tags": [
+        "统计",
+        "报告",
+        "图表"
+      ],
+      "style": "filled",
+      "sourceId": "file-analytics",
+      "file": "library/file-analytics.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-analytics.svg",
+      "sha256": "a5541e92f5c4d10e85ea7637a700abaeed95d4c304db50e3ddecaab9c41fe3d2"
+    },
+    {
+      "id": "file-music",
+      "label": "音频文件",
+      "category": "文件",
+      "tags": [
+        "音乐",
+        "音频",
+        "文件"
+      ],
+      "style": "filled",
+      "sourceId": "file-music",
+      "file": "library/file-music.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-music.svg",
+      "sha256": "171c3702bc81c312e689292c1778a57eb8df46758b31bc0d8757777c3f9de185"
+    },
+    {
+      "id": "file-settings",
+      "label": "文件设置",
+      "category": "文件",
+      "tags": [
+        "配置",
+        "参数",
+        "文档"
+      ],
+      "style": "filled",
+      "sourceId": "file-settings",
+      "file": "library/file-settings.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-settings.svg",
+      "sha256": "206b0ec4d30145fc44151a06020696df5a1a5415f3c6c068e916eab199abc6c8"
+    },
+    {
+      "id": "file-time",
+      "label": "文件历史",
+      "category": "文件",
+      "tags": [
+        "文件",
+        "时间",
+        "历史版本"
+      ],
+      "style": "filled",
+      "sourceId": "file-time",
+      "file": "library/file-time.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-time.svg",
+      "sha256": "142fadeb6fe9a5ce6d8f34f8ff5b7589c162c0137f37b40120ee633e4bc80ea5"
+    },
+    {
+      "id": "file-check",
+      "label": "文件已确认",
+      "category": "文件",
+      "tags": [
+        "文档",
+        "确认",
+        "已检查"
+      ],
+      "style": "filled",
+      "sourceId": "file-check",
+      "file": "library/file-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-check.svg",
+      "sha256": "03607612c63cc33a48f975455988ef8b0f50f1cbc3dd0be6d05605481f0a391b"
+    },
+    {
+      "id": "file-pencil",
+      "label": "编辑文档",
+      "category": "文件",
+      "tags": [
+        "编辑",
+        "修改",
+        "写作"
+      ],
+      "style": "filled",
+      "sourceId": "file-pencil",
+      "file": "library/file-pencil.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-pencil.svg",
+      "sha256": "66731ad9e2cb0ac2e8aaf66d7e40f6040a2e0679e895b44c73d1abc9a5480a42"
+    },
+    {
+      "id": "file-invoice",
+      "label": "发票文件",
+      "category": "文件",
+      "tags": [
+        "发票",
+        "账单",
+        "票据"
+      ],
+      "style": "filled",
+      "sourceId": "file-invoice",
+      "file": "library/file-invoice.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-invoice.svg",
+      "sha256": "187e99fbc2d8966f0cdf0be9e25e238bc6588b559e6d79780dfc7a85fe8ea9ad"
+    },
+    {
+      "id": "file-star",
+      "label": "收藏文件",
+      "category": "文件",
+      "tags": [
+        "收藏",
+        "重要",
+        "星标"
+      ],
+      "style": "filled",
+      "sourceId": "file-star",
+      "file": "library/file-star.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-star.svg",
+      "sha256": "c7adc5611def3a5b562ee7d4400202228403eedf7ab98578967cef09805cda8c"
+    },
+    {
+      "id": "file-info",
+      "label": "文件信息",
+      "category": "文件",
+      "tags": [
+        "说明",
+        "详情",
+        "文档"
+      ],
+      "style": "filled",
+      "sourceId": "file-info",
+      "file": "library/file-info.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-info.svg",
+      "sha256": "0d109dbed78a7db1d21fd1cc2f6c78bf4b364006b63141d12427c0e977576b46"
+    },
+    {
+      "id": "file-diff",
+      "label": "文件差异",
+      "category": "文件",
+      "tags": [
+        "对比",
+        "增删",
+        "变更"
+      ],
+      "style": "filled",
+      "sourceId": "file-diff",
+      "file": "library/file-diff.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-diff.svg",
+      "sha256": "0c43259104dcf9949a9ca58f5a9cdc879df378b545380419dfc2189686d4a39d"
+    },
+    {
+      "id": "file-vector",
+      "label": "矢量文件",
+      "category": "文件",
+      "tags": [
+        "矢量",
+        "设计",
+        "图形"
+      ],
+      "style": "filled",
+      "sourceId": "file-vector",
+      "file": "library/file-vector.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/file-vector.svg",
+      "sha256": "b27609e9eaa519a4562e9bcac447cab13144b3e31cd20fc0a6146d440b57059f"
+    },
+    {
+      "id": "calendar",
+      "label": "日历",
+      "category": "日程",
+      "tags": [
+        "日期",
+        "排期",
+        "计划"
+      ],
+      "style": "filled",
+      "sourceId": "calendar",
+      "file": "library/calendar.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/calendar.svg",
+      "sha256": "7739f100c1c2a673a0c802068fdbd693f27d05007be9351aa504292ecdde275a"
+    },
+    {
+      "id": "calendar-event",
+      "label": "日程事项",
+      "category": "日程",
+      "tags": [
+        "活动",
+        "预约",
+        "安排"
+      ],
+      "style": "filled",
+      "sourceId": "calendar-event",
+      "file": "library/calendar-event.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/calendar-event.svg",
+      "sha256": "35a6a2e55269cfa05b14478f6e296fb2f7d879bfbf0abbd791a8cbde421b9c25"
+    },
+    {
+      "id": "calendar-week",
+      "label": "本周计划",
+      "category": "日程",
+      "tags": [
+        "周历",
+        "一周",
+        "排期"
+      ],
+      "style": "filled",
+      "sourceId": "calendar-week",
+      "file": "library/calendar-week.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/calendar-week.svg",
+      "sha256": "0928059872455211c55ae6a93c3bcf008ca63ae1bbdde4cae092f9240c7ef86b"
+    },
+    {
+      "id": "calendar-month",
+      "label": "本月计划",
+      "category": "日程",
+      "tags": [
+        "月历",
+        "月份",
+        "规划"
+      ],
+      "style": "filled",
+      "sourceId": "calendar-month",
+      "file": "library/calendar-month.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/calendar-month.svg",
+      "sha256": "b5c65de7f44e06983efd23b93b9567e20ab7736cc4cca3a69bcf66c574a99a5a"
+    },
+    {
+      "id": "clock",
+      "label": "时间",
+      "category": "日程",
+      "tags": [
+        "时钟",
+        "当前",
+        "时刻"
+      ],
+      "style": "filled",
+      "sourceId": "clock",
+      "file": "library/clock.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/clock.svg",
+      "sha256": "dd11edc4d34dcc9593980b39a6171d3711fb9f5b72a67e1480be89f00a492f94"
+    },
+    {
+      "id": "clock-hour-3",
+      "label": "下午三点",
+      "category": "日程",
+      "tags": [
+        "三点",
+        "钟表",
+        "时刻"
+      ],
+      "style": "filled",
+      "sourceId": "clock-hour-3",
+      "file": "library/clock-hour-3.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/clock-hour-3.svg",
+      "sha256": "16cda521f314eab8c0016f5e1bfbe2177eac2741f523f8e2e303a240ee3f74d2"
+    },
+    {
+      "id": "alarm",
+      "label": "闹钟",
+      "category": "日程",
+      "tags": [
+        "提醒",
+        "叫醒",
+        "定时"
+      ],
+      "style": "filled",
+      "sourceId": "alarm",
+      "file": "library/alarm.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/alarm.svg",
+      "sha256": "d3fc717cfc37e5f53c320814d6050c65b6f8010ab9e4dab945248cccc8965cdc"
+    },
+    {
+      "id": "alarm-snooze",
+      "label": "稍后提醒",
+      "category": "日程",
+      "tags": [
+        "贪睡",
+        "延后",
+        "小睡"
+      ],
+      "style": "filled",
+      "sourceId": "alarm-snooze",
+      "file": "library/alarm-snooze.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/alarm-snooze.svg",
+      "sha256": "2b22a1ecba3ef463299a644603a8d5a43a37146d9d80cce762ca99bf122449f2"
+    },
+    {
+      "id": "hourglass",
+      "label": "倒计时",
+      "category": "日程",
+      "tags": [
+        "沙漏",
+        "等待",
+        "剩余时间"
+      ],
+      "style": "filled",
+      "sourceId": "hourglass",
+      "file": "library/hourglass.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/hourglass.svg",
+      "sha256": "388759a67d27110d31f8469e5532df6b209ff7e6c0bdf2e26ca3cc6e971263d9"
+    },
+    {
+      "id": "alarm-plus",
+      "label": "添加闹钟",
+      "category": "日程",
+      "tags": [
+        "闹钟",
+        "新增",
+        "定时提醒"
+      ],
+      "style": "filled",
+      "sourceId": "alarm-plus",
+      "file": "library/alarm-plus.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/alarm-plus.svg",
+      "sha256": "54afc8a54aab1856a0ef337936d36f3bf446f3b3503872dcc9446ee1a6a04ca7"
+    },
+    {
+      "id": "alarm-minus",
+      "label": "移除闹钟",
+      "category": "日程",
+      "tags": [
+        "闹钟",
+        "删除",
+        "取消提醒"
+      ],
+      "style": "filled",
+      "sourceId": "alarm-minus",
+      "file": "library/alarm-minus.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/alarm-minus.svg",
+      "sha256": "100e8d3644be39a09e5df75a12b6d240d7abc97cd417543daeca7b74544c3fe9"
+    },
+    {
+      "id": "timeline-event",
+      "label": "时间节点",
+      "category": "日程",
+      "tags": [
+        "节点",
+        "时间线",
+        "事项"
+      ],
+      "style": "filled",
+      "sourceId": "timeline-event",
+      "file": "library/timeline-event.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/timeline-event.svg",
+      "sha256": "8b14b06dbccce95cbd914dd21f4b3c00359da56ac16bd9e38ac8e317cdd96885"
+    },
+    {
+      "id": "ticket",
+      "label": "活动门票",
+      "category": "日程",
+      "tags": [
+        "活动",
+        "入场",
+        "票券"
+      ],
+      "style": "filled",
+      "sourceId": "ticket",
+      "file": "library/ticket.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/ticket.svg",
+      "sha256": "d2e02a60d85990f91a568f28d6099fecd47423612e3d24556df6fc58004ec734"
+    },
+    {
+      "id": "bell-z",
+      "label": "暂停提醒",
+      "category": "日程",
+      "tags": [
+        "免打扰",
+        "稍后",
+        "休息"
+      ],
+      "style": "filled",
+      "sourceId": "bell-z",
+      "file": "library/bell-z.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bell-z.svg",
+      "sha256": "f22e495de01863f5cad6d07993772b7870ba174c485b0e0791c0d786b398fe6e"
+    },
+    {
+      "id": "home",
+      "label": "回家",
+      "category": "生活",
+      "tags": [
+        "家庭",
+        "房屋",
+        "住所"
+      ],
+      "style": "filled",
+      "sourceId": "home",
+      "file": "library/home.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/home.svg",
+      "sha256": "7dab9c4e67b84a4eb541bc84556c7bbec68d0e5495333e6b63f94bcc315c4c64"
+    },
+    {
+      "id": "coffee",
+      "label": "咖啡",
+      "category": "生活",
+      "tags": [
+        "休息",
+        "提神",
+        "饮品"
+      ],
+      "style": "filled",
+      "sourceId": "mug",
+      "file": "library/coffee.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/mug.svg",
+      "sha256": "01b5df806346024f77d92e224c82b4cfff465ff87950ed3bf092e1baa5099e49"
+    },
+    {
+      "id": "moon",
+      "label": "夜晚",
+      "category": "生活",
+      "tags": [
+        "月亮",
+        "睡眠",
+        "休息"
+      ],
+      "style": "filled",
+      "sourceId": "moon",
+      "file": "library/moon.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/moon.svg",
+      "sha256": "3aa039644196dc5a14d1775ffc3f1e8c52122bfc29c3e76288c7fc67a813524e"
+    },
+    {
+      "id": "sun",
+      "label": "白天",
+      "category": "生活",
+      "tags": [
+        "太阳",
+        "晴天",
+        "早晨"
+      ],
+      "style": "filled",
+      "sourceId": "sun",
+      "file": "library/sun.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/sun.svg",
+      "sha256": "228d73fcfd53c94f018a4220bcf5aac2dbf443ea8f7ec71fc1b8f0b3ffc34ab8"
+    },
+    {
+      "id": "cloud",
+      "label": "多云",
+      "category": "生活",
+      "tags": [
+        "云朵",
+        "天气",
+        "天空"
+      ],
+      "style": "filled",
+      "sourceId": "cloud",
+      "file": "library/cloud.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/cloud.svg",
+      "sha256": "e05bbebe81d441862b8e5bbfaaebe26741e600963cb9e60a122abee140d2e6ab"
+    },
+    {
+      "id": "umbrella",
+      "label": "带伞",
+      "category": "生活",
+      "tags": [
+        "雨伞",
+        "防雨",
+        "出门"
+      ],
+      "style": "filled",
+      "sourceId": "umbrella",
+      "file": "library/umbrella.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/umbrella.svg",
+      "sha256": "26974f24c2e28146065541f3a1246ef5b918d412c8e23f15964254e69b414fec"
+    },
+    {
+      "id": "plant",
+      "label": "植物",
+      "category": "生活",
+      "tags": [
+        "绿植",
+        "养护",
+        "成长"
+      ],
+      "style": "filled",
+      "sourceId": "seedling",
+      "file": "library/plant.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/seedling.svg",
+      "sha256": "5efdd159c97e6c109e9f19ee73dfa64cb38762a52b2ba1f304085a14b2098699"
+    },
+    {
+      "id": "leaf",
+      "label": "叶子",
+      "category": "生活",
+      "tags": [
+        "自然",
+        "清新",
+        "环保"
+      ],
+      "style": "filled",
+      "sourceId": "leaf",
+      "file": "library/leaf.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/leaf.svg",
+      "sha256": "872e7a3c36042b6a935bf90ee221190e13fafdb4f6334103dcbbd2a5013318bd"
+    },
+    {
+      "id": "flower",
+      "label": "鲜花",
+      "category": "生活",
+      "tags": [
+        "花朵",
+        "祝福",
+        "花园"
+      ],
+      "style": "filled",
+      "sourceId": "flower",
+      "file": "library/flower.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/flower.svg",
+      "sha256": "318b3c4bf44b3b943ecba9edfd6774128cd69bbd2323f83e45c00c8109b954fd"
+    },
+    {
+      "id": "book",
+      "label": "阅读",
+      "category": "生活",
+      "tags": [
+        "书籍",
+        "学习",
+        "知识"
+      ],
+      "style": "filled",
+      "sourceId": "book",
+      "file": "library/book.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/book.svg",
+      "sha256": "ca8391ffe555866c1ba0eec2720440406fa5fceff9f7c7a887032e4c750a9976"
+    },
+    {
+      "id": "shopping-cart",
+      "label": "购物",
+      "category": "生活",
+      "tags": [
+        "采购",
+        "购物车",
+        "买东西"
+      ],
+      "style": "filled",
+      "sourceId": "shopping-cart",
+      "file": "library/shopping-cart.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/shopping-cart.svg",
+      "sha256": "fddcbd07d9688cb44128fa3b4739d2b5b6dd703f792510297c404d6e512d8cbb"
+    },
+    {
+      "id": "gift",
+      "label": "礼物",
+      "category": "生活",
+      "tags": [
+        "惊喜",
+        "庆祝",
+        "赠送"
+      ],
+      "style": "filled",
+      "sourceId": "gift",
+      "file": "library/gift.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/gift.svg",
+      "sha256": "69346b9cf2a71dee6ebba1f7ef5e5ee1cf6a95014c86aa87b430d3e8725fe6d7"
+    },
+    {
+      "id": "map-pin",
+      "label": "位置",
+      "category": "生活",
+      "tags": [
+        "地点",
+        "定位",
+        "地址"
+      ],
+      "style": "filled",
+      "sourceId": "map-pin",
+      "file": "library/map-pin.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/map-pin.svg",
+      "sha256": "c95089577b40e89e0995b73d8fe75f43fafc19c3587eb5a8c4efd63fc314a998"
+    },
+    {
+      "id": "plane",
+      "label": "旅行",
+      "category": "生活",
+      "tags": [
+        "飞机",
+        "出差",
+        "航班"
+      ],
+      "style": "filled",
+      "sourceId": "plane",
+      "file": "library/plane.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/plane.svg",
+      "sha256": "d430868ff01428235c1a32d39e16031837451b325a39757817db77f77de1270c"
+    },
+    {
+      "id": "battery-3",
+      "label": "电量",
+      "category": "生活",
+      "tags": [
+        "电池",
+        "能量",
+        "续航"
+      ],
+      "style": "filled",
+      "sourceId": "battery-3",
+      "file": "library/battery-3.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/battery-3.svg",
+      "sha256": "652d05e0d0d02a9123cb3dc22f20ad2270ceb7bc94fe9a158e737614fa03a52a"
+    },
+    {
+      "id": "bed",
+      "label": "就寝",
+      "category": "生活",
+      "tags": [
+        "睡觉",
+        "休息",
+        "卧室"
+      ],
+      "style": "filled",
+      "sourceId": "bed",
+      "file": "library/bed.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bed.svg",
+      "sha256": "d58f00a394cd4896ee064a1853b437a2c51d0f09f2d4321d9ca2d2dce6f897ef"
+    },
+    {
+      "id": "bike",
+      "label": "骑行",
+      "category": "生活",
+      "tags": [
+        "自行车",
+        "运动",
+        "出行"
+      ],
+      "style": "filled",
+      "sourceId": "bike",
+      "file": "library/bike.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bike.svg",
+      "sha256": "a15de0d43c5c5998ac9447d4f8a22f2272ba7a0d944dca1517cfb45d178d3c22"
+    },
+    {
+      "id": "car",
+      "label": "驾车",
+      "category": "生活",
+      "tags": [
+        "汽车",
+        "出行",
+        "交通"
+      ],
+      "style": "filled",
+      "sourceId": "car",
+      "file": "library/car.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/car.svg",
+      "sha256": "8fbb4dcd73119be366b47c434509d28a390258a288ab96cd372ae199c09893f8"
+    },
+    {
+      "id": "pizza",
+      "label": "披萨",
+      "category": "生活",
+      "tags": [
+        "食物",
+        "用餐",
+        "饮食"
+      ],
+      "style": "filled",
+      "sourceId": "pizza",
+      "file": "library/pizza.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/pizza.svg",
+      "sha256": "3b72cc40e9e6206c777beb4cc2900ca29f8d3e9a87b1562c47140f8a7f850b4e"
+    },
+    {
+      "id": "bread",
+      "label": "面包",
+      "category": "生活",
+      "tags": [
+        "早餐",
+        "食物",
+        "饮食"
+      ],
+      "style": "filled",
+      "sourceId": "bread",
+      "file": "library/bread.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bread.svg",
+      "sha256": "e10649ff0437b33402afd69a28fc2c8f8465bf9b17845c645d2b2bdafd56b1be"
+    },
+    {
+      "id": "milk",
+      "label": "牛奶",
+      "category": "生活",
+      "tags": [
+        "早餐",
+        "饮品",
+        "补给"
+      ],
+      "style": "filled",
+      "sourceId": "milk",
+      "file": "library/milk.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/milk.svg",
+      "sha256": "9ce9df727d2193cf4e6d643be0b1c522c60839ac01f490ae4216682d8f57017e"
+    },
+    {
+      "id": "bowl-spoon",
+      "label": "用餐",
+      "category": "生活",
+      "tags": [
+        "吃饭",
+        "餐具",
+        "饮食"
+      ],
+      "style": "filled",
+      "sourceId": "bowl-spoon",
+      "file": "library/bowl-spoon.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bowl-spoon.svg",
+      "sha256": "f13f762987eb75105f714ee9e72ac573a024b0f351a3c4b8e28b8bfaa236e374"
+    },
+    {
+      "id": "bottle",
+      "label": "水瓶",
+      "category": "生活",
+      "tags": [
+        "喝水",
+        "补水",
+        "饮品"
+      ],
+      "style": "filled",
+      "sourceId": "bottle",
+      "file": "library/bottle.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/filled/bottle.svg",
+      "sha256": "541603b14b05382ce1691adcf27abd1ea4eccd566646f7d6e61034a94decf83c"
+    }
+  ],
+  "legacyIcons": [
+    {
+      "id": "mood-wink",
+      "label": "眨眼",
+      "category": "表情",
+      "tags": [
+        "俏皮",
+        "默契",
+        "示意"
+      ],
+      "style": "outline",
+      "sourceId": "mood-wink",
+      "file": "library/mood-wink.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-wink.svg",
+      "sha256": "31b3be693d74a5336739d49ade42b33f96cc1a2961d12497327eeccb8f77012d"
+    },
+    {
+      "id": "mood-cry",
+      "label": "哭泣",
+      "category": "表情",
+      "tags": [
+        "眼泪",
+        "委屈",
+        "悲伤"
+      ],
+      "style": "outline",
+      "sourceId": "mood-cry",
+      "file": "library/mood-cry.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-cry.svg",
+      "sha256": "e9ae78e832d8e886f449b19127439db3bdc77f13cebb7f3e34657dc71aeef86b"
+    },
+    {
+      "id": "mood-surprised",
+      "label": "惊讶",
+      "category": "表情",
+      "tags": [
+        "意外",
+        "吃惊",
+        "震惊"
+      ],
+      "style": "outline",
+      "sourceId": "mood-surprised",
+      "file": "library/mood-surprised.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-surprised.svg",
+      "sha256": "ae5de580afce95a8b659037f72fa7c3c3fef178504401ce2b2795f1e15b43be4"
+    },
+    {
+      "id": "mood-nervous",
+      "label": "紧张",
+      "category": "表情",
+      "tags": [
+        "焦虑",
+        "忐忑",
+        "担心"
+      ],
+      "style": "outline",
+      "sourceId": "mood-nervous",
+      "file": "library/mood-nervous.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-nervous.svg",
+      "sha256": "6d651505370fd81254f5ba9dcb1f54de6fd00210a4c3211a96563d233dbdb7d3"
+    },
+    {
+      "id": "mood-sick",
+      "label": "不舒服",
+      "category": "表情",
+      "tags": [
+        "生病",
+        "恶心",
+        "难受"
+      ],
+      "style": "outline",
+      "sourceId": "mood-sick",
+      "file": "library/mood-sick.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-sick.svg",
+      "sha256": "50f6ad87524fd39b0371a002f85e6955b5e8472054b60541915234f9e40c4bf0"
+    },
+    {
+      "id": "mood-tongue",
+      "label": "调皮",
+      "category": "表情",
+      "tags": [
+        "吐舌",
+        "玩笑",
+        "可爱"
+      ],
+      "style": "outline",
+      "sourceId": "mood-tongue",
+      "file": "library/mood-tongue.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-tongue.svg",
+      "sha256": "6a58bef1dad543a3274dd6d51823688f72a85321d0a30424c97609034be4b610"
+    },
+    {
+      "id": "mood-look-left",
+      "label": "看向左边",
+      "category": "表情",
+      "tags": [
+        "左看",
+        "注意",
+        "观察"
+      ],
+      "style": "outline",
+      "sourceId": "mood-look-left",
+      "file": "library/mood-look-left.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-look-left.svg",
+      "sha256": "e498f580bf94afce8b73904e7b84bd74f3c6b5a8da566172ea05b0577bb2441a"
+    },
+    {
+      "id": "mood-look-right",
+      "label": "看向右边",
+      "category": "表情",
+      "tags": [
+        "右看",
+        "注意",
+        "观察"
+      ],
+      "style": "outline",
+      "sourceId": "mood-look-right",
+      "file": "library/mood-look-right.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/mood-look-right.svg",
+      "sha256": "461148475391b0a45c65d09aff32368c71dae07b8914963d6ea02c2f584ef634"
+    },
+    {
+      "id": "phone-incoming",
+      "label": "来电",
+      "category": "沟通",
+      "tags": [
+        "接听",
+        "呼入",
+        "电话"
+      ],
+      "style": "outline",
+      "sourceId": "phone-incoming",
+      "file": "library/phone-incoming.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/phone-incoming.svg",
+      "sha256": "d34df8b2b8ddaa2a3419edb8361f358765adcae662d5e1e35104c4f0159c7599"
+    },
+    {
+      "id": "phone-outgoing",
+      "label": "拨出电话",
+      "category": "沟通",
+      "tags": [
+        "呼出",
+        "拨号",
+        "电话"
+      ],
+      "style": "outline",
+      "sourceId": "phone-outgoing",
+      "file": "library/phone-outgoing.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/phone-outgoing.svg",
+      "sha256": "a822fd79c82328b1739e85afe281a478adedf0b791923d202cac16089d42e77a"
+    },
+    {
+      "id": "message-dots",
+      "label": "正在输入",
+      "category": "沟通",
+      "tags": [
+        "打字",
+        "等待回复",
+        "聊天"
+      ],
+      "style": "outline",
+      "sourceId": "message-dots",
+      "file": "library/message-dots.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/message-dots.svg",
+      "sha256": "0ffef7f282380da58f8c50fe0c30690b4f0e196fb30e675d7401ea2bc51c7bf6"
+    },
+    {
+      "id": "message-check",
+      "label": "已回复",
+      "category": "沟通",
+      "tags": [
+        "消息确认",
+        "已读",
+        "答复"
+      ],
+      "style": "outline",
+      "sourceId": "message-check",
+      "file": "library/message-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/message-check.svg",
+      "sha256": "a021b4c11b3f7f4be3a3f35322ce3660b38b3b7de309e3e28a5387ebb64e6381"
+    },
+    {
+      "id": "message-question",
+      "label": "提问",
+      "category": "沟通",
+      "tags": [
+        "澄清",
+        "询问",
+        "问题"
+      ],
+      "style": "outline",
+      "sourceId": "message-question",
+      "file": "library/message-question.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/message-question.svg",
+      "sha256": "420f82c073f6d2bd0ec10fed7059163c8824c97d557a2dbde94fc3d6478dd506"
+    },
+    {
+      "id": "microphone-off",
+      "label": "麦克风静音",
+      "category": "沟通",
+      "tags": [
+        "关闭录音",
+        "静音",
+        "停用语音"
+      ],
+      "style": "outline",
+      "sourceId": "microphone-off",
+      "file": "library/microphone-off.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/microphone-off.svg",
+      "sha256": "74afc87734c32492d83791858291faad1e5afad0d515ce78ed733e2f67e4e42d"
+    },
+    {
+      "id": "speakerphone",
+      "label": "广播",
+      "category": "沟通",
+      "tags": [
+        "扩音",
+        "公告",
+        "喊话"
+      ],
+      "style": "outline",
+      "sourceId": "speakerphone",
+      "file": "library/speakerphone.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/speakerphone.svg",
+      "sha256": "94ae4a850ceab82bede33859dcba7dd5f55de39eb004d12ea66b855ba7cbd7c5"
+    },
+    {
+      "id": "checks",
+      "label": "全部完成",
+      "category": "任务",
+      "tags": [
+        "完成",
+        "已核对",
+        "双勾"
+      ],
+      "style": "outline",
+      "sourceId": "checks",
+      "file": "library/checks.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/checks.svg",
+      "sha256": "ab6cf399a89a011327fd808d61f6c2aae56dbac2ae8accef757ec75ee5599fea"
+    },
+    {
+      "id": "checklist",
+      "label": "检查清单",
+      "category": "任务",
+      "tags": [
+        "检查",
+        "验收",
+        "核对"
+      ],
+      "style": "outline",
+      "sourceId": "checklist",
+      "file": "library/checklist.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/checklist.svg",
+      "sha256": "89706ae4425e15044e28e3abadd596e236974a2ccb8c46e5175131eccdd54865"
+    },
+    {
+      "id": "progress",
+      "label": "正在进行",
+      "category": "任务",
+      "tags": [
+        "进度",
+        "处理中",
+        "执行"
+      ],
+      "style": "outline",
+      "sourceId": "progress",
+      "file": "library/progress.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/progress.svg",
+      "sha256": "858f79f22cc9179a55ff6c4c599e771ee2d01b506fb041787f7f7f153151f412"
+    },
+    {
+      "id": "loader",
+      "label": "加载中",
+      "category": "任务",
+      "tags": [
+        "等待",
+        "忙碌",
+        "处理"
+      ],
+      "style": "outline",
+      "sourceId": "loader",
+      "file": "library/loader.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/loader.svg",
+      "sha256": "17b0fb2bf4abe7318cc6c7d9830b256e1266c2c674d66b82d3d9c83eae806348"
+    },
+    {
+      "id": "target",
+      "label": "目标",
+      "category": "任务",
+      "tags": [
+        "任务目标",
+        "聚焦",
+        "方向"
+      ],
+      "style": "outline",
+      "sourceId": "target",
+      "file": "library/target.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/target.svg",
+      "sha256": "86aeb93cca8fdd443836de446a3fc565c45f5af5e7312171c1d054f14da1388e"
+    },
+    {
+      "id": "tool",
+      "label": "修复",
+      "category": "任务",
+      "tags": [
+        "工具",
+        "维修",
+        "维护"
+      ],
+      "style": "outline",
+      "sourceId": "tool",
+      "file": "library/tool.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/tool.svg",
+      "sha256": "b432e73424230f357f46decbcdb37b2c6f4b3f223f7169c204af819bcbcb3e34"
+    },
+    {
+      "id": "file-type-pdf",
+      "label": "PDF 文档",
+      "category": "文件",
+      "tags": [
+        "便携文档",
+        "阅读",
+        "报告"
+      ],
+      "style": "outline",
+      "sourceId": "file-type-pdf",
+      "file": "library/file-type-pdf.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/file-type-pdf.svg",
+      "sha256": "f17f25d5d2728b807625ecab7a5ab2cfa0e1ba00c05cf8112aad0fe1f119601f"
+    },
+    {
+      "id": "file-type-doc",
+      "label": "Word 文档",
+      "category": "文件",
+      "tags": [
+        "文字处理",
+        "文稿",
+        "写作"
+      ],
+      "style": "outline",
+      "sourceId": "file-type-doc",
+      "file": "library/file-type-doc.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/file-type-doc.svg",
+      "sha256": "6051156d4a1b3f1f3e9de4b87e2c7bbc9a18a261a1a3235b2e093d25b47586d0"
+    },
+    {
+      "id": "file-type-xls",
+      "label": "Excel 表格",
+      "category": "文件",
+      "tags": [
+        "电子表格",
+        "数据",
+        "工作簿"
+      ],
+      "style": "outline",
+      "sourceId": "file-type-xls",
+      "file": "library/file-type-xls.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/file-type-xls.svg",
+      "sha256": "40ffbee1c89b0c446b8ab5d60154305c634aad6c1a72558f68f4d3341a6f1d2c"
+    },
+    {
+      "id": "file-type-ppt",
+      "label": "演示文稿",
+      "category": "文件",
+      "tags": [
+        "幻灯片",
+        "汇报",
+        "演示"
+      ],
+      "style": "outline",
+      "sourceId": "file-type-ppt",
+      "file": "library/file-type-ppt.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/file-type-ppt.svg",
+      "sha256": "52aa9fba2273161feab6ec3a1a6b3b63edbeb29458ca306eb53671c1568c2bbf"
+    },
+    {
+      "id": "file-zip",
+      "label": "压缩文件",
+      "category": "文件",
+      "tags": [
+        "压缩包",
+        "打包",
+        "归档"
+      ],
+      "style": "outline",
+      "sourceId": "file-zip",
+      "file": "library/file-zip.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/file-zip.svg",
+      "sha256": "866cc7e522c85925564b845619345ab6ddfd81e77f91d672981e0775a11760f2"
+    },
+    {
+      "id": "folder-plus",
+      "label": "新建文件夹",
+      "category": "文件",
+      "tags": [
+        "创建目录",
+        "新增",
+        "整理"
+      ],
+      "style": "outline",
+      "sourceId": "folder-plus",
+      "file": "library/folder-plus.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/folder-plus.svg",
+      "sha256": "5de24f14fb3f72adff197ce08c462edd93bc5cd427bd3a6bddd7eb36ae8b4885"
+    },
+    {
+      "id": "calendar-plus",
+      "label": "新增日程",
+      "category": "日程",
+      "tags": [
+        "创建预约",
+        "添加",
+        "安排"
+      ],
+      "style": "outline",
+      "sourceId": "calendar-plus",
+      "file": "library/calendar-plus.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/calendar-plus.svg",
+      "sha256": "4284a119dd85e22b85e180d65f625aa46143c08d3bad694228bcd7785f9e2963"
+    },
+    {
+      "id": "calendar-check",
+      "label": "日程完成",
+      "category": "日程",
+      "tags": [
+        "赴约",
+        "完成",
+        "确认"
+      ],
+      "style": "outline",
+      "sourceId": "calendar-check",
+      "file": "library/calendar-check.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/calendar-check.svg",
+      "sha256": "1560ba0b39f4e38e38260e70c69968ff378be0986cfbd0295efc6e83b58d858c"
+    },
+    {
+      "id": "calendar-time",
+      "label": "预约时间",
+      "category": "日程",
+      "tags": [
+        "定时",
+        "排期",
+        "约定"
+      ],
+      "style": "outline",
+      "sourceId": "calendar-time",
+      "file": "library/calendar-time.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/calendar-time.svg",
+      "sha256": "47cf4363956948fe26e98f70b1a38990a1f816150233fe52da4e58cbec5b8bc1"
+    },
+    {
+      "id": "calendar-stats",
+      "label": "日程统计",
+      "category": "日程",
+      "tags": [
+        "复盘",
+        "统计",
+        "安排"
+      ],
+      "style": "outline",
+      "sourceId": "calendar-stats",
+      "file": "library/calendar-stats.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/calendar-stats.svg",
+      "sha256": "f4f100a6d558a176becb265b2fd2210e7fd6ffbbd205223d6be9a47b656eb19a"
+    },
+    {
+      "id": "stopwatch",
+      "label": "计时器",
+      "category": "日程",
+      "tags": [
+        "秒表",
+        "计时",
+        "时长"
+      ],
+      "style": "outline",
+      "sourceId": "stopwatch",
+      "file": "library/stopwatch.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/stopwatch.svg",
+      "sha256": "1a9c6fd1f4eac7f875d7c53d9e9bf2db29591db6acd2a61599eaf7f574a9a4a0"
+    },
+    {
+      "id": "repeat",
+      "label": "重复安排",
+      "category": "日程",
+      "tags": [
+        "周期",
+        "循环",
+        "重复"
+      ],
+      "style": "outline",
+      "sourceId": "repeat",
+      "file": "library/repeat.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/repeat.svg",
+      "sha256": "5f8f6d07b51963e6949201fba4c200be8b0910d75a8f8f2fb40a04a1c22fcfa1"
+    },
+    {
+      "id": "history",
+      "label": "历史记录",
+      "category": "日程",
+      "tags": [
+        "回顾",
+        "过去",
+        "时间线"
+      ],
+      "style": "outline",
+      "sourceId": "history",
+      "file": "library/history.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/history.svg",
+      "sha256": "0db058f1c196fb1a515998e5814168df3d5300fce746ed90fcf5d7227a0b594d"
+    },
+    {
+      "id": "timeline",
+      "label": "时间线",
+      "category": "日程",
+      "tags": [
+        "流程",
+        "节点",
+        "先后"
+      ],
+      "style": "outline",
+      "sourceId": "timeline",
+      "file": "library/timeline.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/timeline.svg",
+      "sha256": "b72fd22a6b3d5e814874a7527b807d767d89647539d0d6578e34be2c05632f0f"
+    },
+    {
+      "id": "calendar-share",
+      "label": "共享日程",
+      "category": "日程",
+      "tags": [
+        "分享",
+        "协作",
+        "邀请"
+      ],
+      "style": "outline",
+      "sourceId": "calendar-share",
+      "file": "library/calendar-share.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/calendar-share.svg",
+      "sha256": "833d6a7af6a4ec95cb6dd394346a3a3aeecc934477f649e117f8e8605197f263"
+    },
+    {
+      "id": "calendar-due",
+      "label": "截止日期",
+      "category": "日程",
+      "tags": [
+        "到期",
+        "期限",
+        "交期"
+      ],
+      "style": "outline",
+      "sourceId": "calendar-due",
+      "file": "library/calendar-due.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/calendar-due.svg",
+      "sha256": "807f40d5eb9655819d10e19863717c2c2b70ddd872496a1c866e2fe9042889be"
+    },
+    {
+      "id": "calendar-x",
+      "label": "取消日程",
+      "category": "日程",
+      "tags": [
+        "取消预约",
+        "删除安排",
+        "改期"
+      ],
+      "style": "outline",
+      "sourceId": "calendar-x",
+      "file": "library/calendar-x.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/calendar-x.svg",
+      "sha256": "5ec5cd5ce22f43a87f7ffce6b50c4a498ac5ffa1df87b15c43c8158e12f1cb2d"
+    },
+    {
+      "id": "cup",
+      "label": "喝水",
+      "category": "生活",
+      "tags": [
+        "水杯",
+        "补水",
+        "饮品"
+      ],
+      "style": "outline",
+      "sourceId": "cup",
+      "file": "library/cup.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/cup.svg",
+      "sha256": "578af28f175e5621b9071fd9b6a4e302cefb9d30d3ce5025388eaa0584a6cf9f"
+    },
+    {
+      "id": "cloud-rain",
+      "label": "下雨",
+      "category": "生活",
+      "tags": [
+        "雨天",
+        "天气",
+        "降雨"
+      ],
+      "style": "outline",
+      "sourceId": "cloud-rain",
+      "file": "library/cloud-rain.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/cloud-rain.svg",
+      "sha256": "feebc86f5770036f017170a3bf108b8df20ad23376c5bd670c5070c088345427"
+    },
+    {
+      "id": "music",
+      "label": "音乐",
+      "category": "生活",
+      "tags": [
+        "歌曲",
+        "旋律",
+        "播放"
+      ],
+      "style": "outline",
+      "sourceId": "music",
+      "file": "library/music.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/music.svg",
+      "sha256": "8b69aafb5497fc9773078aab151dda57434e89011e712bb24c10c9b66f80ab68"
+    },
+    {
+      "id": "device-laptop",
+      "label": "笔记本电脑",
+      "category": "生活",
+      "tags": [
+        "电脑",
+        "办公",
+        "设备"
+      ],
+      "style": "outline",
+      "sourceId": "device-laptop",
+      "file": "library/device-laptop.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/device-laptop.svg",
+      "sha256": "f773cac887378f6da0d2bfa206e62ce28c6ec6c723cb9f6c28db67ac9def9faf"
+    },
+    {
+      "id": "walk",
+      "label": "散步",
+      "category": "生活",
+      "tags": [
+        "运动",
+        "步行",
+        "活动"
+      ],
+      "style": "outline",
+      "sourceId": "walk",
+      "file": "library/walk.svg",
+      "sourceUrl": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/walk.svg",
+      "sha256": "f2c5bd771519e3be6096467b682460b41aff8090d1105ead9be9cc367316b59b"
+    }
+  ]
+}

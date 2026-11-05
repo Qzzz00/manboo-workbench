@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "note": "缓冲语与应声的那一小组固定短句。这份是**唯一的源**:手机拿它挑句子与写字幕,scripts/render-filler-audio.mjs 拿它去 8792 合成 public/filler/<id>.m4a。改了这里就要重跑那个脚本、把音频一起提交(见 src/call/fillerAudio.ts 的头注释)。",
+  "kinds": "thinking = 她说完之后那几百毫秒里垫的话;tool = 调一件慢工具时垫的话;ack = **她还说着的时候**插的一声应声(2026-10-02,卡「声音与形象跟着话走」第 5 件;阈值在 channel-worker/src/backchannel.ts,id 与那边的 ACK_LINE_IDS 逐字相同)。",
+  "scene": "chat",
+  "lines": [
+    { "id": "think-1", "kind": "thinking", "text": "我想想。" },
+    { "id": "think-2", "kind": "thinking", "text": "稍等一下。" },
+    { "id": "think-3", "kind": "thinking", "text": "让我看看。" },
+    { "id": "think-4", "kind": "thinking", "text": "嗯,我想一下。" },
+    { "id": "think-5", "kind": "thinking", "text": "等我一下。" },
+    { "id": "tool-scan-projects", "kind": "tool", "tool": "scan_projects", "text": "我看一下你的仓库,大概几秒。" },
+    { "id": "tool-any", "kind": "tool", "text": "我查一下,稍等。" },
+    { "id": "ack-1", "kind": "ack", "text": "嗯。" },
+    { "id": "ack-2", "kind": "ack", "text": "嗯哼。" },
+    { "id": "ack-3", "kind": "ack", "text": "对。" },
+    { "id": "ack-4", "kind": "ack", "text": "嗯嗯。" }
+  ]
+}

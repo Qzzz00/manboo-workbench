@@ -1,0 +1,5 @@
+# 产物不入 git（大文件）；脚本/launcher 入 git。
+build/
+aiboo-holo-win/
+update-out/
+*.zip

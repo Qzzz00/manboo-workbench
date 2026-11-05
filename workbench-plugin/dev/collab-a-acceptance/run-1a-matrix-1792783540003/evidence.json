@@ -1,0 +1,14 @@
+[
+  {
+    "at": "2026-10-23T19:25:40.173Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": false
+  },
+  {
+    "at": "2026-10-23T19:25:47.849Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

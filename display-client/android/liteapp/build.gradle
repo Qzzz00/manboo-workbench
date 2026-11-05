@@ -1,0 +1,64 @@
+// 低端机纯原生 Live2D 陪伴 APK（零 WebView / 零 Capacitor）。
+// 设计文档：docs/superpowers/specs/2026-07-17-liteapp-native-apk-design.md
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace = "com.aiboo.lite"
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    kotlinOptions {
+        jvmTarget = '21'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    defaultConfig {
+        applicationId "com.aiboo.lite"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "0.1"
+        // Cubism Core aar 只带 arm64/x86/x86_64（无 v7a）；x86_64 留给模拟器调试
+        // 5-r.1 的 Core aar 四个 ABI 全带（官方从 5-r.2 起砍掉 v7a）
+        // ThinkSmart View(APQ8053) 是 32 位 armv7l 内核，必须有 armeabi-v7a
+        ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+// 内置角色模型从仓库 public/live2D 注入 assets（单一真相源，不在 android/ 存拷贝）。
+// 轻量角色才内置（shuangsheng 3.2M/2048 纹理/自带 Idle+16 命名动作组）；大模型走服务端下载。
+def builtinModels = ['shuangsheng']
+def copyBuiltinAssets = tasks.register('copyBuiltinLive2DAssets', Copy) {
+    into layout.buildDirectory.dir('builtinAssets')
+    builtinModels.each { name ->
+        from("${rootDir}/../public/live2D/${name}") {
+            into "live2D/${name}"
+            // 模型目录里的工具脚本/文档不进 APK
+            exclude '**/*.ps1', '**/*.md', '**/*.txt', '**/*.bak'
+        }
+    }
+}
+android.sourceSets.main.assets.srcDirs += layout.buildDirectory.dir('builtinAssets')
+tasks.configureEach { t ->
+    if (t.name ==~ /merge.*Assets/ || t.name ==~ /lintVitalAnalyze.*/ || t.name ==~ /generate.*LintVitalReportModel/) {
+        t.dependsOn(copyBuiltinAssets)
+    }
+}
+
+dependencies {
+    implementation files('../libs51/Live2DCubismCore.aar')
+    implementation project(':nativelive2d-51')
+    // 聊天/TTS/ASR/角色下载全部走阿里云后端 HTTP（apiClient.ts 协议的 Kotlin 版）
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.json:json:20240303"
+}

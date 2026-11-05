@@ -1,0 +1,97 @@
+[
+  {
+    "at": "2026-10-23T20:12:27.199Z",
+    "name": "caps",
+    "body": "{\"agents\":[{\"family\":\"claude\",\"title\":\"Claude\",\"installed\":true,\"cells\":{\"chat\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"},\"edit\":{\"state\":\"no\",\"note\":\"要让 Claude 直接改你电脑上的文件,还差一步:登录一次\",\"fix\":{\"kind\":\"login_cli\",\"family\":\"claude\",\"label\":\"帮我接上\",\"hint\":\"会打开 Claude 自己的登录页,账号密码在那一页上填,工作台不经手;登好了这一格自己变\",\"desk_only\":true}},\"collect\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"}},\"line\":\"Claude:要让 Claude 直接改你电脑上的文件,还差一步:登录一次\"},{\"family\":\"codex\",\"title\":\"Codex\",\"installed\":true,\"cells\":{\"chat\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"},\"edit\":{\"state\":\"no\",\"note\":\"要让 Codex 直接改你电脑上的文件,还差一步:登录一次\",\"fix\":{\"kind\":\"login_cli\",\"family\":\"codex\",\"label\":\"帮我接上\",\"hint\":\"会打开 ChatGPT 自己的登录页,账号密码在那一页上填,工作台不经手;登好了这一格自己变\",\"desk_only\":true}},\"collect\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"}},\"line\":\"Codex:要让 Codex 直接改你电脑上的文件,还差一步:登录一次\"},{\"family\":\"kimi\",\"titl"
+  },
+  {
+    "at": "2026-10-23T20:12:27.218Z",
+    "name": "project-picked",
+    "project": {
+      "id": "collab-a-qa",
+      "name": "collab-a-qa",
+      "stage": "待整理",
+      "path": "/Users/example/.cache/collab-a-acceptance/serve-1792786137842/instance/iso/home/Documents/GitHub/collab-a-qa",
+      "signals": {
+        "branch": "main",
+        "dirty_count": 0,
+        "worktrees": 0,
+        "cleanup_count": 0,
+        "idle_days": 0,
+        "last_commit_at": "2026-10-24T04:09:12+08:00",
+        "branches": [
+          "main"
+        ],
+        "recent_commits": 2
+      },
+      "links": [],
+      "session_count": 0,
+      "idle": false,
+      "risk": {
+        "level": "unknown",
+        "reason": "没有截止日",
+        "window_days": 14
+      }
+    },
+    "all": [
+      [
+        "collab-a-qa",
+        "collab-a-qa"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T20:12:27.218Z",
+    "name": "kimi-card",
+    "card": null,
+    "cards": []
+  },
+  {
+    "at": "2026-10-23T20:12:30.619Z",
+    "name": "chain-1-three-notes",
+    "passed": true,
+    "note": "记下了 3 条。",
+    "cards": [
+      [
+        "周四发样片",
+        "todo"
+      ],
+      [
+        "周五交发票",
+        "todo"
+      ],
+      [
+        "下周一约 B 客户",
+        "todo"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T20:12:30.652Z",
+    "name": "chain-2-say-dispatch",
+    "passed": true,
+    "items": [
+      [
+        "办",
+        "failed",
+        null,
+        "派给 Kimi 没派出去:命令行:不知道在哪个项目里做(这件事没归到项目)"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T20:12:30.653Z",
+    "name": "chain-2-dispatch-receipt",
+    "passed": false,
+    "skipped": "这一件没派出去",
+    "detail": "派给 Kimi 没派出去:命令行:不知道在哪个项目里做(这件事没归到项目)"
+  },
+  {
+    "at": "2026-10-23T20:12:30.653Z",
+    "name": "chain-end",
+    "checksFailed": [
+      "chain-2-dispatch-receipt"
+    ],
+    "limitation": "派活未达,回执/查询/续说不再有意义"
+  }
+]

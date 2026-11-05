@@ -1,0 +1,68 @@
+/*
+ * 那一家名字前那张图(2026-09-26,卡 LG3)。**一个新颜色都不加** —— 圆角、描边、底色全用现成的变量,
+ * 图本身是各家自己的 logo(壳渲的 PNG),这里只管它多大、圆多少、状态点叠在哪。
+ *
+ * 退回色点那一路(`.ba-agenticon__fallback`)身上还带着 `.ba-dot`,所以它就是原来那一颗;
+ * 这里只把 `.ba-dot` 为事项卡准备的那 8px 上边距去掉(名字前那一颗是行内的,要跟字齐),
+ * 在事项卡里再按现场加回去。
+ */
+.ba-agenticon {
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-block;
+  line-height: 0;
+  vertical-align: -0.22em;
+}
+.ba-agenticon__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  object-fit: contain;
+  /* 各家的图各有各的底色,统一压一道极淡的描边,免得白底图标在深色卡上像贴纸。 */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+/* 状态那一颗挪到图的右下角当角标(同电脑那侧卡 LG 的做法):语义一点没丢。 */
+.ba-agenticon__dot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--ba-bg-2);
+  background: var(--ba-gray);
+}
+.ba-agenticon__dot[data-dot="white"] { background: var(--ba-white); }
+.ba-agenticon__dot[data-dot="yellow"] { background: var(--ba-yellow); }
+.ba-agenticon__dot[data-dot="blue"] { background: var(--ba-blue); }
+.ba-agenticon__dot[data-dot="gray"] { background: var(--ba-gray); }
+
+/*
+ * 行内那一颗(名字前):跟字齐,不要事项卡那 8px。
+ * `inline-block` 是必须的 —— `.ba-dot` 原来只出现在 flex 容器里(被拉直成块,宽高才生效);
+ * 名字前这几处是行内文字,不写这一条的话 10px 的宽高会被整个忽略,那一颗点就不见了。
+ */
+.ba-agenticon__fallback { display: inline-block; margin-top: 0; vertical-align: -0.1em; }
+
+/* 事项卡里那一格(原来就是一颗点,对着第一行字):图与点都按原来那 8px 落下来。 */
+.ba-item > .ba-agenticon,
+.ba-item > .ba-agenticon__fallback { margin-top: 8px; }
+
+/* 深色的卡片里(等你确认那几张、事项详情那张)角标的描边跟着卡的底色。 */
+.ba-ask .ba-agenticon__dot { border-color: rgba(20, 20, 20, 0.9); }
+
+/*
+ * 首页「正在办」那一张:哪一家在那一行**右边那一格**里(`.ba-cards__note`),图就画在那一格里,
+ * 不另占一格 —— 那一行本来就挤(09-26 真机量到它已经要溢出)。那一格「装不下用省略号」那条
+ * **写在 stageCards.css 里那条规则本身上**,不在这里覆盖:两份样式表谁先谁后是打包顺序说了算,
+ * 靠覆盖会在某次重排里悄悄失效(09-26 实测过一次:computed 还是 `flex: 0 0 auto`)。
+ */
+/* 那一行是 `align-items: baseline`,图没有文字基线 —— 不按中线对会掉下去半个身子。 */
+.ba-cards__note > .ba-agenticon,
+.ba-cards__note > .ba-agenticon__fallback { vertical-align: -0.25em; }
+
+/*
+ * 「另外 N 件等你确认」那几行是 grid、每一格都指定了 `grid-column`,所以图**不当一格**,
+ * 而是画在那句话里面(`.ba-setup-others__text`,行内)—— 不动那张网格的排布。
+ */

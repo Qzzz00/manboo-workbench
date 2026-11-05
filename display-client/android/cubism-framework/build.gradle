@@ -1,0 +1,23 @@
+// Live2D Cubism SDK for Java r.5 的 Framework 源码 module（整拷自官方 SDK，未改动源码）。
+// Core 原生库(aar)只参与编译（compileOnly），运行时由 app module 的 implementation 打进 APK。
+plugins { id 'com.android.library' }
+
+android {
+    namespace = "com.live2d.sdk.cubism.framework"
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    compileOnly(fileTree(dir: '../libs', include: ['Live2DCubismCore.aar']))
+}

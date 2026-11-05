@@ -1,0 +1,27 @@
+{
+  "name": "@ben/butler-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "事务官本机后端(旁路服务):Live2D 形象与音色配置,语音识别/合成/RTC 与手机公开接口。代码复用自 Aiboo origin/main,不连 Aiboo 云端。",
+  "type": "commonjs",
+  "main": "server/index.cjs",
+  "scripts": {
+    "start": "node server/index.cjs",
+    "test": "vitest run",
+    "build": "pnpm -C admin-ui build"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "express": "^5.2.1",
+    "iconv-lite": "^0.7.3",
+    "multer": "^2.1.1",
+    "nanoid": "^5.1.11",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.8"
+  }
+}

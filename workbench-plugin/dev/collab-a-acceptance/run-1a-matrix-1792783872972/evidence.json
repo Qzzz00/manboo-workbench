@@ -1,0 +1,19 @@
+[
+  {
+    "at": "2026-10-23T19:31:13.138Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": false
+  },
+  {
+    "at": "2026-10-23T19:31:43.775Z",
+    "name": "run-error",
+    "error": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/协作A同事项接续/workbench-plugin/dev/collab-a-acceptance/run-1a-matrix-1792783872972/instance/iso/home/.dsh/node/bin/node /Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/协作A同事项接续/workbench-plugin/scripts/install-from-bundle.ts --resources /Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/协作A同事项接续/workbench-plugin/dev/collab-a-acceptance/run-1a-matrix-1792783872972/instance/res --home /Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/协作A同事项接续/workbench-plugin/dev/collab-a-acceptance/run-1a-matrix-1792783872972/instance/iso/home --dsh-home /Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/协作A同事项接续/workbench-plugin/dev/collab-a-acceptance/run-1a-matrix-1792783872972/instance/iso/home/.dsh --no-launch --steps profile,plugin,work_repo,scripts --human --log-file /Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/协作A同事项接续/workbench-plugin/dev/collab-a-acceptance/run-1a-matrix-1792783872972/instance/install.log 失败:[2/4] 正在安装工作台… /       把插件放到 ~/.dsh/packages /       装进 profile web /       官方源这一趟没成,换国内镜像再试一次 /  / ×  正在安装工作台…没做成:装进 profile 失败(官方源退出码 1,换国内镜像也没成)(命令 `/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/协作A同事项接续/workbench-plugin/dev/collab-a-acceptance/run-1a-matrix-1792783872972/instance/iso/home/.dsh/node/bin/node` 退出码 1)"
+  },
+  {
+    "at": "2026-10-23T19:31:44.012Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

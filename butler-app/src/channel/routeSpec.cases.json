@@ -1,0 +1,953 @@
+{
+  "about": [
+    "连接路线规格的对照用例。规格:docs/规格-连接路线-2026-10-21.md。",
+    "TS 实现 butler-app/src/channel/routeSpec.ts、Python 实现 phone-bridge/route_spec.py;两边的测试都读这一份,逐步比对输出。",
+    "每条用例:facts 盖在 default_facts 上(只盖第一层)→ initial 状态 → 依次喂 event,每步的 decision 与 expect 逐字相同;",
+    "有 expect_facts 的那步,再比 state.facts 里列出的那几格。期望值是按规格手推的,改规格先改这里。"
+  ],
+  "constants": {"PROBE_TIMEOUT_MS": 800, "MDNS_BROWSE_MS": 1500, "RECHECK_LAN_MS": 60000, "RECHECK_CLOUD_MS": 30000, "RECHECK_NONE_MS": 30000, "RECHECK_AFTER_MISS_MS": 10000, "LEAVE_LAN_MISSES": 2, "BACK_TO_LAN_HOLD_S": 60, "TICKET_MIN_LEFT_S": 600, "LAN_URLS_MAX": 4},
+  "default_facts": {"kind": "phone", "mac_id": "a1b2c3d4-home", "has_lan_token": true, "has_relay": true, "lan_urls": ["http://192.168.1.20:8791"], "trusted_networks": ["home-wifi"], "declined_networks": [], "tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086400}, "cloud": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "expires_at": 1800604800}}, "revoked": false},
+  "cases": [
+    {
+      "name": "在家首次:刚配对、手上没有票 → 向 8791 要一张再进本机房间",
+      "facts": {"tickets": {"lan": null, "cloud": null}},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "局域网票没有:向答话的那台 8791 要,不向中转要",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "fetch_ticket", "route": "lan", "source": "workbench", "from": "http://192.168.1.20:8791"}]}
+        },
+        {
+          "event": {"type": "ticket_result", "at": 1800000001, "route": "lan", "ok": true, "ticket": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086401}},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000002, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []},
+          "expect_facts": {"tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086401}, "cloud": null}, "lan_urls": ["http://192.168.1.20:8791"]}
+        }
+      ]
+    },
+    {
+      "name": "在家冷启动:手上的局域网票还有效 → 不重复要票",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "在家票过期(剩不到 10 分钟也算)→ 向 8791 换,不拿中转那张凑数",
+      "facts": {"tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800000300}, "cloud": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "expires_at": 1800604800}}},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "局域网票只剩 300 秒(< 600):换一张;中转那张还有 7 天,也不拿去连本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "fetch_ticket", "route": "lan", "source": "workbench", "from": "http://192.168.1.20:8791"}]}
+        },
+        {
+          "event": {"type": "ticket_result", "at": 1800000001, "route": "lan", "ok": true, "ticket": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086401}},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000002, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []},
+          "expect_facts": {"tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086401}, "cloud": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "expires_at": 1800604800}}}
+        }
+      ]
+    },
+    {
+      "name": "出门:家里 Wi-Fi 换成 4G → 先进云房间,进上了再退本机房间",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "note": "网络换了而且不是 Wi-Fi:这一下就算判定,不等第二次;本机房间先留着",
+          "event": {"type": "net_changed", "at": 1800000100, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "note": "云房间进上了,才退本机房间(来电不漏)",
+          "event": {"type": "join_result", "at": 1800000101, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "leave", "route": "lan"}]}
+        },
+        {
+          "note": "已经不在的那间房报断开:不理",
+          "event": {"type": "room_lost", "at": 1800000102, "route": "lan"},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "出门回家:4G 换回家里 Wi-Fi → 判到在家一次就回本机房间",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在 4G:不问 8791,直接进云房间",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000600, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000600, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000601, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "leave", "route": "cloud"}]}
+        }
+      ]
+    },
+    {
+      "name": "网络没确认:只看 mDNS、不带令牌,看到配对过的那台才问一句;答「是」后走本机房间",
+      "facts": {},
+      "steps": [
+        {
+          "note": "没确认过的网络按出门走;同时只听 mDNS,不拿设备令牌去问任何地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "office-wifi"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}, {"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "广播里有配对过的那台:问「这是你常用的网络吗」",
+          "event": {"type": "mdns_result", "at": 1800000002, "services": [{"url": "http://10.0.0.8:8791", "mac_id": "a1b2c3d4-home"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "ask_home_network", "network_id": "office-wifi"}]}
+        },
+        {
+          "note": "这次运行里问过了,没答就不再问、也不再听",
+          "event": {"type": "tick", "at": 1800000032},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "答「是」:记成确认过,马上判一次",
+          "event": {"type": "home_network_answer", "at": 1800000040, "network_id": "office-wifi", "yes": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "家里那个地址在办公室够不着:听 mDNS 找回",
+          "event": {"type": "probe_result", "at": 1800000041, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000042, "services": [{"url": "http://10.0.0.8:8791", "mac_id": "a1b2c3d4-home"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://10.0.0.8:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "同一台 Mac 在这个网络上的地址:房间名没变,票照用,地址换成它答的那一个",
+          "event": {"type": "probe_result", "at": 1800000042, "answers": [{"url": "http://10.0.0.8:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://10.0.0.8:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://10.0.0.8:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://10.0.0.8:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://10.0.0.8:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000043, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://10.0.0.8:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://10.0.0.8:8791", "recheck_ms": 60000, "actions": [{"type": "leave", "route": "cloud"}]},
+          "expect_facts": {"trusted_networks": ["home-wifi", "office-wifi"], "declined_networks": [], "lan_urls": ["http://10.0.0.8:8791", "http://192.168.1.20:8791"]}
+        }
+      ]
+    },
+    {
+      "name": "网络没确认:答「不是」→ 记下,以后在这个网络上不再问",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "cafe-wifi"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}, {"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000001, "services": [{"url": "http://172.16.0.9:8791", "mac_id": "a1b2c3d4-home"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "ask_home_network", "network_id": "cafe-wifi"}]}
+        },
+        {
+          "event": {"type": "home_network_answer", "at": 1800000005, "network_id": "cafe-wifi", "yes": false},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "第二天再来:答过「不是」的网络连 mDNS 都不听",
+          "event": {"type": "start", "at": 1800086400, "network": {"kind": "wifi", "id": "cafe-wifi"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]},
+          "expect_facts": {"declined_networks": ["cafe-wifi"], "trusted_networks": ["home-wifi"]}
+        }
+      ]
+    },
+    {
+      "name": "听筒在没确认的网络上:没有屏幕不问,按出门",
+      "facts": {"kind": "handset", "trusted_networks": ["gw-home"]},
+      "steps": [
+        {
+          "note": "听筒的网络标识是网关;配网那一次的网络才算确认过",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "ethernet", "id": "gw-other"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000031},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "办公室里另一台 8791 在广播:只认配对过的机器 id",
+      "facts": {"trusted_networks": ["home-wifi", "office-wifi"], "lan_urls": ["http://10.0.0.8:8791"]},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "office-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://10.0.0.8:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "上次的地址换给了同事的 Mac:它不认这把令牌(401),但机器 id 不是配对那台 → 不是撤销;地址从表里拿掉",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://10.0.0.8:8791", "status": "unauthorized", "mac_id": "e5f6a7b8-other"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "note": "广播里明说是别的机器的不问;没写机器 id 的(旧版)要问了才知道",
+          "event": {"type": "mdns_result", "at": 1800000001, "services": [{"url": "http://10.0.0.8:8791", "mac_id": "e5f6a7b8-other"}, {"url": "http://10.0.0.15:8791", "mac_id": "a1b2c3d4-home"}, {"url": "http://10.0.0.23:8791"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://10.0.0.15:8791", "http://10.0.0.23:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000001, "answers": [{"url": "http://10.0.0.15:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://10.0.0.15:7880", "room": "wb-local-a1b2c3d4"}, {"url": "http://10.0.0.23:8791", "status": "unauthorized", "mac_id": "c9d0e1f2-third"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://10.0.0.15:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://10.0.0.15:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://10.0.0.15:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000002, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://10.0.0.15:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://10.0.0.15:8791", "recheck_ms": 60000, "actions": []},
+          "expect_facts": {"lan_urls": ["http://10.0.0.15:8791"]}
+        }
+      ]
+    },
+    {
+      "name": "同一地址换了另一台 Mac:当不在家,地址从表里拿掉",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "unauthorized", "mac_id": "e5f6a7b8-other"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "note": "局域网里只有别人的机器:按出门",
+          "event": {"type": "mdns_result", "at": 1800000001, "services": [{"url": "http://192.168.1.20:8791", "mac_id": "e5f6a7b8-other"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]},
+          "expect_facts": {"lan_urls": []}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000002, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "候选表空了:直接听 mDNS",
+          "event": {"type": "tick", "at": 1800000032},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        }
+      ]
+    },
+    {
+      "name": "Mac 换了地址:mDNS 找回成功",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "800 ms 没答:先不下结论,听 mDNS",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000001, "services": [{"url": "http://192.168.1.37:8791", "mac_id": "a1b2c3d4-home"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.37:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "新地址放到候选表最前",
+          "event": {"type": "probe_result", "at": 1800000001, "answers": [{"url": "http://192.168.1.37:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.37:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.37:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.37:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.37:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000002, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.37:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.37:8791", "recheck_ms": 60000, "actions": []},
+          "expect_facts": {"lan_urls": ["http://192.168.1.37:8791", "http://192.168.1.20:8791"]}
+        }
+      ]
+    },
+    {
+      "name": "mDNS 找回失败(电脑关着)→ 按出门,30 秒再判",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000001, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000002, "services": []},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000003, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000033},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000034, "answers": [{"url": "http://192.168.1.20:8791", "status": "error"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000035, "services": []},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "8791 直连 1.2 秒没答:发一次 tick 提前判;连续两次判不到才切",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "note": "HTTP 直连 1.2 秒没答(routedClient 抢跑那一下)由驱动发 tick,不等 60 秒",
+          "event": {"type": "tick", "at": 1800000020},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000021, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "note": "第一次判不到:留在本机房间,10 秒后再判;这期间不给直连地址",
+          "event": {"type": "mdns_result", "at": 1800000022, "services": []},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000032},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000033, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "note": "连续第二次:切云房间(本机房间先留着,进上了再退)",
+          "event": {"type": "mdns_result", "at": 1800000034, "services": []},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000035, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "leave", "route": "lan"}]}
+        }
+      ]
+    },
+    {
+      "name": "探测抖了一下:一次没答不切,下一次答了就照旧",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000060},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000061, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000062, "services": []},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000072},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "还是那间房:不重进,计数清零",
+          "event": {"type": "probe_result", "at": 1800000072, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "门口 Wi-Fi 时有时无:刚退出本机房间 60 秒内不回",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000100, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000101, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "leave", "route": "lan"}]}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000110, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "判到在家,但离开本机房间才 10 秒:先待在云房间(HTTP 可以直连)",
+          "event": {"type": "probe_result", "at": 1800000110, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "又掉回 4G:本来就在云房间,什么都不用做",
+          "event": {"type": "net_changed", "at": 1800000115, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000120, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000120, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "离满 60 秒还剩 10 秒:复查对准那一刻",
+          "event": {"type": "tick", "at": 1800000150},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 10000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000150, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 10000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000160},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "满 60 秒还判到在家:回本机房间",
+          "event": {"type": "probe_result", "at": 1800000160, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000161, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "leave", "route": "cloud"}]}
+        }
+      ]
+    },
+    {
+      "name": "中转不通:签不出云房间的票 → 无路可走,30 秒再试,同一句不重复提示",
+      "facts": {"tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086400}, "cloud": null}},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "fetch_ticket", "route": "cloud", "source": "relay", "from": null}]}
+        },
+        {
+          "event": {"type": "ticket_result", "at": 1800000005, "route": "cloud", "ok": false},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "notify", "notice": "offline"}]}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000035},
+          "expect": {"route": "cloud", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "fetch_ticket", "route": "cloud", "source": "relay", "from": null}]}
+        },
+        {
+          "event": {"type": "ticket_result", "at": 1800000040, "route": "cloud", "ok": false},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000070},
+          "expect": {"route": "cloud", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "fetch_ticket", "route": "cloud", "source": "relay", "from": null}]}
+        },
+        {
+          "event": {"type": "ticket_result", "at": 1800000071, "route": "cloud", "ok": true, "ticket": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "expires_at": 1800604871}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000072, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []},
+          "expect_facts": {"tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086400}, "cloud": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "expires_at": 1800604871}}}
+        }
+      ]
+    },
+    {
+      "name": "两边都不通:电脑关着、云房间也进不去",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000001, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000002, "services": []},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000003, "route": "cloud", "ok": false},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "notify", "notice": "offline"}]}
+        },
+        {
+          "note": "每 30 秒从头判一次:先在家、再出门",
+          "event": {"type": "tick", "at": 1800000033},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000034, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000035, "services": []},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000036, "route": "cloud", "ok": false},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "零服务器档(没配中转):探测没答时本机房间留着;真出了门就停,提示没有出门线路",
+      "facts": {"has_relay": false, "tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086400}, "cloud": null}},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000060},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000061, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "event": {"type": "mdns_result", "at": 1800000062, "services": []},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000072},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000073, "answers": [{"url": "http://192.168.1.20:8791", "status": "timeout"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": [{"type": "browse_mdns", "ms": 1500}]}
+        },
+        {
+          "note": "连续两次判不到,但没有别的路:本机房间还连着就留着",
+          "event": {"type": "mdns_result", "at": 1800000074, "services": []},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": null, "recheck_ms": 10000, "actions": []}
+        },
+        {
+          "note": "换到 4G 是确定出了门:退房、提示「出门线路没配」",
+          "event": {"type": "net_changed", "at": 1800000100, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "leave", "route": "lan"}, {"type": "notify", "notice": "no_way_out"}]}
+        },
+        {
+          "event": {"type": "room_lost", "at": 1800000101, "route": "lan"},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000600, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000600, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000601, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "通话中走出家门:先进云房间、续上这一通(call.resume)、再退本机房间",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "call_state", "at": 1800000010, "active": true, "call_id": "call-7"},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "note": "网络换了是确定的:通话中也换",
+          "event": {"type": "net_changed", "at": 1800000020, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "note": "先在新房里续上同一通,再退旧房(反过来工人会当她挂了)",
+          "event": {"type": "join_result", "at": 1800000021, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "resume_call", "call_id": "call-7"}, {"type": "leave", "route": "lan"}]}
+        },
+        {
+          "event": {"type": "room_lost", "at": 1800000022, "route": "lan"},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "挂断后判一次:还在 4G,照旧",
+          "event": {"type": "call_state", "at": 1800000300, "active": false},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "通话中本机房间先断(家里 Wi-Fi 卡了一下)→ 直接去云房间续上,不先探测",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "call_state", "at": 1800000010, "active": true, "call_id": "call-8"},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "room_lost", "at": 1800000020, "route": "lan"},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000021, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "resume_call", "call_id": "call-8"}]}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000051},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 29000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "家里又通了,但还在通话:不主动换回去",
+          "event": {"type": "probe_result", "at": 1800000051, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 29000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "回家时正在通话:挂断后再回本机房间",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "call_state", "at": 1800000010, "active": true, "call_id": "call-9"},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000020, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "判到在家,通话中不切",
+          "event": {"type": "probe_result", "at": 1800000021, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "note": "挂断:马上再判一次",
+          "event": {"type": "call_state", "at": 1800000120, "active": false},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000121, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000122, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "leave", "route": "cloud"}]}
+        }
+      ]
+    },
+    {
+      "name": "设备被 8791 撤销:两条路都停,不拿中转兜",
+      "facts": {},
+      "steps": [
+        {
+          "note": "冷启动在确认过的家里 Wi-Fi:带设备令牌问候选表里的地址",
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台答了;手上的局域网票还够用,直接进本机房间",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000060},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "配对过的那台明说不认这把令牌",
+          "event": {"type": "probe_result", "at": 1800000060, "answers": [{"url": "http://192.168.1.20:8791", "status": "unauthorized", "mac_id": "a1b2c3d4-home"}]},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": null, "actions": [{"type": "leave", "route": "lan"}, {"type": "notify", "notice": "revoked"}]},
+          "expect_facts": {"revoked": true}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000100, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": null, "actions": []}
+        },
+        {
+          "note": "重启也不自己好:重新配对才回来",
+          "event": {"type": "start", "at": 1800000200, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": null, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "设备被中转撤销:也不拿本机那条兜",
+      "facts": {"tickets": {"lan": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "expires_at": 1800086400}, "cloud": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "expires_at": 1799999900}}},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "cellular", "id": null}},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": null, "recheck_ms": 30000, "actions": [{"type": "fetch_ticket", "route": "cloud", "source": "relay", "from": null}]}
+        },
+        {
+          "event": {"type": "ticket_result", "at": 1800000002, "route": "cloud", "ok": false, "revoked": true},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": null, "actions": [{"type": "notify", "notice": "revoked"}]},
+          "expect_facts": {"revoked": true}
+        },
+        {
+          "note": "回到家里也不去问 8791",
+          "event": {"type": "net_changed", "at": 1800000600, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": null, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "8791 答了但本机房间没配:提示一次、走云房间,HTTP 仍直连",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "/channel/route 没给本机房间地址",
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": null, "room": null}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "notify", "notice": "local_room_down"}, {"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000001, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000031},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "还没起:不重复提示",
+          "event": {"type": "probe_result", "at": 1800000031, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": null, "room": null}]},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000061},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "note": "本机房间起来了:没进过本机房间,不受 60 秒的限制",
+          "event": {"type": "probe_result", "at": 1800000061, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000062, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "leave", "route": "cloud"}]}
+        }
+      ]
+    },
+    {
+      "name": "本机房间进不去:提示、改走云房间,之后每次复查再试一次本机房间",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000000, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000002, "route": "lan", "ok": false},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "notify", "notice": "local_room_down"}, {"type": "join", "route": "cloud", "url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000003, "route": "cloud", "ok": true},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": []}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000033},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000033, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "note": "还是进不去:留在云房间,不重复提示",
+          "event": {"type": "join_result", "at": 1800000034, "route": "lan", "ok": false},
+          "expect": {"route": "cloud", "room": {"url": "wss://cloud.example", "room": "wb-0123456789abcdef", "ticket": "relay"}, "http": "http://192.168.1.20:8791", "recheck_ms": 30000, "actions": []}
+        }
+      ]
+    },
+    {
+      "name": "断网(飞行模式):不探测、不进房,网络回来再判",
+      "facts": {},
+      "steps": [
+        {
+          "event": {"type": "start", "at": 1800000000, "network": {"kind": "none", "id": null}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "notify", "notice": "offline"}]}
+        },
+        {
+          "event": {"type": "net_changed", "at": 1800000050, "network": {"kind": "wifi", "id": "home-wifi"}},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "probe", "urls": ["http://192.168.1.20:8791"], "timeout_ms": 800}]}
+        },
+        {
+          "event": {"type": "probe_result", "at": 1800000050, "answers": [{"url": "http://192.168.1.20:8791", "status": "ok", "mac_id": "a1b2c3d4-home", "lan_url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4"}]},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": [{"type": "join", "route": "lan", "url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}]}
+        },
+        {
+          "event": {"type": "join_result", "at": 1800000051, "route": "lan", "ok": true},
+          "expect": {"route": "lan", "room": {"url": "ws://192.168.1.20:7880", "room": "wb-local-a1b2c3d4", "ticket": "workbench"}, "http": "http://192.168.1.20:8791", "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "note": "没网了但房间还没报断:先不动,等它报",
+          "event": {"type": "net_changed", "at": 1800000100, "network": {"kind": "none", "id": null}},
+          "expect": {"route": "lan", "room": null, "http": null, "recheck_ms": 60000, "actions": []}
+        },
+        {
+          "event": {"type": "room_lost", "at": 1800000105, "route": "lan"},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": [{"type": "notify", "notice": "offline"}]}
+        },
+        {
+          "event": {"type": "tick", "at": 1800000135},
+          "expect": {"route": "none", "room": null, "http": null, "recheck_ms": 30000, "actions": []}
+        }
+      ]
+    }
+  ]
+}

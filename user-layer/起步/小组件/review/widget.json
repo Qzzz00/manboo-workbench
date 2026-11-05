@@ -1,0 +1,10 @@
+{
+  "contract": 1,
+  "id": "review",
+  "name": "数据复盘",
+  "replaces": "review",
+  "entry": "index.js",
+  "export": "ReviewModule",
+  "author": "运营同学",
+  "version": "2026-10-21"
+}

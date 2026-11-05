@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  座机服务(workbench-core,阶段 1:转发 + 只读事件流)的 launchd 项。**模板,本卡不安装**。
+  `{{HOME}}` 由安装方渲染成本机家目录;文件里不含任何本机私有值与凭据。名字 ai.deepseek.workbench-core 待拍板。
+
+  端口对调(统筹发版时做,步骤与回退全文见 docs/交接-1020-卡A-座机服务骨架.md):
+    1. 插件挪到 8790:~/.dsh/bin/dsh-start 加 `export WORKBENCH_PORT=8790`(插件代码不改)。
+    2. 座机服务占 8791:就是下面 EnvironmentVariables 那几格。
+    3. 装:
+       mkdir -p ~/.dsh/workbench-core && cp workbench-core/lib/core.js ~/.dsh/workbench-core/core.js
+       sed "s|{{HOME}}|$HOME|g" deploy/ai.deepseek.workbench-core.plist > ~/Library/LaunchAgents/ai.deepseek.workbench-core.plist
+       launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.deepseek.workbench-core.plist
+       launchctl kickstart -k gui/$(id -u)/ai.deepseek.dsh
+  回退:launchctl bootout gui/$(id -u)/ai.deepseek.workbench-core;dsh-start 删掉 WORKBENCH_PORT 那一行;kickstart DSH。
+
+  几个选择的理由:
+  - 用 ~/.dsh/node(与 dsh-start 同一份自有 node):理由见 dsh-start 文件头(授权认二进制,不借别家会自动更新的 node)。
+    core.js 运行时零依赖,一个文件拷过去就能跑,不需要 node_modules。
+  - CORE_HOST=0.0.0.0 + CORE_UPSTREAM_REMOTE=interface:手机在局域网里存的是「电脑地址:8791」,对调后得还连得上;
+    非本机来源经「进来的那块网卡」转给插件,插件看到的来源不是回环,照旧认设备令牌、照旧按「允许局域网访问」开关放不放行。
+    **绝不能**把非本机来源转到 127.0.0.1(插件会当成本机、不认令牌),config.ts 与 server.ts 各拦一道。
+  - KeepAlive.SuccessfulExit=false + ThrottleInterval 10:同 DSH 那份;端口被占、环境变量写坏时非零退出,10 秒后再试。
+  - 上游(插件)不在时它照样起、照样听 8791,回 502 一句人话 —— 这正是它要在 DSH 重启时顶住的那一段。
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.deepseek.workbench-core</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>{{HOME}}/.dsh/node/bin/node</string>
+    <string>{{HOME}}/.dsh/workbench-core/core.js</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>CORE_PORT</key>
+    <string>8791</string>
+    <key>CORE_HOST</key>
+    <string>0.0.0.0</string>
+    <key>CORE_UPSTREAM</key>
+    <string>http://127.0.0.1:8790</string>
+    <key>CORE_UPSTREAM_REMOTE</key>
+    <string>interface</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>{{HOME}}/.dsh/workbench-core</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>{{HOME}}/.dsh/logs/core.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{HOME}}/.dsh/logs/core.stderr.log</string>
+</dict>
+</plist>

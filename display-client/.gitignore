@@ -1,0 +1,104 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist-ssr
+dist
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+live2D/*
+
+.env
+.env.local
+*.zip
+# 例外：烟测 fixture 必须入库（可复现，仅含伪 model3.json，无敏感内容）
+!server/scripts/fixtures/test-avatar.zip
+!server/tests/fixtures/sample-avatar.zip
+
+# Runtime-generated assets (DJ TTS audio output etc.) — recreated at runtime
+server/uploads/
+
+# Secrets / TLS keys / local DB (do NOT commit)
+*.pem
+*.pfx
+users.db
+users.db-*
+*.db
+*.db-shm
+*.db-wal
+server_output.log
+
+# Temp screenshots / scratch
+tupian/
+
+# Local tooling configs (machine-specific / may contain secrets)
+.codex/
+
+# Live2D 模型一律不入仓(2026-10-21 维护者定:模型文件全部出库,形象靠 butler-server 上传)。
+# 本机调试要放模型就放这里,git 看不见它;动态壁纸的构建期产物 _wallpaper/ 也在这下面。
+public/live2D/
+
+# Capacitor native projects（android/ 大部分不入仓；原生渲染核心与 liteapp 白名单入仓）
+android/*
+!android/libs/
+!android/nativelive2d/
+!android/liteapp/
+!android/cubism-framework/
+!android/libs51/
+!android/nativelive2d-51/
+!android/cubism-framework-51/
+!android/settings.gradle
+!android/build.gradle
+!android/variables.gradle
+!android/gradle.properties
+# u3 电台桌面 / Live2D 动态壁纸涉及的 android/app 文件用 git add -f 定点跟踪
+# （父目录 android/* 已排除，子文件写 ! 白名单无效——git 不允许重新纳入被排除目录下的文件，
+#   只能 -f；首次 -f 后该文件永久追踪，此后 git status 正常显示其修改）
+android/**/build/
+android/**/.cxx/
+ios/
+.agent_context/
+
+# 电子吧唧素材导出产物（工具页 ?badgeExport=1 落盘目录，不入库）
+badge-assets/
+
+# 全息屏本地部署运行产物
+.holo-server.pid
+.holo-server.log
+
+# 全息屏 Windows 打包产物（大文件，勿提交）
+holo-desktop/build/
+holo-desktop/web
+holo-desktop/aiboo-holo-win/
+holo-desktop/aiboo-holo-win.zip
+holo-desktop/aiboo-holo-win-patch.zip
+
+# Live2D 素材中转区：第三方 VTS 模型原件 + 解压残渣 + 烘焙中间产物（85MB）。
+# 成品落 public/live2D/<角色>/，生成脚本落 tools/live2d/，这里只是工作台，勿入仓。
+tmp/
+
+# macOS 目录元数据，散落各处，纯垃圾
+.DS_Store
+
+# pnpm 的本地包缓存（pnpm config set store-dir 指到了仓库里），不是源码
+.pnpm-store/
+
+# Personal-only agent skills (ponytail etc.) — not shared
+.claude/skills/

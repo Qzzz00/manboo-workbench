@@ -1,0 +1,52 @@
+{
+  "name": "@ben/butler-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "事务官手机端(Capacitor + React)。竖屏 Live2D 形象 + 对话,横屏展示台。代码复用自 Aiboo origin/main,只对工作台 8791 说话。",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 4180",
+    "sync:display": "node scripts/sync-display.mjs",
+    "build": "node scripts/write-build-stamp.mjs && tsc -b && node scripts/sync-display.mjs && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc -b",
+    "cap:sync": "pnpm build && npx cap sync android",
+    "android:debug": "pnpm cap:sync && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor-community/bluetooth-le": "8.3.0",
+    "@capacitor/android": "8.5.2",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/filesystem": "8.1.3",
+    "@capacitor/keyboard": "8.0.5",
+    "@capacitor/preferences": "8.0.1",
+    "@capacitor/splash-screen": "8.0.2",
+    "@capacitor/status-bar": "8.0.3",
+    "@volcengine/rtc": "4.68.5",
+    "@zip.js/zip.js": "2.15.0",
+    "border-beam": "1.4.1",
+    "capacitor-zeroconf": "4.0.0",
+    "jsqr": "1.4.0",
+    "livekit-client": "2.22.3",
+    "pixi-live2d-display": "0.4.0",
+    "pixi.js": "6.5.10",
+    "qrcode-generator": "2.0.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "voice-glow": "0.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "^25.5.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^26.1.0",
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1",
+    "vitest": "^4.1.8"
+  }
+}

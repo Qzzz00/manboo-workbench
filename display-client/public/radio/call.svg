@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 244">
+<foreignObject x="-11.5467" y="-11.5467" width="103.093" height="103.093"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5.77px);clip-path:url(#bgblur_0_2048_1682_clip_path);height:100%;width:100%"></div></foreignObject><rect id="Rectangle 14119" data-figma-bg-blur-radius="11.5467" x="0.5" y="0.5" width="79" height="79" rx="39.5" fill="var(--fill-0, #F5F5F5)" fill-opacity="0.8" stroke="var(--stroke-0, white)"/>
+<path id="Union" d="M32.8319 47.6211C29.6893 44.4786 25.907 40.1804 24.669 34.0859C24.1452 31.4671 24.0733 28.3008 25.6426 25.2893C27.4044 21.9089 30.7585 20.4062 32.6899 22.3376L37.2129 26.8606C38.7366 28.3843 38.5931 30.6732 37.6265 31.7043C36.6599 32.7353 35.4493 33.754 34.3357 34.4166C33.2221 35.0791 33.6401 35.6988 34.1723 36.7222C34.6442 37.6298 35.8927 39.7654 38.2901 42.1628C40.6874 44.5601 42.8229 45.8086 43.7308 46.2807C44.7544 46.813 45.3738 47.231 46.0364 46.1173C46.699 45.0037 47.7178 43.7931 48.7487 42.8265C49.7797 41.8599 52.0687 41.7167 53.5924 43.2401L58.1161 47.7638C60.0476 49.6953 58.5448 53.0493 55.1645 54.8111C52.153 56.3805 48.9866 56.3086 46.3679 55.7848C40.2732 54.5467 35.9744 50.7637 32.8319 47.6211Z" fill="var(--fill-0, #404040)"/>
+</g>
+<defs>
+<clipPath id="bgblur_0_2048_1682_clip_path" transform="translate(11.5467 11.5467)"><rect x="0.5" y="0.5" width="79" height="79" rx="39.5"/>
+</clipPath></defs>
+</svg>

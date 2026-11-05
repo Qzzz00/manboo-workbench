@@ -1,0 +1,12 @@
+import {readFile,writeFile,rename} from 'node:fs/promises';
+import vm from 'node:vm';
+const read=name=>readFile(new URL(name,import.meta.url),'utf8');
+const scripts=(await Promise.all(['tuning.js','tasks.js','motion.js','icons.js','svg-import.js','icon-library.js','icon-picker.js','cloud.js','hole-light.js','renderer.js','tuning-panel.js','controller.js'].map(read))).join('\n');
+new vm.Script(scripts);
+const css=await read('scene.css')+'\n'+await read('tuning.css')+'\n'+await read('icon-picker.css'),license=await read('THIRD_PARTY_LICENSES.txt');
+const html=(await read('page.html')).replace('/* STYLES */',css).replace('/* SCRIPTS */',scripts).replace('<!-- LICENSES -->',`<!--\n${license}\n-->`);
+if(!html.includes('data-scene-version="4"')||!html.includes('MIT License'))throw new Error('Missing version or attribution');
+const stage=new URL('../.事务官-粒子声纹球-v4.staging.html',import.meta.url),target=new URL('../事务官-粒子声纹球-v4.html',import.meta.url);
+await writeFile(stage,html);const check=await readFile(stage,'utf8');new vm.Script(check.match(/<script>([\s\S]*?)<\/script>/)[1]);
+if(check!==html)throw new Error('Staging mismatch');await rename(stage,target);
+console.log('Built v4: self-contained HTML, syntax validated, SVG attribution included.');

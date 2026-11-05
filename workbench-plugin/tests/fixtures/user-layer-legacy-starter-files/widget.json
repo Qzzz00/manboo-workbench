@@ -1,0 +1,10 @@
+{
+  "contract": 1,
+  "id": "files",
+  "name": "素材管理",
+  "replaces": "files",
+  "entry": "index.js",
+  "export": "FilesModule",
+  "author": "运营同学",
+  "version": "2026-10-21"
+}

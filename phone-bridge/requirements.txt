@@ -1,0 +1,20 @@
+# 派上要装的三样。**故意只有三样** —— Zero 2W 是 415MB 内存、四核 A53,
+# 依赖树每长一棵,开机就慢一分、坏的机会就多一处。
+#
+# 为什么没有 sounddevice / PyAudio:那两个要 PortAudio,派上要编译;
+# 而 arecord / aplay 本来就在系统里(audio.py 顶部那段)。
+
+# 房间那条路。aarch64 有预编译 wheel(manylinux_2_28_aarch64,2026-09-21 查证:
+# 10.6MB,解开 24.9MB,其中 liblivekit_ffi.so 22.9MB);派上是 Debian 13 trixie,
+# glibc 远高于 2.28,装得上。**不要在派上让它去源码编译** —— 那是一棵 Rust 树。
+livekit==1.1.19
+
+# 8791 那条老路(兜底,只有响铃没有音频)。没装它也能跑,popphone.py 会说一句。
+websockets>=12,<16
+
+# 叉簧开关。gpiozero 与它的后端 lgpio **都用系统 apt 装好的那份**(python3-gpiozero 2.0.1、
+# python3-lgpio 0.2.2,trixie 自带):deploy.sh 建 venv 时带 `--system-site-packages`。
+# 2026-09-22 真机实测:pip 装 lgpio 要从源码编,派上没有 swig / python3-dev / liblgpio 头文件,
+# 直接失败,而且 pip 是整批装的,连 livekit 一起没装上。装编译链要 sudo apt,不值得。
+# 这一行留着只是声明"要它":系统里那份满足 >=2.0,pip 会跳过。
+gpiozero>=2.0

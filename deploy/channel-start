@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# 「事务官工人」(channel-worker)启动脚本。
+#
+# 安装位置:~/.dsh/bin/channel-start(cp 本文件过去并 chmod 755)。仿 butler-start / dsh-start。
+#   cp deploy/channel-start ~/.dsh/bin/channel-start && chmod 755 ~/.dsh/bin/channel-start
+#
+# 谁来调它:工作台插件。插件起来时如果 ~/.dsh/workbench/channel.json 里 api key / secret 齐了,
+# 就自己拉一次;之后崩了由插件按退避重拉(上限 8 次,见 workbench-plugin/src/server/channelWorker.ts)。
+# 也可以手动:curl -X POST http://127.0.0.1:8791/channel/start
+#
+# 工人代码从哪跑:缺省 ~/.dsh/channel-worker(把仓库 channel-worker/ 整个复制过去,**要带
+# node_modules** —— Silero VAD 的 onnxruntime 是原生模块,不能只拷源码);开发/灰度用
+# CHANNEL_WORKER_DIR 指到仓库目录直接跑,例如:
+#   CHANNEL_WORKER_DIR=~/Documents/GitHub/desktop-workbench/channel-worker ~/.dsh/bin/channel-start
+#
+# 为什么要这个脚本、而不是让插件直接 spawn 仓库里的 main.ts:插件最后是打成单文件装进 ~/.dsh
+# 运行时的,**它不知道仓库在哪**,也不该知道。脚本是两边的接缝:插件只认「channel-start 这个名字」。
+#
+# 密钥:这个脚本里**一个都没有**,也不该有。
+#   - LiveKit 的 api key / secret → ~/.dsh/workbench/channel.json(工作台读,工人只拿签好的凭证);
+#   - DeepSeek 的 key → 工作台设置里那一格(落 ~/.dsh/workbench/credentials.json 的 keys.deepseek),
+#     或环境变量 DEEPSEEK_API_KEY;
+#   - 火山 TTS/ASR → 已经在 butler-server(8792)里,工人只发 HTTP。
+set -euo pipefail
+
+export DSH_HOME="$HOME/.dsh"
+export PATH="$DSH_HOME/node/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+CHANNEL_WORKER_DIR="${CHANNEL_WORKER_DIR:-$DSH_HOME/channel-worker}"
+
+# 工人对外只说三个地址,都可以在这里或插件那边覆盖(插件会把 8791 的真实端口传进来)。
+export WORKBENCH_CHANNEL_WORKBENCH_URL="${WORKBENCH_CHANNEL_WORKBENCH_URL:-http://127.0.0.1:8791}"
+export WORKBENCH_CHANNEL_BUTLER_URL="${WORKBENCH_CHANNEL_BUTLER_URL:-http://127.0.0.1:8792}"
+# 默认只看警告以上:框架的 info 日志里全是房间与轨道的细节,会把我们自己那几行盖掉。
+export WORKBENCH_CHANNEL_LOG_LEVEL="${WORKBENCH_CHANNEL_LOG_LEVEL:-warn}"
+
+if [ ! -f "$CHANNEL_WORKER_DIR/src/main.ts" ]; then
+  echo "[channel-start] 找不到 $CHANNEL_WORKER_DIR/src/main.ts:把仓库 channel-worker/(连 node_modules)复制到 ~/.dsh/channel-worker,或用 CHANNEL_WORKER_DIR 指到仓库目录" >&2
+  exit 1
+fi
+if [ ! -d "$CHANNEL_WORKER_DIR/node_modules/@livekit/rtc-node" ]; then
+  echo "[channel-start] $CHANNEL_WORKER_DIR 里没装依赖:先在那个目录跑 pnpm install(原生模块必须在这台机器上装过)" >&2
+  exit 1
+fi
+
+# node 的选法与 butler-start 同一条理由(macOS 文件夹授权认二进制),但多一条硬要求:
+# 工人是 `node src/main.ts` 直接跑 TypeScript 的,**要 Node ≥ 24**(原生剥类型)。
+# 自有 node 版本不够就退回 PATH 里的。
+NODE_BIN="$DSH_HOME/node/bin/node"
+if [ ! -x "$NODE_BIN" ]; then
+  NODE_BIN="$(command -v node)"
+fi
+MAJOR="$("$NODE_BIN" -p 'process.versions.node.split(".")[0]')"
+if [ "$MAJOR" -lt 24 ]; then
+  ALT="$(command -v node || true)"
+  if [ -n "$ALT" ] && [ "$("$ALT" -p 'process.versions.node.split(".")[0]')" -ge 24 ]; then
+    echo "[channel-start] $NODE_BIN 是 Node $MAJOR,剥不了类型,改用 $ALT" >&2
+    NODE_BIN="$ALT"
+  else
+    echo "[channel-start] 需要 Node ≥ 24(工人直接跑 TypeScript),现在只有 Node $MAJOR" >&2
+    exit 1
+  fi
+fi
+
+cd "$CHANNEL_WORKER_DIR"
+# exec:让工人**继承这个进程的 pid**,插件那边的「崩了自动拉起」认的就是它的退出。
+exec "$NODE_BIN" "$CHANNEL_WORKER_DIR/src/main.ts"

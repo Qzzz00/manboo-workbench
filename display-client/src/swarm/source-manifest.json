@@ -1,0 +1,14 @@
+{
+  "source": "docs/prototypes/swarm-v4",
+  "files": {
+    "tuning.js": "ca0a778761607d3e9cf1fdffc4b2ac3376b277a596a82f80d55f3679b0f4fd59",
+    "motion.js": "0f9e7ba0363cc5d92a0aea71df9f753c21aaeaa3005565000964f315972e2630",
+    "icons.js": "848502023edb76a9e5e937e3239d31c066e5f37d7814a7ae337078522a8a68d2",
+    "svg-import.js": "888c2e8cb9bf863a262d6718a274229230e1ac79e551efd78d28e25bfc799cf9",
+    "icon-library.js": "8c71679364dc005747ccd65949a4770508ba605f56eb073289dabaecf2e03ed1",
+    "icon-picker.js": "fafd18a83ced45a9b91f00ce046dd0500e0cc724ecbafe2697ea569d47fc5bbe",
+    "cloud.js": "0fa6a6514c248d8eec7bcc2f3fa5b6807e2b070bac01d5a65ae8c00c528f47f3",
+    "hole-light.js": "52656820c476e07dcbe717775cebcb03418fc54effa562e9472869c5929e6ccf",
+    "renderer.js": "9cadf7d36526abea0c6da04edc12bbb07acd02716d68784e80eff348a3042c09"
+  }
+}

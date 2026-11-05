@@ -1,0 +1,213 @@
+{
+  "role": "rattan",
+  "kind": "expression",
+  "version": "v3",
+  "items": [
+    {
+      "id": "exp1",
+      "file": "exp/1.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "一键变小（同类三支合一）"
+    },
+    {
+      "id": "loli",
+      "file": "exp/loli.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "一键变小（同类三支合一）"
+    },
+    {
+      "id": "daQ",
+      "file": "exp/大Q.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "一键变小（同类三支合一）"
+    },
+    {
+      "id": "exp2",
+      "file": "exp/2.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "话筒"
+    },
+    {
+      "id": "exp3",
+      "file": "exp/3.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "加载动画"
+    },
+    {
+      "id": "exp4",
+      "file": "exp/4.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "surprised",
+      "intensity": "medium",
+      "hint": "问号"
+    },
+    {
+      "id": "exp5",
+      "file": "exp/5.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "angry",
+      "intensity": "medium",
+      "hint": "脸黑",
+      "keywords": ["生气"]
+    },
+    {
+      "id": "exp6",
+      "file": "exp/6.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "surprised",
+      "intensity": "strong",
+      "hint": "星星眼"
+    },
+    {
+      "id": "exp7",
+      "file": "exp/7.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "strong",
+      "hint": "爱心眼 + 腮红泛起"
+    },
+    {
+      "id": "exp8",
+      "file": "exp/8.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "sad",
+      "intensity": "strong",
+      "hint": "哭（含眼泪）"
+    },
+    {
+      "id": "exp9",
+      "file": "exp/9.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "shy",
+      "intensity": "strong",
+      "hint": "脸红"
+    },
+    {
+      "id": "exp10",
+      "file": "exp/10.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "晕"
+    },
+    {
+      "id": "exp11",
+      "file": "exp/11.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "angry",
+      "intensity": "light",
+      "hint": "两瞳孔各出现白色圆球，占瞳孔约 90%"
+    },
+    {
+      "id": "exp12",
+      "file": "exp/12.exp3.json",
+      "category": "prop",
+      "kind": "disabled",
+      "hint": "汗——VTS 测无变化，剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "exp13",
+      "file": "exp/13.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "earwear",
+      "mode": "remove",
+      "triggerEnabled": false,
+      "hint": "去掉耳环",
+      "keywords": []
+    },
+    {
+      "id": "exp14",
+      "file": "exp/14.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "angry",
+      "intensity": "medium",
+      "hint": "爪"
+    },
+    {
+      "id": "exp15",
+      "file": "exp/15.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "chest_cover",
+      "mode": "remove",
+      "triggerEnabled": false,
+      "hint": "去掉胸部遮挡",
+      "keywords": []
+    },
+    {
+      "id": "exp16",
+      "file": "exp/16.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headwear",
+      "mode": "remove",
+      "triggerEnabled": false,
+      "hint": "去掉头环",
+      "keywords": []
+    },
+    {
+      "id": "exp17",
+      "file": "exp/17.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headwear",
+      "mode": "remove",
+      "triggerEnabled": false,
+      "hint": "去掉头纱",
+      "keywords": []
+    },
+    {
+      "id": "exp18",
+      "file": "exp/18.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "mode": "remove",
+      "triggerEnabled": false,
+      "hint": "去掉马尾",
+      "keywords": []
+    },
+    {
+      "id": "exp19",
+      "file": "exp/19.exp3.json",
+      "category": "prop",
+      "kind": "disabled",
+      "hint": "吐舌按键——VTS 测无变化，剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "exp20",
+      "file": "exp/20.exp3.json",
+      "category": "prop",
+      "kind": "disabled",
+      "hint": "飞头 = 脖子以下全部去掉，绝对不参与触发",
+      "keywords": []
+    }
+  ]
+}

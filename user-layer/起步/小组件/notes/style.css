@@ -1,0 +1,24 @@
+/* 兼容样式(2026-10-23,分层二刀二第三轮):与 notes/index.js 里那份 <style> 的
+   「2026-10-23(分层二刀二)」块逐字同源。升级时本体把 mono 那一层里只服务这一格的规则
+   搬进了各组件;老机器上的旧原件没有这组规则 —— 加载口发现目录里缺这份 style.css 时
+   补放一份(一次性,见 契约.md 的「style.css」一节),客户端把它注在组件自带 <style> 之前。 */
+.ben-wb .creator-notes-subtitle{display:none}
+.ben-wb .creator-notes-count{padding:0;border:0;background:transparent;color:var(--wb-sub);font-size:11px;font-weight:400}
+.ben-wb .creator-notes-compose{margin:0 0 12px;padding:10px 12px;border:0;border-radius:9px;background:var(--wb-soft);box-shadow:none}
+.ben-wb .creator-notes-compose textarea{height:54px;min-height:42px;padding:0;border:0;background:transparent;box-shadow:none;color:var(--wb-ink);font:400 12px/1.65 var(--wb-font);resize:vertical}
+.ben-wb .creator-notes-compose textarea::placeholder{color:var(--wb-faint)}
+.ben-wb .creator-notes-compose-foot{display:flex;align-items:center;justify-content:space-between;margin:4px 0 0;color:var(--wb-faint);font-size:10px}
+.ben-wb .creator-notes-hint{color:var(--wb-faint);font-size:10px}
+.ben-wb .creator-notes-save{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:4px 9px;border:0;border-radius:6px;background:var(--wb-ink);box-shadow:none;color:var(--wb-reverse);font-size:11px;font-weight:400;text-decoration:none}
+.ben-wb .creator-notes-save:disabled{opacity:.35}
+.ben-wb .creator-notes-list{gap:0}
+.ben-wb .creator-notes-item{padding:10px 0!important;border:0;border-bottom:var(--wb-hair) solid var(--wb-line);border-radius:0;background:transparent;box-shadow:none}
+.ben-wb .creator-notes-item:first-child{padding-top:0!important}
+.ben-wb .creator-notes-item:last-child{border-bottom:0}
+.ben-wb .creator-notes-item:before{display:none}
+.ben-wb .creator-notes-meta{gap:12px;margin:0;color:var(--wb-faint);font-size:10px}
+.ben-wb .creator-notes-date{color:var(--wb-faint);font-size:10px;opacity:1;letter-spacing:0}
+.ben-wb .creator-notes-delete{min-width:0;min-height:18px;padding:0;color:var(--wb-faint);font-size:14px;line-height:1.5;opacity:1}
+.ben-wb .creator-notes-text{margin-top:4px;color:var(--wb-ink);font-size:12px;line-height:1.65}
+/* 「竖屏那一条」里随记条目的补丁(与 notes/index.js 里那份保原相对顺序:主体在前补丁在后)。 */
+.ben-wb .creator-notes-item{border-left:0;padding-left:0}

@@ -1,0 +1,310 @@
+{
+  "schema_version": 3,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "一张卡的一生 · 执行阶段与存储状态",
+    "subtitle": "sent/review是执行阶段,并非TaskStatus七态枚举;待排门与真实回执已有,目标机制待排;10-23最终重钉:全部source按main@c55ff4c1取证(0.4.148热修已发布,本机已更新;稳定0.4.142)",
+    "output": "docs/梳理-全景地图-2026-10-21/archify/lifecycle-card.html",
+    "quality_profile": "showcase",
+    "locale": "zh-CN",
+    "repository": {
+      "url": "https://github.com/BeeeeeeeeeeeeeeenY/workbench.git",
+      "revision": "c55ff4c1ab07bf3b8c7760a64653f21ce6fe2aa6",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "mainPath": [
+    "todo",
+    "sent",
+    "review",
+    "confirm",
+    "done"
+  ],
+  "states": [
+    {
+      "id": "todo",
+      "type": "start",
+      "label": "待办",
+      "sublabel": "从backlog显式转待办;新建缺省待排",
+      "step": "todo",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/protocol.ts",
+          "line": 3395,
+          "end_line": 3399,
+          "label": "七个状态"
+        },
+        {
+          "path": "workbench-plugin/src/server/http.ts",
+          "line": 15420,
+          "end_line": 15422,
+          "label": "POST /butler/item"
+        }
+      ]
+    },
+    {
+      "id": "sent",
+      "type": "active",
+      "label": "派出去了",
+      "sublabel": "送达三档",
+      "step": "doing",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/engine/adapter.ts",
+          "line": 165,
+          "end_line": 172,
+          "label": "confirmed / unconfirmed / not_sent"
+        },
+        {
+          "path": "workbench-plugin/src/server/actionGate.ts",
+          "line": 222,
+          "end_line": 241,
+          "label": "闸计数落盘 action-gate.json,六小时过期"
+        },
+        {
+          "path": "workbench-plugin/src/protocol.ts",
+          "line": 4116,
+          "end_line": 4119,
+          "label": "派活记录只有 running / done / failed"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "type": "decision",
+      "label": "读到回话 · 自查",
+      "sublabel": "四条机械检查",
+      "step": "doing",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/dispatchRun.ts",
+          "line": 1588,
+          "end_line": 1664,
+          "label": "tick():4 秒一拍,每家一圈、同一家逐张"
+        },
+        {
+          "path": "workbench-plugin/src/server/rules.ts",
+          "line": 601,
+          "end_line": 636,
+          "label": "蓝色 / 超两句 / 露路径"
+        },
+        {
+          "path": "workbench-plugin/src/server/rules.ts",
+          "line": 638,
+          "end_line": 649,
+          "label": "抄了交代"
+        }
+      ]
+    },
+    {
+      "id": "confirm",
+      "type": "waiting",
+      "label": "等我确认",
+      "sublabel": "默认只通知",
+      "step": "confirm",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/callOut.ts",
+          "line": 310,
+          "end_line": 334,
+          "label": "卡片状态转来电事件"
+        },
+        {
+          "path": "workbench-plugin/src/server/callOut.ts",
+          "line": 157,
+          "end_line": 164,
+          "label": "confirm 看 done_call 开关"
+        }
+      ]
+    },
+    {
+      "id": "done",
+      "type": "success",
+      "label": "完成",
+      "sublabel": "可重开",
+      "step": "done",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/protocol.ts",
+          "line": 3432,
+          "end_line": 3441,
+          "label": "合法转换表"
+        }
+      ]
+    },
+    {
+      "id": "blocked",
+      "type": "failure",
+      "label": "阻塞 · 出错",
+      "sublabel": "响铃(failed)",
+      "step": "blocked",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/dispatchRun.ts",
+          "line": 1494,
+          "end_line": 1521,
+          "label": "超时分支:挪到 blocked,原因 error"
+        },
+        {
+          "path": "workbench-plugin/src/server/dispatchRun.ts",
+          "line": 77,
+          "end_line": 82,
+          "label": "4 秒 / 45 分钟 / 3 分钟"
+        }
+      ]
+    },
+    {
+      "id": "canceled",
+      "type": "neutral",
+      "label": "取消",
+      "sublabel": "不删,卡还在",
+      "step": "canceled",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/protocol.ts",
+          "line": 3432,
+          "end_line": 3441,
+          "label": "合法转换表"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t-dispatch",
+      "from": "todo",
+      "to": "sent",
+      "label": "送字",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t-reply",
+      "from": "sent",
+      "to": "review",
+      "label": "回话",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t-pass",
+      "from": "review",
+      "to": "confirm",
+      "label": "过了",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t-done",
+      "from": "confirm",
+      "to": "done",
+      "label": "完成",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t-rework",
+      "from": "review",
+      "to": "sent",
+      "label": "没过:打回一次",
+      "variant": "dashed"
+    },
+    {
+      "id": "t-timeout",
+      "from": "sent",
+      "to": "blocked",
+      "label": "超时"
+    },
+    {
+      "id": "t-redo",
+      "from": "confirm",
+      "to": "sent",
+      "label": "再改一遍",
+      "variant": "dashed"
+    },
+    {
+      "id": "t-reopen",
+      "from": "done",
+      "to": "sent",
+      "label": "重开",
+      "variant": "dashed"
+    },
+    {
+      "id": "t-unblock",
+      "from": "blocked",
+      "to": "todo",
+      "label": "挪回",
+      "variant": "dashed"
+    },
+    {
+      "id": "t-cancel-1",
+      "from": "todo",
+      "to": "canceled",
+      "label": "不做了"
+    },
+    {
+      "id": "t-cancel-2",
+      "from": "sent",
+      "to": "canceled",
+      "label": "不做了"
+    },
+    {
+      "id": "t-cancel-3",
+      "from": "confirm",
+      "to": "canceled",
+      "label": "不做了"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "状态名对照(看板列序)",
+      "items": [
+        "backlog 待排 · todo 待办 · doing 进行中 · confirm 等我确认 · done 完成;blocked 阻塞、canceled 取消是两条旁路",
+        "图中sent/review是doing下的执行阶段,不是新增存储状态;backlog未画成主路径节点,必须先过待排门才能派。",
+        "表里没写的转换一律拒绝并说原因;原地不动恒为合法",
+        "命令行派活记录另有三档 running / done / failed,没有「排队中」;窗口型的家一次只送一件,后来的卡上挂「排着」"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "哪里会把卡卡住",
+      "items": [
+        "派出去:通道次序 协议 > 窗口 > 命令行 > 接口 > 文件;送达分 confirmed / unconfirmed / not_sent",
+        "超时 = 3 分钟没在对话区看到那句话,或 45 分钟没读完回答;盯窗 4 秒一拍",
+        "窗口通道一家一条:读窗一下超 20 秒、送话超 150 秒记 jammed 并放开通道,一家堵着不拖别家;「重置这一家」不用重启",
+        "超时只挪卡、记账、来电,不重发;唯一的再发送是自查没过时打回同一条对话一次",
+        "闸的计数落盘(action-gate.json,六小时过期),重启不清;送达 unconfirmed 一个字不说成送到了",
+        "待排的卡不许被派:出队前重读卡状态,挪回待排立刻撤队;/task/create 不传状态缺落待排(10-23,0.4.146)"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "图里的省略",
+      "items": [
+        "没画「阻塞 · 要你一句」(input):回话在问她、派不出去要她先修或换一家、命令行到时长上限时挂这一档",
+        "没画「没送出」之后卡去哪:都进阻塞 —— 送失败算出错(响铃),锁屏、有框挡着、缺能力算要你一句",
+        "阻塞也能直接回进行中、取消也能回待排;图只画了常走的一条"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "板工具/留言与目标边界",
+      "items": [
+        "wb_goal_create/update、wb_note_create/update/move已有;按名片与实际来源驱动,backlog/已删卡不会发。排期可上板待排,不是永远只写文档。",
+        "自然醒自动重送当前仅目标Claude会话的捎话/替她答(relay/answer):delivered:kept只表示留存,现查登记表/socket醒后重送,不主动唤醒App。别家留言/锁屏派活不归这条触发;卡面普通评论不进会话。",
+        "卡done不等于目标达成;Task.acceptance不是Goal逐条件机制。A同事项正在实施,B条件/证据、C邀请活动、D2交接退回待排。",
+        "CanvasFile.edges仍为never[],依赖由统筹手动把关;没有自动下游证据失效或完整自主验收闭环。",
+        "产品 CLI 只认 Claude/Codex/Kimi(cli.ts:48-50,67-104);AGY 研发 CLI 不是这一契约的现行家。",
+        "负责人驱动看 itemDriver.ts drivable:非 todo 拒绝、已接过/会话在跑/演示卡不二派(172-194)。",
+        "CollabGoal 尚无逐条件字段(protocol.ts:7947-7966);CanvasFile.edges 为 never[](collabCanvas.ts:34-37)。"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "本轮证据边界(10-23 最终重钉)",
+      "items": [
+        "全部 source 已按 main@c55ff4c1 取证重钉(14 引用:6 未变/8 行漂)。",
+        "新增 29 候选中生命周期相关六样(产品 CLI 来源与发起、待排门、五件板工具、留言等自然醒、Goal 无条件字段、edges:never[])落运行时总览新方块;卡内文字同步。",
+        "0.4.148 热修已发布并本机更新(exec10863 exit0);隔离 QA 45 项与整包九阶段全部 exit0;稳定仍 0.4.142。"
+      ]
+    }
+  ]
+}

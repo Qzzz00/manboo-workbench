@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "6b5e435b-2b50-4114-98d5-2a466ce90627",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/architecture-runtime.json",
+  "output": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/architecture-runtime.html",
+  "specification": {
+    "sha256": "2f82da17fccd6f68c72a7cb5bb33f12cacc61d33ef4f7d737c18f7b0c325c723",
+    "bytes": 35259
+  },
+  "artifact": {
+    "sha256": "29713b9f8e533f81bff04bfc67fff5320da0e0d46471183387f8f80f1e860bdd",
+    "bytes": 899842
+  }
+}

@@ -1,0 +1,54 @@
+/*
+ * 手机从电脑取文件(2026-09-25,卡 J):那张卡、进度那一行、收到的文件那一栏。
+ * 只用全局那几个中性色变量(--ba-fg / --ba-fg-2 / --ba-line / --ba-bg-3),不用蓝:
+ * 「发到这台手机」是白字,不是一颗彩色按钮(维护者 09-24 的规矩:强调色只用黑白灰)。
+ */
+
+/* 卡上一行一个候选:左边名字 + 在哪 / 多大,右边一句「发到这台手机」。 */
+.ba-fileask__hit { min-height: 60px; padding: 8px 14px; }
+.ba-fileask__hit:disabled { opacity: .6; cursor: default; }
+.ba-fileask__main { display: grid; gap: 2px; min-width: 0; }
+.ba-fileask__name { color: var(--ba-fg); font-size: var(--ba-fs-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-fileask__meta { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-fileask__go { flex: 0 0 auto; color: var(--ba-fg); font-size: var(--ba-fs-sub); }
+.ba-fileask__note { margin: 4px 4px 0; }
+.ba-fileask__foot { display: flex; justify-content: space-between; margin-top: 4px; }
+
+/* 正在收:一行字 + 一条 2px 的细线。通话中也摆(它不说话,不抢话)。 */
+.ba-fileprogress { flex: 0 0 auto; padding: 0 16px 6px; text-align: center; }
+.ba-fileprogress__text { margin: 0 0 4px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-fileprogress__bar { height: 2px; background: var(--ba-line); border-radius: 1px; overflow: hidden; max-width: 260px; margin: 0 auto; }
+.ba-fileprogress__bar > span { display: block; height: 100%; background: var(--ba-fg-2); transition: width .2s linear; }
+@media (prefers-reduced-motion: reduce) { .ba-fileprogress__bar > span { transition: none; } }
+
+/* 收到的文件:一行一个,点名字打开,右边「分享」。 */
+.ba-received { padding: 4px 14px 8px; border-bottom: 1px solid var(--ba-line); }
+.ba-received__row { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+.ba-received__open {
+  flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; text-align: left; cursor: pointer;
+  min-height: 48px; padding: 6px 12px; background: var(--ba-bg-3); border: 1px solid var(--ba-line); border-radius: 12px;
+}
+.ba-received__share { flex: 0 0 auto; }
+
+/*
+ * 通话中弹出来的那个播放器(2026-10-12,周三演示末尾那一下)。
+ * **不盖满整屏、不要遮罩**:顶上一块,最高 52% —— 底下那条挂断 / 麦克风 / 字幕照旧点得到。
+ * z-index 27:压在「选设备 / 找到了什么」那一层(26)上面,低于整屏的记录页(25 是 fixed 另一屏)。
+ */
+.ba-callvideo {
+  position: absolute; z-index: 27;
+  left: 12px; right: 12px; top: calc(12px + var(--ba-safe-top, 0px));
+  display: grid; gap: 6px; max-height: 52%;
+  background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 14px;
+  padding: 8px 10px 10px;
+}
+.ba-callvideo__head { display: flex; align-items: center; gap: 8px; }
+.ba-callvideo__name { flex: 1 1 auto; min-width: 0; color: var(--ba-fg); font-size: var(--ba-fs-sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 关闭那颗 icon:44px 的点区(单手、在打电话),字是一个 ×。 */
+.ba-callvideo__close {
+  flex: 0 0 auto; width: 44px; height: 44px; margin: -6px -4px -6px 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: transparent; border: 0; color: var(--ba-fg); font-size: 26px; line-height: 1;
+}
+.ba-callvideo__video { width: 100%; max-height: calc(40 * var(--ba-vh, 1vh)); background: #000; border-radius: 10px; }
+.ba-callvideo__note { margin: 2px 4px 4px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); line-height: var(--ba-lh); }

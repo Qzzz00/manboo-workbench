@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>首次引导预览台</title>
+<style>
+html,body{margin:0;height:100%;background:#0e0f10;color:#e8e7e1;font-family:"PingFang SC",system-ui,sans-serif}
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:2147483647;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 12px;background:#1c1d1f;border-top:1px solid #333;font-size:12px}
+#bar button{font:inherit;padding:4px 10px;border-radius:6px;border:1px solid #444;background:#26272a;color:#e8e7e1;cursor:pointer}
+#bar .tag{color:#e0a35a}
+#app{min-height:calc(100% - 44px)}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="app"></div>
+<script type="module" src="./main.tsx"></script>
+</body>
+</html>

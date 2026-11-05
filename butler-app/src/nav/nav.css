@@ -1,0 +1,40 @@
+/*
+ * 下一级页顶上那一条返回头(2026-09-24,卡 fix/phone-nav-back)。
+ * 色板照 styles.css 开头那套:纯黑底、白字、中性灰线,不用蓝。字号只用 --ba-fs-* 变量(大字开关跟着走)。
+ * 高度 52px + 状态栏:左上角那颗「‹」是 48×48 的触控区,单手大拇指够得着、不会点偏。
+ */
+.ba-backhead {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 2px;
+  min-height: calc(52px + var(--ba-safe-top)); padding: var(--ba-safe-top) 14px 0 4px;
+  background: var(--ba-bg); border-bottom: 1px solid var(--ba-line);
+}
+.ba-backhead__back {
+  flex: 0 0 auto; width: 48px; height: 48px; display: grid; place-items: center;
+  padding: 0 0 4px; border: 0; border-radius: 50%; background: transparent; color: var(--ba-fg);
+  font-size: 2.25rem; font-weight: 300; line-height: 1; cursor: pointer;
+}
+.ba-backhead__back:active { background: var(--ba-bg-3); }
+.ba-backhead__back:focus-visible { outline: 2px solid var(--ba-fg); outline-offset: -2px; }
+/* 没有「‹」的时候(会议录着)页名别贴着屏幕边。 */
+.ba-backhead__gap { flex: 0 0 auto; width: 10px; }
+.ba-backhead__title {
+  margin: 0; min-width: 0; color: var(--ba-fg); font-size: var(--ba-fs-title); font-weight: 600; line-height: 1.3;
+  letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* 一整个下一级页:返回头 + 那一页(它自己滚)。 */
+.ba-subpage { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--ba-bg); }
+.ba-subpage__body { min-height: 0; position: relative; }
+/*
+ * 事项页那一行「工作台掉线……」(`.ba-chat__offline`)原来绝对定位在屏幕最顶上 ——
+ * 现在那儿是返回头,压上去会挡住「‹」。在下一级页里让它回到页里第一行。
+ */
+.ba-subpage__body .ba-chat__offline { position: static; }
+
+/*
+ * 折叠屏展开 / 平板竖屏(styles.css 同一个断点):事项那一栏**一直在左边**,不是「下一级」,
+ * 所以它那颗「‹」不摆(位置留着,页名不跳),右半边的资讯 / 设置照常有。
+ */
+@media (orientation: portrait) and (min-width: 600px) {
+  .ba-pane--inbox .ba-backhead__back { visibility: hidden; }
+}

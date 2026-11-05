@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  事务官本机后端(butler-server)的 launchd 项。仿 ai.deepseek.dsh.plist。
+  安装:cp 本文件 ~/Library/LaunchAgents/ && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.deepseek.butler.plist
+  工作台设置页的「启动 / 停止」分别是 launchctl kickstart -k / kill SIGTERM 这个 Label。
+  KeepAlive.SuccessfulExit=false:崩了自动拉起,但「点了停止」(SIGTERM → exit 0)不拉起。
+  端口已被另一份 butler-server 占着时也 exit 0(2026-09-17 起,index.cjs 先问 /health),不然每 ThrottleInterval 秒重试一次、永远。
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.deepseek.butler</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/example/.dsh/bin/butler-start</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/example/.dsh</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>/Users/example/.dsh/logs/butler.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/example/.dsh/logs/butler.stderr.log</string>
+</dict>
+</plist>

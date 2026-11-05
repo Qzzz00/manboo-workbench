@@ -1,0 +1,131 @@
+/*
+ * 弹键盘时粒子球不缩、输入框不盖内容(2026-09-24 卡 fix/phone-keyboard-orb-stable;2026-09-25 卡 fix/phone-keyboard-overlap 改成下面这套)。
+ * 独占 <html data-ba-kb> 这一个属性与 --ba-kb* / --ba-app-h / --ba-vh 这几个变量;谁写、为什么写,见 keyboardViewport.ts 的文件头。
+ *
+ *   html[data-ba-kb="hold"]  焦点在首页 / 通话页 / 引导打字兜底页的输入框里:布局钉在「没弹键盘时」(与没钉时一模一样);
+ *   html[data-ba-kb="up"]    键盘起来了:布局照旧钉着,**整页的下边界收到键盘上沿**,内容区跟着变矮、自己滚,
+ *                            输入框照常排在内容区下面 —— 谁都不压谁。
+ *
+ * ## 上一版为什么会重叠(维护者 0.3.2:「正在办和呼出键盘的输入框会重叠在一起」)
+ *
+ * 上一版(0.3.0)写的是「只把输入框抬到键盘上沿,键盘下面那几张卡片被盖住就盖住」:
+ * `.ba-scene__dock` 加 `position: relative; top: -shift`,而内容区还是按没弹键盘时的高度排在原地 ——
+ * 输入框于是**画到了卡片区身上**(统筹在小米上量:输入框从 737 抬到 376,「正在办」标题一直在 355–390)。
+ * 那个「盖住就盖住」在 0.3.0 当晚卡片区铺满五张卡(正在办 / 等你确认 / 今天要做 / 最近一次通话 / 资讯)之后就不成立了:
+ * 抬上去正好落在卡片区最上面那张的标题上。
+ *
+ * ## 这一版的机制(不是把某一段挪回去)
+ *
+ * 1. 整页的高度照旧钉在「没弹键盘时」(--ba-app-h),球那一格照旧钉住 —— **球不缩**这条规矩不动(维护者第 7 条);
+ * 2. 键盘起来时给 `.ba-scene` 垫一个 `padding-bottom: --ba-kb-shift`:整页的**内容盒**下边界正好落在键盘上沿,
+ *    底部那一条(输入框)于是自己就排在键盘上面,不用挪、也不可能压到别人身上;
+ * 3. 内容区(`[data-ba-kb-fit]`,首页是球 + 字幕 + 卡片那一整块)是 `flex: 1`:它自动少掉 shift 那一截,
+ *    **自己滚**(overflow-y: auto);里面照没弹键盘时的样子排(球那一格钉住、卡片按内容高),所以只是「看得见的那一段变短了」,
+ *    不是「东西被压扁了」。输入框长高(打一长段)时它继续让,照样不重叠。
+ * 4. 「当前在看的那一块」(`data-ba-kb-into`)由 keyboardViewport 滚进可视区。
+ *
+ * 这一份不挪任何东西的「画在哪」,只改盒子的高度;也不加任何动效(抬起是一步到位,和系统自己的 adjustResize 一样)。
+ */
+
+/* ── 钉住布局(hold 与 up 都是)── */
+/*
+ * 整棵树按没弹键盘时的高度排(--ba-app-h;球那一格里的 vh 也都换成了 --ba-vh),WebView 被压矮时多出来的那截由 body 裁掉。
+ * 用 clip 不用 hidden:hidden 仍然能被程序滚动 —— 系统把焦点输入框「滚进视野」那一下会把整页往上推,球就跟着上去了。
+ */
+html[data-ba-kb], html[data-ba-kb] > body { overflow: clip; }
+html[data-ba-kb] #root { height: var(--ba-app-h, 100%); }
+
+/* ── 球那一格:键盘开着时钉在量到的高度(首页与通话页)── */
+/*
+ * 打字期间字幕长了一行、来了一条「等你批」,也挤不动它;收起键盘后才照常排。
+ * 用 min/max 不用 height:万一没量到(变量缺席),这两条等于没写,版面照旧。
+ */
+html[data-ba-kb="up"] .ba-scene .ba-scene__orb { min-height: var(--ba-kb-anchor-h, 0px); max-height: var(--ba-kb-anchor-h, none); }
+
+/* ── 首页:整页的下边界收到键盘上沿,内容区让出那一截、自己滚 ── */
+/*
+ * --ba-kb-shift = 键盘高度扣掉底部安全区:底部那一条的内边距里本来就含一份安全区(手势条),
+ * 键盘开着时那一截埋在键盘后面,所以只收 lift − safeBottom —— 输入框底边照旧离键盘 14px。
+ *
+ * 用 padding 不用 transform / top:
+ *   · transform 会让输入框里「+」弹出的抽屉(position: fixed)改拿这一条当参照物;
+ *   · top(上一版)只挪「画在哪」,排版还占着原地 —— 那正是它压到卡片上的原因。
+ * padding 改的是**排版**:底部那一条自己就在键盘上面,内容区(flex: 1)自动少掉同样一截。
+ * 通话中那一页不走这一套(它有自己的 --ba-kb-room,见文件末尾)。
+ */
+html[data-ba-kb="up"] .ba-scene:not([data-call="true"]) { padding-bottom: var(--ba-kb-shift, 0px); }
+/*
+ * 内容区:变矮之后自己滚(overscroll-behavior: contain —— 滚到头不许把整页也带着动,整页是 clip 的)。
+ * 里面照没弹键盘时的样子排:球那一格由上面那条钉住,外面这一层(球 + 字幕那一栏)改成按内容高 ——
+ * 不改的话它是 flex: 1,会被变矮的内容区压扁,球那一格的 min-height 就会从它身上溢出去、压在卡片上。
+ */
+html[data-ba-kb="up"] .ba-scene:not([data-call="true"]) [data-ba-kb-fit] {
+  overflow-y: auto; overscroll-behavior: contain;
+}
+html[data-ba-kb="up"] .ba-scene:not([data-call="true"]) [data-ba-kb-fit] > .ba-scene__stage { flex: 0 0 auto; height: auto; }
+/*
+ * 横屏(球在左、卡片在右):两栏都按内容高、贴着内容区上沿,滚的还是内容区那一个框 ——
+ * 不这样的话两栏会被拉成变矮后的高度,球那一格照旧溢出、卡片区自己再滚一遍(两层滚动,没人知道该滚哪个)。
+ */
+@media (orientation: landscape) {
+  html[data-ba-kb="up"] .ba-scene:not([data-call="true"]) [data-ba-kb-fit] > * { align-self: flex-start; }
+  html[data-ba-kb="up"] .ba-scene:not([data-call="true"]) [data-ba-kb-fit] > .ba-cards {
+    height: auto; max-height: none; overflow: visible;
+  }
+}
+
+/* ── 两种会话页的覆盖层:整页钉住,下边界收到键盘上沿 ── */
+/*
+ * 2026-10-03,卡 claude/phone-saybox-pinned。这两层是 `position: fixed; inset: 0` 的整屏覆盖层:
+ *   .ba-sheet       会话详情(捎话那个框在它最下面那一格 .ba-sheet__dock);
+ *   .ba-asks-page   「等你确认」(替她答那张卡里的「我自己说」,asks.css 里吸底)。
+ *
+ * 为什么要收这一下:fixed 的参照物是视口,不是 #root ——
+ *   · 安卓上 WebView 被压矮,这两层跟着缩,框自己就在键盘上面(收不收都对);
+ *   · **iOS 上 `Keyboard.resize: None`,视口一个像素都不变**(keyboardModel.ts 的文件头),
+ *     键盘就直接画在框上面。
+ * 所以两边统一成一套:高度钉成 --ba-app-h(两个平台一样高),再把**内容盒**的下边界收到键盘上沿。
+ * 收的是 padding 不是 transform / top:transform 会让输入框里 fixed 的抽屉改拿这一层当参照物,
+ * top 只挪「画在哪」、排版还占着原地(2026-09-25 首页那次重叠就是这么来的,见文件头)。
+ * --ba-kb-shift 已经扣掉底部安全区:那一截埋在键盘后面,正好是卡自己的 padding-bottom 那一份。
+ */
+html[data-ba-kb] .ba-sheet, html[data-ba-kb] .ba-asks-page { height: var(--ba-app-h, 100%); }
+html[data-ba-kb="up"] .ba-sheet, html[data-ba-kb="up"] .ba-asks-page { padding-bottom: var(--ba-kb-shift, 0px); }
+/*
+ * 她在打字的时候,抬头那一格让出来 —— 让的是「哪一家、在做什么」那几行,留下的是**那段对话**。
+ * 平时抬头不让(styles.css 的 .ba-sheet__head:flex-shrink 0、封顶 34vh);键盘一起来,
+ * 小屏 + 大键盘(统筹在 375×667 上量:键盘 300,卡只剩 367)只按平时那套排的话,
+ * 抬头就把整格吃光,对话一行都不剩 —— 她正要回的那句话就在对话里。
+ * 收到 16vh 并且允许它让:抬头照旧看得见抬头那一行(自己能滚),剩下的全归对话。
+ */
+html[data-ba-kb="up"] .ba-sheet__head { flex: 0 1 auto; max-height: calc(var(--ba-vh, 1vh) * 16); }
+
+/* ── 引导打字兜底页:输入行(与它上面那两行说明)抬起来,对话流让出同样一截 ── */
+/* 对话流由 keyboardViewport 滚到最底(data-ba-kb-stick):最新那句贴在输入行上面。球在最上面那一行,不动。 */
+html[data-ba-kb="up"] .ba-onboarding > .ba-composer,
+html[data-ba-kb="up"] .ba-onboarding > .ba-onboarding__scan,
+html[data-ba-kb="up"] .ba-onboarding > .ba-chat__voicenote {
+  position: relative; top: calc(-1 * var(--ba-kb-shift, 0px));
+}
+html[data-ba-kb="up"] .ba-onboarding > .ba-chat__thread { max-height: calc(100% - var(--ba-kb-shift, 0px)); }
+
+/* ── 通话页:字幕尾巴 + 打字框放进「球底到键盘上沿」那一截,三颗键藏到键盘后面 ── */
+/*
+ * 那一截的高 = --ba-kb-room(键盘起来那一刻量的:键盘上沿 − 球的下沿);往上借掉球那一格里球下面的空(--ba-kb-anchor-gap),
+ * 于是它从球的下沿开始、到键盘上沿为止。太矮(小屏 + 大键盘)时至少留 5rem:宁可压住球底一点,也不让打字框看不见。
+ * 时长、「通话中」两行先收起来,地方让给字幕;字幕面板缩到装得下为止、自己滚(贴底),打字框钉在面板最下面。
+ */
+html[data-ba-kb="up"] .ba-scene[data-call="true"] .ba-call__captions {
+  flex: none; min-height: 0; overflow: hidden; justify-content: flex-end; background: var(--ba-bg);
+  height: max(var(--ba-kb-room, 0px), 5rem);
+  margin-top: calc(-1 * var(--ba-kb-anchor-gap, 0px) - max(0px, 5rem - var(--ba-kb-room, 0px)));
+}
+html[data-ba-kb="up"] .ba-scene[data-call="true"] .ba-call__status,
+html[data-ba-kb="up"] .ba-scene[data-call="true"] .ba-call__elapsed { display: none; }
+/* 面板上沿渐隐一小截:那一截装不下整行时,露出来的是淡去的半行,不是一刀切掉的字。 */
+html[data-ba-kb="up"] .ba-scene[data-call="true"] .ba-call__subtitles {
+  flex: 0 1 auto; min-height: min(100%, 5rem); max-height: none; padding-top: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 1.25rem); mask-image: linear-gradient(to bottom, transparent, black 1.25rem);
+}
+html[data-ba-kb="up"] .ba-scene[data-call="true"] .ba-call__type { position: sticky; bottom: 0; background: var(--ba-bg); }
+html[data-ba-kb="up"] .ba-scene[data-call="true"] .ba-call__dock { visibility: hidden; }

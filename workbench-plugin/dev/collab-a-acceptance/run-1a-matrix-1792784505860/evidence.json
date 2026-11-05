@@ -1,0 +1,362 @@
+[
+  {
+    "at": "2026-10-23T19:41:46.019Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": false
+  },
+  {
+    "at": "2026-10-23T19:42:24.169Z",
+    "name": "model-pointed-own",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T19:42:24.178Z",
+    "name": "phone-paired",
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T19:42:25.182Z",
+    "name": "butler-voice",
+    "up": true
+  },
+  {
+    "at": "2026-10-23T19:42:36.435Z",
+    "name": "cell-s1-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:42:56.008Z",
+    "name": "cell-s1-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:42:56.040Z",
+    "name": "upstream-understand",
+    "said": "不用现在发,帮我建一个待办事项:周四下午给客户发样片",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午把样片发给客户\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-default\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:43:07.259Z",
+    "name": "cell-s2-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:43:07.289Z",
+    "name": "upstream-understand",
+    "said": "不用现在发,帮我建一个待办事项:周四下午给客户发样片",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午把样片发给客户\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-default\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:43:26.702Z",
+    "name": "cell-s2-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:43:26.731Z",
+    "name": "upstream-understand",
+    "said": "帮我建一个待办:周四下午给客户发样片,建之前先跟我确认一下",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午把样片发给客户\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-default\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:43:40.783Z",
+    "name": "cell-s3-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:43:40.810Z",
+    "name": "upstream-understand",
+    "said": "帮我建一个待办:周四下午给客户发样片,建之前先跟我确认一下",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午把样片发给客户\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-default\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:44:11.208Z",
+    "name": "cell-s3-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:44:22.351Z",
+    "name": "cell-s4-desk",
+    "status": "fail",
+    "reasons": [
+      "要 2 张,建了 1 张(「帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…」)",
+      "标题「帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…」带「帮我」「建一个待办」「派给」",
+      "「帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…」没派出去(todo)",
+      "推回 1 次(最多 0)",
+      "回话没说到「记下」「Claude」「女声」:「事项已建下」",
+      "音色读不到"
+    ],
+    "cards": [
+      [
+        "帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…",
+        "todo",
+        "claude"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:44:25.357Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:44:25.362Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:44:41.675Z",
+    "name": "cell-s4-phone",
+    "status": "fail",
+    "reasons": [
+      "要 2 张,建了 1 张(「帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…」)",
+      "标题「帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…」带「帮我」「建一个待办」「派给」",
+      "「帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…」没派出去(todo)",
+      "推回 1 次(最多 0)",
+      "回话没说到「记下」「Claude」「女声」:「已交给事务官」",
+      "音色读不到"
+    ],
+    "cards": [
+      [
+        "帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换…",
+        "todo",
+        "claude"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:44:41.705Z",
+    "name": "upstream-understand",
+    "said": "记三条:周四发样片、周五交发票、下周一约 B 客户",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s5a\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s5b\"},{\"kind\":\"记\",\"title\":\"下周一约 B 客户\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s5c\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:44:52.758Z",
+    "name": "cell-s5-desk",
+    "status": "fail",
+    "reasons": [
+      "回话没说到「记下」:「已建下,记了 3 条。」"
+    ],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ],
+      [
+        "下周一约 B 客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:44:52.798Z",
+    "name": "upstream-understand",
+    "said": "记三条:周四发样片、周五交发票、下周一约 B 客户",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s5a\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s5b\"},{\"kind\":\"记\",\"title\":\"下周一约 B 客户\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s5c\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:45:12.078Z",
+    "name": "cell-s5-phone",
+    "status": "fail",
+    "reasons": [
+      "回话没说到「记下」:「记了 3 条。」"
+    ],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ],
+      [
+        "下周一约 B 客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:45:12.111Z",
+    "name": "upstream-understand",
+    "said": "记一下周四发样片……哦对,顺便再记一下周五交发票",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s6a\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s6b\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:45:23.160Z",
+    "name": "cell-s6-desk",
+    "status": "fail",
+    "reasons": [
+      "回话没说到「记下」:「已建下,记了 2 条。」"
+    ],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:45:23.206Z",
+    "name": "upstream-understand",
+    "said": "记一下周四发样片……哦对,顺便再记一下周五交发票",
+    "model": "collab-a-brain",
+    "pinned": true,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s6a\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"qa-s6b\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:45:42.490Z",
+    "name": "cell-s6-phone",
+    "status": "fail",
+    "reasons": [
+      "回话没说到「记下」:「记了 2 条。」"
+    ],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:45:42.502Z",
+    "name": "cell-s7-na",
+    "note": "旁人插话是电话那一列(1b)的事"
+  },
+  {
+    "at": "2026-10-23T19:45:53.559Z",
+    "name": "cell-s8-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "下周二把合同发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:46:12.849Z",
+    "name": "cell-s8-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "下周二把合同发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:46:12.859Z",
+    "name": "matrix-end",
+    "checksFailed": [
+      "s4-desk",
+      "s4-phone",
+      "s5-desk",
+      "s5-phone",
+      "s6-desk",
+      "s6-phone"
+    ],
+    "limitation": "电话两列是 1b 未跑;真手机未验;真云模型=真 Kimi 桥"
+  },
+  {
+    "at": "2026-10-23T19:46:14.658Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

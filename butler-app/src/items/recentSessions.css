@@ -1,0 +1,35 @@
+/*
+ * 「各家最近的对话」那一页上的分组(2026-10-03,卡「手机各家最近会话固定入口」)。
+ *
+ * 独占 `ba-recent-` 前缀、单独一个文件(同 stageCards.css 的理由):`styles.css` 那一大份是好几张卡同时在改的地方。
+ * 字号一律用 styles.css 顶上那几个变量,不写 px(那边的规矩)。
+ *
+ * **首页上那条入口不在这儿了**(2026-10-03 下午,卡「首页侧边小图标」;维护者:「未接来电和各家的最近对话
+ * 换个地方放,做成小图标放到侧边吧」)—— 原来这上面有一段 `.ba-scene__recent`(球下、卡片区顶上一条单行入口),
+ * 整段连样子一起搬成了球那一栏右边那一列小图标,见 stage/homeRail.css 与 stage/HomeRail.tsx。
+ * 「不许挤球」那条理由跟着搬过去了(那一列是绝对定位的,一个像素都不从球身上扣)。
+ */
+
+/* ── 那一页上的分组:一家一折叠组,家底下按项目 ── */
+.ba-recent__family { margin-top: 12px; }
+.ba-recent__head { margin: 0; }
+.ba-recent__toggle {
+  width: 100%; display: flex; align-items: center; gap: 6px; min-width: 0;
+  margin: 0; padding: 6px 2px; border: 0; border-bottom: 1px solid var(--ba-line);
+  background: transparent; color: var(--ba-fg); font-size: var(--ba-fs-sub); line-height: 1.5; font-weight: 600;
+  text-align: left; -webkit-tap-highlight-color: transparent;
+}
+.ba-recent__toggle:active { background: color-mix(in srgb, var(--ba-fg) 7%, transparent); }
+.ba-recent__toggle:focus-visible { outline: 2px solid var(--ba-fg-2); outline-offset: -2px; }
+.ba-recent__name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-recent__count {
+  flex: 0 0 auto; min-width: 1.6em; padding: 0 6px; border-radius: 999px; text-align: center; line-height: 1.4;
+  background: var(--ba-bg); color: var(--ba-fg-2); font-weight: 400; font-variant-numeric: tabular-nums;
+}
+.ba-recent__chev { flex: 0 0 auto; color: var(--ba-fg-3); font-weight: 400; }
+.ba-recent__project { margin-top: 6px; }
+/* 项目名:一行,长名字自己截 —— 它是定位用的,不是正文。 */
+.ba-recent__projectname {
+  margin: 0 0 2px; padding: 0 2px; font-size: var(--ba-fs-min); font-weight: 400; color: var(--ba-fg-3);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}

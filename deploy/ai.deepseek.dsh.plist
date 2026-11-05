@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  DSH(工作台跑在它进程里)的 launchd 项。**模板**:`{{HOME}}` 由登录台渲染成本机家目录,
+  所以这份文件里不含任何本机私有值,可以进仓库。
+
+  2026-09-17 补进仓库。此前这份 plist 只存在于 Ben 那台机器的 ~/Library/LaunchAgents/,
+  仓库里一份副本都没有(设计-电脑端登录台梳理 关 1 那张表里写的「仓库里无 plist 副本,未找到」)
+  —— 也就是说再来一次家目录事故,它就得靠人回忆重写。本模板按本机那份的**结构**补齐。
+
+  手工安装(登录台的「一键装 → launchd」做的就是这三步):
+    sed "s|{{HOME}}|$HOME|g" deploy/ai.deepseek.dsh.plist > ~/Library/LaunchAgents/ai.deepseek.dsh.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.deepseek.dsh.plist
+    launchctl kickstart -k gui/$(id -u)/ai.deepseek.dsh
+
+  几个选择的理由:
+  - ProgramArguments 只有一条 `~/.dsh/bin/dsh-start`:环境变量、端口、自有 node 全在那个脚本里,
+    plist 不重复一遍(两处各写一份迟早不一致)。
+  - KeepAlive.SuccessfulExit=false:崩了自动拉起,但正常退出(点了停)不拉起。
+  - WorkingDirectory 指 runtime:DSH 自己要在那里解析 node_modules。
+  - 日志两条路径与 `docs/交接-*` 里到处引用的 `~/.dsh/logs/web.std*.log` 一致,别改名
+    —— 登录台读 web.stdout.log 里的网页 token 就靠它。
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.deepseek.dsh</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>{{HOME}}/.dsh/bin/dsh-start</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>{{HOME}}/.dsh/runtime</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>{{HOME}}/.dsh/logs/web.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{HOME}}/.dsh/logs/web.stderr.log</string>
+</dict>
+</plist>

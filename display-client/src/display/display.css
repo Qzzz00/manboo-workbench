@@ -1,0 +1,493 @@
+/* 展示台专属样式：只管「会话区」和「余额/用量」两块新面板。
+   时钟/黄历/唱盘/整体版式一律由 holo 那套（holo.css + HoloDashboard）负责——
+   上一版我自己重写了一份，结果把 holo 里能跑的东西丢干净了，这次不再重复。
+   面板压在角色与底图上，配色随 <html data-display-scheme> 翻转。 */
+/* ── 刻度（1200 CSS px 空间；display.html 把视口钉死成 1200 宽） ──
+   Figma 稿（node 2134-2）就是按 1200 宽画的，所以稿上量到多少 px 这里就写多少 px。
+   在这之前，同一份版式是按 788 宽写的，于是出现了 13 / 12.5 / 11.5 / 10.5 / 9.5px
+   这种换算残留——「尺寸不规范」的来源。所有新值一律从下面这两套刻度里取，不要再手写零散数字。 */
+:root {
+  /* 间距：4 的倍数，只有这七档 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  /* 圆角 */
+  --r-card: 16px;
+  --r-sm: 8px;
+  /* 字阶：只有这七档 */
+  --fs-clock: 64px;   /* 时钟 */
+  --fs-lg: 40px;      /* 黄历主行、天气字符这类大号展示元素 */
+  --fs-num: 34px;     /* 余额大数字 */
+  --fs-title: 26px;   /* 会话标题 */
+  --fs-agent: 21px;   /* agent 名 / 黄历主行 */
+  --fs-body: 17px;    /* 正文 */
+  --fs-meta: 15px;    /* 次要信息 */
+  --fs-label: 13px;   /* 卡片标题、等宽小标签 */
+
+  /* 0.5 时底图透过来太多、正文看不清（Ben 实报），加深到 0.75。
+     2026-09-30:灰阶改成中性(R=G=B),与手机 --ba-* / 电脑 surface.ts 同一套 —— 09-24 两端「去蓝、中性、一律深色」,
+     展示台一直是带绿的那一版。语义色(绿 = 在跑、琥珀 = 等你、红 = 出错)照留。 */
+  --dp-card: rgba(21, 21, 21, 0.78);
+  --dp-card-2: rgba(21, 21, 21, 0.4);
+  --dp-edge: #2a2a2a;
+  --dp-fg: #e8e8e8;
+  --dp-dim: #b5b5b5;
+  --dp-dimmer: #9c9c9c;
+  --dp-teal: #3fb39c;
+  --dp-amber: #e8a838;
+  --dp-red: #ea7676;
+  /* 名字沿用:「刚完成没看」那颗点,09-24 起两端都不再用蓝,是一档浅灰。 */
+  --dp-blue: #d4d4d4;
+  --dp-bar: #d4d4d4;
+}
+/* 粒子那条路(不铺底图,2026-09-30):卡片不再需要半透明去压图,直接是手机那几档实色。 */
+html[data-display-plain] {
+  --dp-card: #151515;
+  --dp-card-2: #1c1c1c;
+}
+html[data-display-plain] .dp-card { text-shadow: none; }
+/* 亮底图配深色字与浅色遮罩（实测底图平均亮度 02=64 暗 / 01=209 亮）。
+   黄历宜/忌按 Ben 要求不动，那块归 HoloDashboard。 */
+html[data-display-scheme='light'] {
+  /* 与暗色卡同步加深（0.5 → 0.75），亮底图下同样是内容优先。 */
+  --dp-card: rgba(250, 250, 248, 0.75);
+  --dp-card-2: rgba(250, 250, 248, 0.32);
+  --dp-edge: #b9c2bb;
+  --dp-fg: #1b2621;
+  --dp-dim: #46504a;
+  --dp-dimmer: #5f6a63;
+}
+
+.dp-card {
+  border: 1px solid var(--dp-edge);
+  border-radius: var(--r-card);
+  background: var(--dp-card);
+  padding: var(--sp-4) var(--sp-5);
+  color: var(--dp-fg);
+  font-size: var(--fs-body);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+html[data-display-scheme='light'] .dp-card { text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8); }
+.dp-card--fill { display: flex; flex-direction: column; min-height: 0; }
+.dp-ttl {
+  font-size: var(--fs-body); color: var(--dp-fg); display: flex; align-items: baseline;
+  margin-bottom: var(--sp-4); flex: none;
+}
+.dp-ttl-r {
+  margin-left: auto; font-size: var(--fs-meta); color: var(--dp-dimmer);
+  /* 不加 min-width:0 时这段会把自己顶出容器右边被裁掉，而不是省略 */
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dp-scroll {
+  flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
+  /* 会话多于一屏时，末行会被硬切一半，看起来像渲染坏了。
+     底部收一道渐隐，把「下面还有」表达出来。展示台没人滚动，看不见的内容本就看不见，
+     但至少不该看起来像故障。内容不满一屏时渐隐落在空白上，无影响。
+     Chrome 61 只认带前缀的 -webkit-mask-image。 */
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
+}
+.dp-scroll > * + * { margin-top: var(--sp-5); }
+
+/* 会话区：按 agent 分组。
+   ★分组不再是「带边框、带底色标题栏的盒子」——稿子里它只是一行「小圆点 + agent 名」，
+   靠留白分组，不靠描边。盒子在 788 那版是为了在极窄空间里分清层级，
+   1200 宽下留白足够，描边反而把画面切碎。 */
+.dp-grp { flex: none; }
+.dp-ghead {
+  display: flex; align-items: baseline;
+  padding: 0 0 var(--sp-2);
+  font-size: var(--fs-agent); letter-spacing: 0.01em;
+}
+.dp-gname { color: var(--dp-fg); font-weight: 600; }
+.dp-gct { margin-left: auto; color: var(--dp-dim); font-size: var(--fs-meta); }
+.dp-gbody { display: flex; flex-direction: column; }
+/* Chrome 61 没有 flex gap，间距一律走 margin。删 gap 时漏补这几条，
+   结果灯贴着字、进度条贴着标签，真机上挤成一团。 */
+.dp-gbody > * + * { margin-top: var(--sp-3); }
+
+.dp-lamp { width: 10px; height: 10px; border-radius: 50%; flex: none; display: inline-block; }
+.dp-lamp--teal { background: var(--dp-teal); }
+.dp-lamp--amber { background: var(--dp-amber); }
+.dp-lamp--red { background: var(--dp-red); }
+.dp-lamp--blue { background: var(--dp-blue); }
+.dp-lamp--off { background: #4a4a4a; }
+
+.dp-sess { display: flex; align-items: flex-start; }
+.dp-sess-bd { flex: 1; min-width: 0; }
+.dp-sess-h { font-size: var(--fs-title); line-height: 1.25; }
+.dp-sess-m {
+  font-family: ui-monospace, Menlo, monospace; font-size: var(--fs-meta);
+  color: var(--dp-dim); margin-top: var(--sp-1);
+}
+/* 高亮那条在稿子里是整条圆角色带，左右各出血一个卡片内边距。
+   出血值必须跟 .dp-card 的左右 padding 一致（--sp-5），否则色带边缘和卡片边缘对不齐。 */
+.dp-sess--wait {
+  background: rgba(232, 168, 56, 0.14);
+  margin: 0 calc(-1 * var(--sp-5)); padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--r-sm);
+}
+.dp-sess--wait .dp-sess-h { font-weight: 600; }
+.dp-sess--fresh {
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0 calc(-1 * var(--sp-5)); padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--r-sm);
+}
+/* 响铃中的那条：左侧描边强调。不闪烁——闪烁在常驻设备上很快就变噪音。 */
+.dp-sess--ring { box-shadow: inset 3px 0 0 var(--dp-red); }
+
+.dp-offline {
+  margin: 0; padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--dp-edge); border-radius: var(--r-sm);
+  background: var(--dp-card-2); color: var(--dp-fg);
+  font-size: var(--fs-meta); flex: none;
+}
+
+/* 余额 / 用量 */
+.dp-ubox { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.dp-u { padding: 0 var(--sp-5); border-left: 1px solid var(--dp-edge); min-width: 0; }
+.dp-u:first-child { padding-left: 0; border-left: none; }
+.dp-uname {
+  font-family: ui-monospace, Menlo, monospace; font-size: var(--fs-meta);
+  letter-spacing: 0.08em; color: var(--dp-dim);
+}
+.dp-ubal {
+  font-size: var(--fs-num); font-weight: 600; letter-spacing: -0.02em;
+  line-height: 1.2; margin-top: var(--sp-2);
+}
+.dp-unote {
+  font-family: ui-monospace, Menlo, monospace; font-size: var(--fs-label); line-height: 1.4;
+  color: var(--dp-dimmer); margin-top: var(--sp-2);
+  /* 逐窗口一行重置说明（\n 分行），Kimi 有 总/5h/周 三个窗口 → 限三行。
+     「未配置 DEEPSEEK_API_KEY，余额未接入」这类长说明也靠这个截断，
+     不让格子撑破压到下一块。Chrome 61 支持 -webkit-box 这套。 */
+  white-space: pre-line;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  /* keep-all：万一还是放不下，按词折（「重置」整体下行），不许从词中间劈开。 */
+  overflow: hidden; word-break: keep-all;
+}
+.dp-rows { margin-top: var(--sp-3); display: flex; flex-direction: column; }
+.dp-rows > * + * { margin-top: var(--sp-2); }
+.dp-row { display: flex; align-items: center; }
+/* 标签与百分比都定宽，四家的条才会左右对齐成一条竖线——稿子里就是对齐的。 */
+.dp-lb { font-family: ui-monospace, Menlo, monospace; font-size: var(--fs-meta); color: var(--dp-dimmer); width: 32px; flex: none; }
+.dp-track { flex: 1; height: 8px; background: var(--dp-edge); border-radius: 4px; overflow: hidden; }
+.dp-track i { display: block; height: 100%; }
+.dp-pc { font-family: ui-monospace, Menlo, monospace; font-size: var(--fs-meta); color: var(--dp-dim); width: 44px; text-align: right; flex: none; }
+
+/* 阈值配色：正常绿 / 偏低黄 / 见底红 */
+.dp-lv--ok { background: var(--dp-bar); color: var(--dp-fg); }
+.dp-lv--warn { background: var(--dp-amber); color: var(--dp-amber); }
+.dp-lv--danger { background: var(--dp-red); color: var(--dp-red); }
+/* 数字用文字色，条用背景色——同一个类两种用法，各取所需 */
+.dp-ubal.dp-lv--ok { background: none; }
+.dp-ubal.dp-lv--warn { background: none; }
+.dp-ubal.dp-lv--danger { background: none; }
+
+/* demo 模式标记：必须一眼看出这不是真实状态 */
+.dp-demo {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px dashed var(--dp-amber);
+  border-radius: var(--r-sm);
+  color: var(--dp-amber);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  flex: none;
+}
+.dp-stage-badge {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: var(--fs-label);
+  letter-spacing: 0.16em;
+  color: #5e6d66;
+}
+
+/* ── Chrome 61 无 flex gap（真机实测），间距一律走 margin ── */
+.dp-ttl > * + * { margin-left: var(--sp-2); }
+.dp-scroll > * + * { margin-top: var(--sp-5); }
+.dp-yj > * + * { margin-left: var(--sp-2); }
+.dp-topwrap > * + * { margin-left: var(--sp-4); }
+.dp-ghead > * + * { margin-left: var(--sp-2); }
+.dp-gbody > * + * { margin-top: var(--sp-3); }
+.dp-sess > * + * { margin-left: var(--sp-3); }
+.dp-rows > * + * { margin-top: var(--sp-2); }
+.dp-row > * + * { margin-left: var(--sp-3); }
+
+
+/* ── v4 布局稿的版式 ──
+   左列 33%：上半留空给 GL 层画角色，下半日历；
+   右侧三段：时间/音乐 → 会话（最大）→ 余额。
+   仪表盘整体 pointer-events:none（纯展示层），只有唱盘开回来。 */
+/* ★设计盒子固定 1200 宽，再整体缩放到真实视口。
+   稿子是按 1200 画的，而真机 CSS 视口只有 788（1280 物理 ÷ DPR 1.625）。
+   本来想用 `<meta viewport width=1200>` 让浏览器去缩，实测 Android WebView 忽略它
+   （useWideViewPort 默认关，见 display.html 里的说明）。改在这里缩，效果一样，
+   而且只影响展示台——那个 Android 工程是六个 flavor 共用的，动不得。
+
+   于是：本文件里所有尺寸都写**稿子上的原值**，不做任何换算；
+   宽高与 transform 由 DisplayApp 按 innerWidth/1200 算好后内联下来。
+   .viewer-panel 不在 .dp-dash 里，所以 Live2D 的定位完全不受这个 transform 影响。 */
+:root[data-holo] .dp-dash {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 1200px;
+  /* height 与 transform 由 DisplayApp 内联；这里给个兜底值，免得 JS 还没跑时整块塌掉 */
+  height: 750px;
+  transform-origin: 0 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 33% 1fr;
+  grid-template-rows: 1fr auto;
+  /* ★Chrome 61（实测 61.0.3163.98）的 grid 只认老写法 grid-gap，
+     `gap` 简写要到 Chrome 66 才生效 —— 之前这里只写了 gap，整条被忽略，
+     于是四块卡片贴在一起、间距为 0。两个都写：老机器吃 grid-gap，新浏览器吃 gap。
+     数值按 v4 布局稿：卡片间距 12px、舞台内边距 13px。 */
+  grid-gap: var(--sp-4);
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  box-sizing: border-box;
+  pointer-events: none;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+/* 版位一律用下面的 grid-template-areas 指定。
+   这里原本还有一组 grid-column / grid-row 的写法，跟 areas 重复且被 areas 覆盖，
+   属于死代码——改版式时容易照着改了上面那组、发现不生效，已删。 */
+:root[data-holo] .dp-dash {
+  grid-template-areas:
+    'live  top'
+    'cal   sessions'
+    'cal   quota';
+  grid-template-rows: auto 1fr auto;
+}
+/* ★grid 项目默认 min-width:auto，会被内容的最小宽度撑开。
+   右列里只要出现一个不能换行的长东西（比如「Piano Concerto No.2 In C Minor,
+   Op.18:1. Moderato」这种曲名），1fr 那一轨就会被顶到超出屏幕，
+   整个右列连同余额栏的 Kimi 那格一起被推出可视区。真机上就是这么溢出的。
+   短曲名时看不出来，所以这是个会随内容偶发的坑，必须显式兜住。 */
+:root[data-holo] .dp-dash > * { min-width: 0; }
+
+:root[data-holo] .dp-cal { grid-area: cal; align-self: end; }
+:root[data-holo] .dp-topwrap { grid-area: top; }
+:root[data-holo] .dp-dash > .dp-card--fill { grid-area: sessions; }
+:root[data-holo] .dp-dash > .dp-quota { grid-area: quota; }
+
+/* 时间 + 音乐：稿子里是**两张分开的卡片**，不是一张卡中间一条分隔线。
+   外层 .dp-topwrap 只是排布用的透明容器，本身不画卡片。 */
+:root[data-holo] .dp-topwrap { display: flex; align-items: stretch; background: none; border: none; padding: 0; }
+:root[data-holo] .dp-clockcard { flex: none; display: flex; align-items: center; }
+:root[data-holo] .dp-musiccard { flex: 1; display: flex; align-items: center; min-width: 0; pointer-events: auto; }
+/* 天气图标在稿子里是时钟左边一枚大图。这里用天气字体符号顶上，不引新素材。 */
+:root[data-holo] .dp-wx { font-size: var(--fs-lg); line-height: 1; flex: none; margin-right: var(--sp-4); }
+:root[data-holo] .dp-time { flex: none; }
+:root[data-holo] .dp-clock { font-size: var(--fs-clock); font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+:root[data-holo] .dp-date { font-size: var(--fs-meta); color: var(--dp-dim); margin-top: var(--sp-2); white-space: nowrap; }
+:root[data-holo] .dp-player { flex: 1; display: flex; align-items: center; min-width: 0; }
+:root[data-holo] .dp-song { flex: 1 1 auto; padding-left: var(--sp-4); min-width: 0; }
+:root[data-holo] .dp-song-title { font-size: var(--fs-agent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-holo] .dp-song-artist { font-size: var(--fs-meta); color: var(--dp-dim); margin-top: var(--sp-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-holo] .dp-song-time { font-family: ui-monospace, Menlo, monospace; font-size: var(--fs-meta); color: var(--dp-dimmer); margin-top: var(--sp-1); }
+:root[data-holo] .dp-wave { height: 18px; margin-top: var(--sp-1); }
+
+/* 日历：★稿子里它直接落在背景图上，没有卡片描边也没有底色。
+   描边那版是 788 宽时为了跟角色分层加的；1200 宽下它把左下角切出一个突兀的方框。
+   去掉 border/background 后仍然可读，靠的是 .dp-card 上那条 text-shadow。 */
+:root[data-holo] .dp-cal { border: none; background: none; }
+:root[data-holo] .dp-lunar { font-size: var(--fs-lg); font-weight: 600; line-height: 1.1; }
+:root[data-holo] .dp-gz { font-size: var(--fs-meta); color: var(--dp-dim); margin-top: var(--sp-1); }
+:root[data-holo] .dp-yj { display: flex; align-items: flex-start; margin-top: var(--sp-3); font-size: var(--fs-body); }
+:root[data-holo] .dp-yj > * + * { margin-left: var(--sp-2); }
+:root[data-holo] .dp-tg {
+  font-size: var(--fs-meta); padding: 0 var(--sp-2); border-radius: var(--r-sm);
+  line-height: 26px; flex: none;
+}
+:root[data-holo] .dp-yi .dp-tg { background: #1e3830; color: #3fb39c; }
+:root[data-holo] .dp-ji .dp-tg { background: #33201c; color: #c4553d; }
+:root[data-holo] .dp-quote { margin-top: var(--sp-3); font-size: var(--fs-meta); color: var(--dp-dim); font-style: italic; }
+
+/* 余额横条：四家一行 */
+:root[data-holo] .dp-quota .dp-ubox { display: flex; }
+:root[data-holo] .dp-quota .dp-u { flex: 1; }
+:root[data-holo] .dp-quota .dp-ubal { font-size: var(--fs-num); }
+
+/* ── 尺寸收口（holo 的唱盘是为满高药丸设计的，展示台这里是一条横栏） ── */
+:root[data-holo] .dp-player .holo-turntable {
+  position: relative;
+  width: 80px; height: 80px; flex: none;
+}
+:root[data-holo] .dp-player .holo-vinyl {
+  position: absolute; inset: 0; width: 80px; height: 80px;
+}
+:root[data-holo] .dp-player .holo-player-arc { display: none; }
+:root[data-holo] .dp-song-title { white-space: nowrap; }
+/* 歌词窄栏容易把日文挤成竖排，给它最小宽度 */
+
+
+/* ── 角色进左列（v4：左列上半是 Live2D） ──
+   viewer-panel 限制到左列上半，HoloStage 拿它的 containerRect 定位；
+   分数基准要显式传整屏（见 Live2DStage.viewportSize），否则角色会跑到屏幕中央。 */
+:root[data-holo] .device-frame .viewer-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 33%;
+  bottom: 0;
+  z-index: 1;
+}
+/* 日历压在角色列上，但不拦点击——双击左列一律=换装，规则一句话说得清。 */
+:root[data-holo] .dp-cal { pointer-events: none; }
+
+/* 卡片内部呼吸。全部取自刻度——这段以前是 788 时代一处一处试出来的零散值。 */
+:root[data-holo] .dp-card { padding: var(--sp-4) var(--sp-5); }
+:root[data-holo] .dp-dash .dp-ttl { margin-bottom: var(--sp-3); }
+:root[data-holo] .dp-scroll > * + * { margin-top: var(--sp-5); }
+:root[data-holo] .dp-gbody > * + * { margin-top: var(--sp-3); }
+:root[data-holo] .dp-quota .dp-u { padding: 0 var(--sp-5); }
+/* 黄历没有卡片底，左内边距去掉，让它跟屏幕左缘的留白由 .dp-dash 的 padding 统一决定 */
+:root[data-holo] .dp-cal { padding: 0; }
+
+/* 2026-09-11 配对框:工作台不在本机且没有令牌时才出现(WorkbenchPairing.tsx)。 */
+.dp-pair {
+  position: absolute; top: var(--sp-3); left: 50%; transform: translateX(-50%); z-index: 20;
+  display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; max-width: 560px;
+  padding: var(--sp-3); border: 1px solid var(--dp-edge); border-radius: var(--r-sm);
+  background: var(--dp-card-2); color: var(--dp-fg); font-size: var(--fs-meta);
+}
+.dp-pair-hint { margin: 0; flex: 1 1 100%; }
+.dp-pair-inp { width: 8em; font-size: 20px; letter-spacing: 4px; text-align: center; padding: 4px 8px; }
+.dp-pair-btn { padding: 4px 14px; font-size: var(--fs-meta); }
+.dp-pair-msg { margin: 0; flex: 1 1 100%; color: var(--dp-fg); }
+
+/* ── 形象位:粒子球(2026-09-22,Ben:「把 Live2D 形象换成旋转的粒子吧」) ──
+   版位**就是 Live2D 那一块**:`.viewer-panel`(左列,fixed 左上、宽 33%、到底)。
+   粒子球只占它的上半 —— 下半是黄历(`.dp-cal` align-self:end),球铺满整列会压在黄历上。
+   Live2D 那条路(`?avatar=<形象 id>`)一个字没动,这几条只在粒子那条路上有 DOM。 */
+.dp-avatar {
+  position: absolute;
+  /* 球心原来在整列 31% 处,Ben 真机(0.2.60):「粒子的位置有点高了」——往下挪到约 42%(黄历贴底,上面留得出)。 */
+  left: 0; right: 0; top: 10%;
+  height: 64%;
+  pointer-events: none;   /* 双击左列=换装/换底图的判定在 .viewer-panel 上，这一层不抢 */
+}
+.dp-avatar__wrap { position: relative; width: 100%; height: 100%; }
+.dp-avatar__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.dp-avatar__a11y { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* 粒子核心起不来时的占位球(ParticleAvatar 自己退到这里)。纯 CSS，不依赖 canvas/WebGL。
+   展示台是一块没人看管的屏幕：宁可是一颗呆球，也不能是一块空白。 */
+.dp-avatar__orb {
+  position: absolute; top: 50%; left: 50%; width: 46%; aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%); border-radius: 50%;
+  background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.85), rgba(255,255,255,.12) 62%, transparent 72%);
+  animation: dpOrbBreath 4.5s ease-in-out infinite;
+}
+html[data-display-scheme='light'] .dp-avatar__orb {
+  background: radial-gradient(circle at 50% 42%, rgba(20,26,23,.75), rgba(20,26,23,.12) 62%, transparent 72%);
+}
+.dp-avatar__orb[data-mode='acknowledging'] {
+  background: radial-gradient(circle at 50% 42%, rgba(243,197,99,.9), rgba(243,197,99,.14) 62%, transparent 72%);
+}
+@keyframes dpOrbBreath {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: .9; }
+  50%      { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .dp-avatar__orb { animation: none; } }
+
+/* 底图(只在粒子那条路上):理由写在 DisplayApp 里那段注释。压在最底下，不拦点击。
+   2026-09-30 起不铺图,是手机那一档中性黑(displayStage.ts `stageBackdrop`)。 */
+.dp-bg {
+  position: fixed; inset: 0; z-index: 0;
+  background-size: cover; background-position: center;
+  pointer-events: none;
+}
+.dp-bg--plain { background: #0f0f0f; }
+
+/* ── 会话区:没接上的那一家灰着一行,不摆会话(2026-09-30,同 Mac 顶栏 dim) ── */
+.dp-grp[data-connected='false'] .dp-gname,
+.dp-grp[data-connected='false'] .dp-gct { color: var(--dp-dimmer); }
+.dp-grp[data-connected='false'] .dp-gct { font-size: var(--fs-label); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.dp-gname { white-space: nowrap; }
+.dp-sess-h { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dp-sess-m { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── 额度区:一家一行,只画此刻真接上了的(displayBoard.ts `quotaLines`) ── */
+.dp-qgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-column-gap: var(--sp-6); column-gap: var(--sp-6); grid-row-gap: var(--sp-2); row-gap: var(--sp-2); }
+.dp-q { display: flex; align-items: center; min-width: 0; font-size: var(--fs-meta); }
+.dp-q > * + * { margin-left: var(--sp-3); }
+.dp-qname { flex: none; width: 6.2em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dp-fg); }
+.dp-qbars { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; }
+.dp-qbars > * + * { margin-left: var(--sp-3); }
+.dp-qbar { flex: 1 1 0; min-width: 0; display: flex; align-items: center; }
+.dp-qbar > * + * { margin-left: var(--sp-1); }
+.dp-qbar .dp-lb { width: auto; min-width: 1.6em; }
+.dp-qbar .dp-track { height: 6px; }
+.dp-qbar .dp-pc { width: 3em; }
+.dp-pc--warn { color: var(--dp-amber); }
+.dp-pc--danger { color: var(--dp-red); }
+.dp-qval { color: var(--dp-fg); white-space: nowrap; }
+.dp-qnote { flex: none; max-width: 7em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-label); color: var(--dp-dimmer); }
+.dp-q[data-stale='true'] .dp-track i { opacity: .45; }
+/* 每扇窗口自己的重置时刻(逐窗口,Ben 点名),挂在百分比后面一小格。 */
+.dp-qreset { flex: none; font-size: var(--fs-label); color: var(--dp-dimmer); white-space: nowrap; }
+.dp-qempty { margin: 0; color: var(--dp-dim); font-size: var(--fs-meta); }
+
+/* ── 音乐卡:「音乐 / 播客」两颗(2026-09-30,竖屏资讯页早有播客,横屏一直只有音乐) ── */
+.dp-song-row { display: flex; align-items: center; justify-content: space-between; margin-top: var(--sp-1); }
+.dp-song-row .dp-song-time { margin-top: 0; }
+.dp-modes { display: flex; flex: none; margin-left: var(--sp-2); }
+.dp-modes > * + * { margin-left: var(--sp-1); }
+.dp-mode {
+  font: inherit; font-size: var(--fs-label); color: var(--dp-dim);
+  background: transparent; border: 1px solid var(--dp-edge); border-radius: 999px;
+  padding: 2px var(--sp-3); line-height: 1.6; cursor: pointer;
+}
+.dp-mode[data-on='true'] { background: #ffffff; color: #0a0a0a; border-color: #ffffff; }
+
+/* ── 手机横屏(宽扁屏,displayStage.ts `isWideScreen`):三栏 ──
+   左 33%:粒子球 + 黄历(同稿子);中:会话(整列高);右:时钟、音乐、额度摞起来。
+   按宽缩放后手机上设计高度只剩 ~540,v4 那套竖着摞三层会把会话区挤成只剩一个标题。 */
+:root[data-holo] .dp-dash.dp-dash--wide {
+  grid-template-columns: 33% minmax(0, 1fr) 36%;
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    'live  sessions top'
+    'cal   sessions music'
+    'cal   sessions quota';
+}
+:root[data-holo] .dp-dash--wide .dp-topwrap { display: contents; }
+:root[data-holo] .dp-dash--wide .dp-topwrap > * + * { margin-left: 0; }
+:root[data-holo] .dp-dash--wide .dp-clockcard { grid-area: top; }
+:root[data-holo] .dp-dash--wide .dp-musiccard { grid-area: music; }
+:root[data-holo] .dp-dash--wide > .dp-quota { min-height: 0; overflow: hidden; }
+:root[data-holo] .dp-dash--wide .dp-qgrid { grid-template-columns: minmax(0, 1fr); }
+:root[data-holo] .dp-dash--wide .dp-clock { font-size: 46px; }
+:root[data-holo] .dp-dash--wide .dp-date { margin-top: var(--sp-1); }
+/* 右栏三块摞着,得给额度留出八九行:时钟、唱盘各收一号,额度行距收紧、重置那句小字不摆(1200×800 那台照旧摆)。 */
+:root[data-holo] .dp-dash--wide .dp-clockcard,
+:root[data-holo] .dp-dash--wide .dp-musiccard { padding: var(--sp-3) var(--sp-4); }
+:root[data-holo] .dp-dash--wide .dp-wx { font-size: 32px; }
+:root[data-holo] .dp-dash--wide .dp-player .holo-turntable,
+:root[data-holo] .dp-dash--wide .dp-player .holo-vinyl { width: 68px; height: 68px; }
+:root[data-holo] .dp-dash--wide .dp-wave { display: none; }
+:root[data-holo] .dp-dash--wide .dp-quota { padding: var(--sp-3) var(--sp-4); }
+:root[data-holo] .dp-dash--wide .dp-quota .dp-ttl { margin-bottom: var(--sp-2); }
+:root[data-holo] .dp-dash--wide .dp-qgrid {
+  grid-row-gap: 2px; row-gap: 2px;
+  /* 家数再多也不硬切半行:底部收一道渐隐(同会话区 .dp-scroll)。 */
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 12px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 12px), transparent 100%);
+}
+:root[data-holo] .dp-dash--wide .dp-q { font-size: var(--fs-label); }
+:root[data-holo] .dp-dash--wide .dp-q .dp-lb,
+:root[data-holo] .dp-dash--wide .dp-q .dp-pc { font-size: var(--fs-label); }
+:root[data-holo] .dp-dash--wide .dp-q[data-stale='false'] .dp-qnote { display: none; }
+/* 手机横屏右栏太窄,逐窗口的重置时刻摆不下:不摆(1200×800 那台照摆)。取舍写在交接里,可推翻。 */
+:root[data-holo] .dp-dash--wide .dp-qreset { display: none; }

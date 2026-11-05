@@ -1,0 +1,266 @@
+[
+  {
+    "at": "2026-10-24T01:20:30.032Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": true
+  },
+  {
+    "at": "2026-10-24T01:21:07.238Z",
+    "name": "model-pointed-own",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "at": "2026-10-24T01:21:07.353Z",
+    "name": "relay-test-account",
+    "ok": true,
+    "registered": true
+  },
+  {
+    "at": "2026-10-24T01:21:07.363Z",
+    "name": "phone-paired",
+    "ok": true
+  },
+  {
+    "at": "2026-10-24T01:21:08.365Z",
+    "name": "butler-voice",
+    "up": true
+  },
+  {
+    "at": "2026-10-24T01:21:08.388Z",
+    "name": "upstream-real-understand",
+    "said": "不用，现在发，帮我建一个待办事项，周四下午给客户发样品。"
+  },
+  {
+    "at": "2026-10-24T01:21:18.400Z",
+    "name": "upstream-real-reply",
+    "said": "不用，现在发，帮我建一个待办事项，周四下午给客户发样品。",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样品\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"她明说「帮我建一个待办事项」，是只记不派；「现在发」是对前文提议的否定，不构成新事项。\"}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-24T01:21:29.596Z",
+    "name": "cell-p2-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样品",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:21:29.618Z",
+    "name": "upstream-real-understand",
+    "said": "不用，现在发，帮我建一个待办事项，周四下午给客户发样品。"
+  },
+  {
+    "at": "2026-10-24T01:21:33.325Z",
+    "name": "upstream-real-reply",
+    "said": "不用，现在发，帮我建一个待办事项，周四下午给客户发样品。",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样品\",\"when\":\"周四下午\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"明说建待办，只记不派\"}]}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-24T01:21:52.702Z",
+    "name": "cell-p2-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样品",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:21:52.728Z",
+    "name": "upstream-real-understand",
+    "said": "记3条，周四发样片，周五交发票，下周一约 b 客户。"
+  },
+  {
+    "at": "2026-10-24T01:21:56.545Z",
+    "name": "upstream-real-reply",
+    "said": "记3条，周四发样片，周五交发票，下周一约 b 客户。",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[\n    {\"kind\":\"记\",\"title\":\"周四发样片\",\"when\":\"周四\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"原话「记3条」开头，只记不派\"},\n    {\"kind\":\"记\",\"title\":\"周五交发票\",\"when\":\"周五\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"三件并列事项之一\"},\n    {\"kind\":\"记\",\"title\":\"下周一约 b 客户\",\"when\":\"下周一\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"三件并列事项之一，未指明派给谁\"}\n  ]}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-24T01:22:07.752Z",
+    "name": "cell-p5-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ],
+      [
+        "下周一约 b 客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:22:07.800Z",
+    "name": "upstream-real-understand",
+    "said": "记3条，周四发样片，周五交发票，下周一约 b 客户。"
+  },
+  {
+    "at": "2026-10-24T01:22:11.553Z",
+    "name": "upstream-real-reply",
+    "said": "记3条，周四发样片，周五交发票，下周一约 b 客户。",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[\n  {\"kind\":\"记\",\"title\":\"周四发样片\",\"when\":\"周四\",\"risk\":\"none\",\"confidence\":0.97,\"why\":\"明说「记」，只记不派\"},\n  {\"kind\":\"记\",\"title\":\"周五交发票\",\"when\":\"周五\",\"risk\":\"none\",\"confidence\":0.97,\"why\":\"明说「记」，只记不派\"},\n  {\"kind\":\"记\",\"title\":\"下周一约 b 客户\",\"when\":\"下周一\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"明说「记」，只记不派\"}\n  ]}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-24T01:22:31.084Z",
+    "name": "cell-p5-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ],
+      [
+        "下周一约 b 客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:22:31.299Z",
+    "name": "upstream-real-understand",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。"
+  },
+  {
+    "at": "2026-10-24T01:22:37.421Z",
+    "name": "upstream-real-reply",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.7,\"why\":\"带日期的安排，原话未说派给谁或现在办\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"明说「记一下」，只记不派\"}]}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-24T01:22:49.027Z",
+    "name": "cell-p6-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:22:49.058Z",
+    "name": "upstream-real-understand",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。"
+  },
+  {
+    "at": "2026-10-24T01:22:58.723Z",
+    "name": "upstream-real-reply",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。",
+    "reply": "• ```json\n  {\n    \"addressed\": true,\n    \"items\": [\n      {\"kind\": \"办\", \"title\": \"周四发样片\", \"when\": \"周四\", \"risk\": \"none\", \"confidence\": 0.9, \"why\": \"交代的一件要做的事\"},\n      {\"kind\": \"记\", \"title\": \"周五交发票\", \"when\": \"周五\", \"risk\": \"none\", \"confidence\": 0.95, \"why\": \"「顺便再记一下」引出，只记不派\"}\n    ]\n  }\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-24T01:23:18.155Z",
+    "name": "cell-p6-phone",
+    "status": "fail",
+    "reasons": [
+      "要 2 张,建了 1 张(「周四发样片。哦，对，顺便再记一下，周五交发票。」)",
+      "标题「周四发样片。哦，对，顺便再记一下，周五交发票。」带「发票」「哦」「顺便」",
+      "标题「周四发样片。哦，对，顺便再记一下，周五交发票。」带「样片」「哦」「顺便」",
+      "回话没说到「记下」:「已交给事务官」"
+    ],
+    "cards": [
+      [
+        "周四发样片。哦，对，顺便再记一下，周五交发票。",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:23:18.185Z",
+    "name": "upstream-real-understand",
+    "said": "帮我建一个代办，周四下午给客户发样品，再把样片派给客户简易版，然后换个女声。"
+  },
+  {
+    "at": "2026-10-24T01:23:25.598Z",
+    "name": "upstream-real-reply",
+    "said": "帮我建一个代办，周四下午给客户发样品，再把样片派给客户简易版，然后换个女声。",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样品\",\"when\":\"周四下午\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"明说建代办，只记不派\"},{\"kind\":\"办\",\"title\":\"把样片(简易版)发给客户\",\"when\":\"周四下午?\",\"risk\":\"external\",\"confidence\":0.55,\"why\":\"「派给客户」是对外发送，客户不在能派名单，按对外动作升 external\"},{\"kind\":\"改\",\"title\":\"换个女声\",\"risk\":\"none\",\"confidence\":0.75,\"why\":\"「然后」引出的另一件事\"}],\"chit\":null}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-24T01:23:36.721Z",
+    "name": "cell-p4-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样品",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:23:36.749Z",
+    "name": "upstream-real-understand",
+    "said": "帮我建一个代办，周四下午给客户发样品，再把样片派给客户简易版，然后换个女声。"
+  },
+  {
+    "at": "2026-10-24T01:24:02.109Z",
+    "name": "upstream-real-reply",
+    "said": "帮我建一个代办，周四下午给客户发样品，再把样片派给客户简易版，然后换个女声。",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样品\",\"when\":\"周四下午\",\"risk\":\"none\",\"confidence\":0.93,\"why\":\"明说「建一个待办」,只记不派\"},{\"kind\":\"办\",\"title\":\"把样片派给客户简易版\",\"risk\":\"external\",\"confidence\":0.6,\"why\":\"「再」引出的第二件,对外发给客户;客户不在能派名单,who 留空\"},{\"kind\":\"改\",\"title\":\"换个女声\",\"risk\":\"none\",\"confidence\":0.85,\"why\":\"「然后」引出的第三件,改声音设置\"}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-24T01:24:21.555Z",
+    "name": "cell-p4-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样品",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:24:21.563Z",
+    "name": "matrix-end",
+    "checksFailed": [
+      "p6-phone"
+    ],
+    "limitation": "电话两列是 1b 未跑;真手机未验;真云模型=真 Kimi 桥"
+  },
+  {
+    "at": "2026-10-24T01:24:23.346Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

@@ -1,0 +1,175 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace = "com.llm.live2d"
+    compileSdk = rootProject.ext.compileSdkVersion
+    // Kotlin 字节码目标与 Capacitor 的 Java 21 编译选项保持一致
+    kotlinOptions {
+        jvmTarget = '21'
+    }
+    defaultConfig {
+        applicationId "com.llm.live2d"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    flavorDimensions = ["dist"]
+    productFlavors {
+        // IS_LAUNCHER 只回答「我是不是桌面」；LAUNCHER_KIND 回答「我是哪一种桌面」。
+        // 拆开的理由：电台桌面要拉起 RadioPlaybackService 与电台白屏看门狗，掌机桌面不要——
+        // 一个布尔表达不了这个区别，掌机若复用它会莫名多跑一个播放服务。
+        //
+        // 手机主 App：现状，appId 沿用 defaultConfig 的 com.llm.live2d
+        phone {
+            dimension "dist"
+            buildConfigField "boolean", "KEEP_SCREEN_ON", "false"
+            buildConfigField "String", "WEB_ENTRY", "\"\""
+            buildConfigField "boolean", "IS_LAUNCHER", "false"
+            buildConfigField "String", "LAUNCHER_KIND", "\"none\""
+        }
+        // U3 电台桌面（MP4 产品）：独立 appId，可与主 App 并存
+        u3 {
+            dimension "dist"
+            buildConfigField "boolean", "KEEP_SCREEN_ON", "false"
+            buildConfigField "String", "WEB_ENTRY", "\"\""
+            applicationId "com.aiboo.radio"
+            buildConfigField "boolean", "IS_LAUNCHER", "true"
+            buildConfigField "String", "LAUNCHER_KIND", "\"radio\""
+        }
+        // ThinkSmart View（Lenovo CD-18781Y，8" 1280x800 会议屏，APQ8053 32 位 armv7l）
+        // 独立 appId，可与主 App 并存。它是唯一走 Cubism 5-r.1 链的 flavor：
+        // 官方从 5-r.2 起砍掉 armeabi-v7a 的 Core .so，这台机器只能用 5-r.1。
+        // IS_LAUNCHER 保持 false，避免触发桌面专属路径（holo 是 web surface，与桌面身份无关）。
+        tsv {
+            dimension "dist"
+            // 桌面常驻终端：屏幕常亮（窗口标志，App 作用域——不改用户系统的息屏设置，
+            // 退出/卸载自动还原，不留残留）。其余 flavor 是手机/掌机，保持系统息屏行为。
+            buildConfigField "boolean", "KEEP_SCREEN_ON", "true"
+            // ★这个 flavor 的 web 入口是 holo（独立 vite 入口），不是手机主界面 index.html。
+            // ?avatar=shuangsheng-p30：完整模型（68 条物理链/全部表情/Param67 换装都在），
+            // 只把 physics3 的 Meta.Fps 从 120 降到 30——渲染本身才 ~19fps，120Hz 那些物理子步
+            // 一个也看不到，白烧 CPU。真机实测 update 34→15ms、14.0→18.7fps(+34%)，观感无差。
+            buildConfigField "String", "WEB_ENTRY", "\"holo.html?avatar=shuangsheng-p30\""
+            applicationId "com.aiboo.tsv"
+            buildConfigField "boolean", "IS_LAUNCHER", "false"
+            buildConfigField "String", "LAUNCHER_KIND", "\"none\""
+            ndk { abiFilters 'armeabi-v7a' }
+        }
+        // 桌面工作台 · 展示台（独立 appId）。原生 Live2D 链、常亮、armv7a 全部沿用
+        // tsv 那条已经跑通的配置；同时作为 X08A 的系统 HOME，开机直接进入展示台。
+        // X08A 走 p20：完整模型与 68 条物理链全保留，只把 physics3 Meta.Fps 降到 20。
+        display {
+            dimension "dist"
+            buildConfigField "boolean", "KEEP_SCREEN_ON", "true"
+            // scale/head 是角色构图旋钮（holoStage.resolveHoloFraming）。
+            // 改基准视口后脸占屏比是按整屏算的，要回到上一版的观感需乘回来：
+            //   上一版基准=左列容器高 333，现在=整屏高 493 → 1.58×。head 沿用 holo 的 0.19。
+            // X08A 的完整模型单帧长期超过 16.7ms，旧 target=60 只会让 GL 线程无休止满载。
+            // 真机 p20 稳定约 20fps；封顶 20 才能让每帧留下少量休息时间，避免 target=24
+            // 永远追不上而持续满载。普通 holo/其他 flavor 仍保留各自原配置。
+            buildConfigField "String", "WEB_ENTRY", "\"display.html?avatar=shuangsheng-p20&scale=1.9&head=0.14&fps=20&texture=1024\""
+            applicationId "com.aiboo.display"
+            buildConfigField "boolean", "IS_LAUNCHER", "true"
+            buildConfigField "String", "LAUNCHER_KIND", "\"display\""
+            ndk { abiFilters 'armeabi-v7a' }
+        }
+        // 掌机桌面（Anbernic RG Rotate，720×720 方屏）：独立 appId，三者可并存
+        handheld {
+            dimension "dist"
+            buildConfigField "boolean", "KEEP_SCREEN_ON", "false"
+            buildConfigField "String", "WEB_ENTRY", "\"\""
+            applicationId "com.aiboo.handheld"
+            buildConfigField "boolean", "IS_LAUNCHER", "true"
+            buildConfigField "String", "LAUNCHER_KIND", "\"handheld\""
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    // 屏保 WebView 通过 WebViewAssetLoader 以 https://appassets.androidplatform.net 提供本地资源，
+    // 这样网页里的 fetch() 才能加载 Live2D 模型（Chromium WebView 的 fetch 不支持 file:// 协议）
+    implementation "androidx.webkit:webkit:$androidxWebkitVersion"
+    // 通勤播客锁屏续播：原生 ExoPlayer 前台 Service（口播无缝列表 + 低音量循环床），
+    // 生命周期独立于屏保 DreamService，灭屏照播 + 锁屏媒体控制。
+    implementation "androidx.media3:media3-exoplayer:1.4.1"
+    implementation "androidx.media3:media3-session:1.4.1"
+    implementation project(':capacitor-android')
+    // 低端机原生 Live2D：渲染核心在 :nativelive2d（与 :liteapp 共享）；Core aar 在 android/libs/，
+    // library 侧 compileOnly，运行时由本 module 打进 APK
+    // 按 flavor 分派 Cubism 链：tsv 走 5-r.1（含 armeabi-v7a），其余走 5-r.5。
+    // 两条链的 Java 包名/类名完全一致，宿主代码（NativeLive2DPlugin 等）无需改动。
+    phoneImplementation files('../libs/Live2DCubismCore.aar')
+    phoneImplementation project(':nativelive2d')
+    u3Implementation files('../libs/Live2DCubismCore.aar')
+    u3Implementation project(':nativelive2d')
+    handheldImplementation files('../libs/Live2DCubismCore.aar')
+    handheldImplementation project(':nativelive2d')
+    tsvImplementation files('../libs51/Live2DCubismCore.aar')
+    tsvImplementation project(':nativelive2d-51')
+    // 展示台与 tsv 同机同链：都走 5-r.1（唯一带 armeabi-v7a Core .so 的版本）。
+    displayImplementation files('../libs51/Live2DCubismCore.aar')
+    displayImplementation project(':nativelive2d-51')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+// u3 电台桌面资源裁剪：APK 里只保留电台 DJ 可选的三只（hijiki/ghostpuppy/ghostie），
+// 其余角色模型/头像/吧唧背景不进包。（2026-07-28 换角：双生 shuangsheng/-dj 共 ~46M 剔出；
+// 同日再换角：白猫 tororo → 黑猫 hijiki，tororo 一并剔出，仓库里仍留着可随时换回。）
+// 注：三只新模型的贴图目录直接就是 .2048（仓库里没留 .4096），U3 判低端走 downscaleTexturePath
+// 也只是原样命中，不需要在这里裁贴图档位。
+// ignoreAssetsPatterns 按「文件/目录名」匹配（不是路径），live2D 下各角色目录名唯一，可安全按名裁。
+// 选型：AGP 8.13 上 variant.androidResources.ignoreAssetsPatterns 编译期即可用（androidComponents
+// 主路验证通过，无需 mergeAssets doLast 物理删除兜底）——留作记录：若未来 AGP 升级后此 API 编译报错，
+// 换 tasks.configureEach { it.name in ["mergeU3DebugAssets","mergeU3ReleaseAssets"] } 的 doLast 物理删除方案。
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        if (variant.flavorName == "u3") {
+            variant.androidResources.ignoreAssetsPatterns.addAll([
+                "!DLC Estella Belongs_to_DG_STUDIO", "!rattan", "!yumi",
+                "!shuangsheng", "!shuangsheng-dj", "!tororo",
+                "!touxiang", "!badge-backgrounds",
+            ])
+        }
+    }
+}
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

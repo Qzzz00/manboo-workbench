@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# 「本机房间」(livekit-server)启动脚本(2026-10-21,局域网主路卡 M1;docs/设计-局域网主路-2026-10-21.md 第一节)。
+#
+# 安装位置:~/.dsh/bin/livekit-start(安装器 / 热更新的 scripts 与 livekit 两步放过去,755)。
+# 谁来调它:launchd 那一项 ai.deepseek.livekit(deploy/ai.deepseek.livekit.plist),RunAtLoad、崩了 10 秒后拉起。
+# 8791 在两种时候让 launchd 重起它(`launchctl kickstart -k gui/<uid>/ai.deepseek.livekit`):
+#   ① 装了二进制却没有钥匙,8791 补上了两份配置;② 这台 Mac 的局域网地址变了(livekit 不写死 node_ip,重起才认新网卡)。
+#
+# 它做三件事:
+#   1. **没准备好就以 0 退出**:二进制不在、配置不在、系统低于 macOS 15(随包那份跑不了)——
+#      launchd 的 KeepAlive 只在非 0 退出时拉起,所以这几种不会每 10 秒空转一次;
+#   2. **探端口**:7880/TCP、7881/TCP、7882/UDP 有一个被占(最常见是另一台 `livekit-server --dev`,它三个都占),
+#      就整组换到 7890 / 7891 / 7892,并把 livekit.yaml 的三行与 channel.json 的地址一起写回(8791 按 channel.json 签票);
+#      两组都被占就说一句、以 0 退出;
+#   3. exec livekit-server --config ~/.dsh/livekit/livekit.yaml。
+#
+# 钥匙:这个脚本里**一个都没有**,也不打印配置文件的内容。api secret 只在 livekit.yaml 与 channel.json 里(都 0600)。
+set -euo pipefail
+
+export DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
+# 继承来的 PATH 留在中间(launchd 给的是 /usr/bin:/bin:/usr/sbin:/sbin),自有 node 在最前面:写回 channel.json 要用它。
+export PATH="$DSH_HOME/node/bin:${PATH:-/usr/bin:/bin}:/usr/bin:/bin:/usr/sbin:/sbin"
+
+LK_DIR="$DSH_HOME/livekit"
+BIN="$LK_DIR/livekit-server"
+CONF="$LK_DIR/livekit.yaml"
+CHANNEL_JSON="$DSH_HOME/workbench/channel.json"
+# 与 workbench-plugin/src/server/setup/paths.ts 的 LIVEKIT_MIN_MACOS_MAJOR、LIVEKIT_PORTS / LIVEKIT_ALT_PORTS 同一组数(有用例比着)。
+MIN_MACOS=15
+PRIMARY="${WORKBENCH_LIVEKIT_PRIMARY_PORT:-7880}"
+ALT="${WORKBENCH_LIVEKIT_ALT_PORT:-7890}"
+
+say() { echo "[livekit-start] $*" >&2; }
+
+if [ ! -x "$BIN" ]; then
+  say "没装本机通话服务($BIN 不在):不起。装上之后工作台会让 launchd 重起这一项。"
+  exit 0
+fi
+if [ ! -f "$CONF" ]; then
+  say "没有配置($CONF):不起。工作台起来时会补上钥匙与配置,再让 launchd 重起这一项。"
+  exit 0
+fi
+MACOS="$(sw_vers -productVersion 2>/dev/null || true)"
+if [ -n "$MACOS" ] && [ "${MACOS%%.*}" -lt "$MIN_MACOS" ] 2>/dev/null; then
+  say "这台 Mac 是 macOS $MACOS,随包的 livekit-server 要 $MIN_MACOS 起:不起(打电话走云上那条)。"
+  exit 0
+fi
+
+# ── 端口 ──
+CURRENT="$(sed -n 's/^port: *\([0-9][0-9]*\) *$/\1/p' "$CONF" | head -1)"
+[ -n "$CURRENT" ] || CURRENT="$PRIMARY"
+
+# 一组口里有没有被占的。TCP 两样都看:lsof 只看得见本账户的进程,连一下回环能撞见别的账户绑在所有网卡上的那种。
+busy_tcp() {
+  lsof -nP -iTCP:"$1" -sTCP:LISTEN >/dev/null 2>&1 && return 0
+  nc -z -G 1 127.0.0.1 "$1" >/dev/null 2>&1 && return 0
+  return 1
+}
+busy_set() {
+  local signal="$1"
+  busy_tcp "$signal" && return 0
+  busy_tcp "$((signal + 1))" && return 0
+  lsof -nP -iUDP:"$((signal + 2))" >/dev/null 2>&1 && return 0
+  return 1
+}
+
+PICK=""
+if ! busy_set "$CURRENT"; then
+  PICK="$CURRENT"
+else
+  OTHER="$PRIMARY"
+  [ "$CURRENT" = "$PRIMARY" ] && OTHER="$ALT"
+  if ! busy_set "$OTHER"; then
+    PICK="$OTHER"
+    say "$CURRENT 那一组口($CURRENT/$((CURRENT + 1)) TCP、$((CURRENT + 2)) UDP)被别的程序占着,换到 $OTHER 那一组"
+  fi
+fi
+if [ -z "$PICK" ]; then
+  say "$CURRENT 与另一组口都被别的程序占着,本机通话服务这次不起。让出其中一组之后在终端跑:launchctl kickstart -k gui/\$(id -u)/ai.deepseek.livekit"
+  exit 0
+fi
+
+if [ "$PICK" != "$CURRENT" ]; then
+  NODE_BIN="$DSH_HOME/node/bin/node"
+  [ -x "$NODE_BIN" ] || NODE_BIN="$(command -v node || true)"
+  [ -n "$NODE_BIN" ] || { say "找不到 node,没法写回新的端口"; exit 1; }
+  # 只改那三行与 channel.json 的 url(指着本机的才改 —— 指着别处的是她自己定的路,不碰)。两份都收回 0600。
+  CONF="$CONF" CHANNEL_JSON="$CHANNEL_JSON" PICK="$PICK" "$NODE_BIN" -e '
+    const fs = require("node:fs");
+    const pick = Number(process.env.PICK);
+    const conf = process.env.CONF;
+    const yaml = fs.readFileSync(conf, "utf8")
+      .replace(/^port: *\d+ *$/m, `port: ${pick}`)
+      .replace(/^  tcp_port: *\d+ *$/m, `  tcp_port: ${pick + 1}`)
+      .replace(/^  udp_port: *\d+ *$/m, `  udp_port: ${pick + 2}`);
+    fs.writeFileSync(conf, yaml, { mode: 0o600 });
+    fs.chmodSync(conf, 0o600);
+    const file = process.env.CHANNEL_JSON;
+    let body;
+    try { body = JSON.parse(fs.readFileSync(file, "utf8")); } catch { process.exit(0); }
+    if (body === null || typeof body !== "object" || Array.isArray(body)) process.exit(0);
+    let url;
+    try { url = new URL(typeof body.url === "string" ? body.url : "ws://127.0.0.1"); } catch { process.exit(0); }
+    const local = ["127.0.0.1", "localhost", "[::1]", "0.0.0.0"].includes(url.hostname);
+    if (!local) process.exit(0);
+    body.url = `ws://127.0.0.1:${pick}`;
+    fs.writeFileSync(file, `${JSON.stringify(body, null, 2)}\n`, { mode: 0o600 });
+    fs.chmodSync(file, 0o600);
+  '
+  say "已把 livekit.yaml 与 channel.json 改到 $PICK 那一组"
+fi
+
+exec "$BIN" --config "$CONF"

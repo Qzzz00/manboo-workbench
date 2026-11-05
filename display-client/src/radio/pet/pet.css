@@ -1,0 +1,95 @@
+/* src/radio/pet/pet.css
+ * 宠物玩法 UI（设计画布 480×640 坐标）。独立文件不动 radio.css（那边常有 WIP）。
+ * z 序：舞台0 < 播放器10 < 角标20 < 爱心30 < 面板40 < 拖拽贴图45 < 状态栏50(pointer-events:none) */
+.pet-badge-wrap {
+  position: absolute;
+  left: 12px;
+  top: 52px; /* 状态栏 44px 之下 */
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pet-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+}
+.pet-badge:active { transform: scale(0.94); }
+.pet-badge-heart { font-size: 20px; }
+.pet-badge-level { font-size: 18px; font-weight: 600; }
+.pet-bubble {
+  max-width: 230px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #333;
+  font-size: 20px;
+  white-space: nowrap;
+  animation: pet-bubble-in 200ms ease-out;
+}
+@keyframes pet-bubble-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.pet-panel-backdrop { position: absolute; inset: 0; z-index: 40; }
+.pet-panel {
+  position: absolute;
+  left: 12px;
+  top: 100px;
+  width: 264px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(20, 20, 20, 0.88);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pet-hearts { font-size: 30px; color: #ff6584; letter-spacing: 4px; }
+.pet-status { font-size: 20px; opacity: 0.9; }
+.pet-snacks { display: flex; gap: 10px; }
+.pet-snack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 0;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  touch-action: none; /* 按住直接拖出，别被浏览器手势吃掉 */
+}
+.pet-snack--fav { background: rgba(255, 101, 132, 0.25); }
+.pet-snack-emoji { font-size: 30px; }
+.pet-snack-label { font-size: 16px; opacity: 0.85; }
+.pet-counters { font-size: 16px; opacity: 0.6; }
+.pet-drag-ghost {
+  position: absolute;
+  z-index: 45;
+  font-size: 40px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  /* 飞行：tapFeedSnack 设起点帧后 30ms 切终点帧，这里的 transition 接管滑行。
+   * x 快出 y 慢起 = 一点抛物线感。时长与 usePetPlay 的 FLIGHT_MS(450) 对齐。 */
+  transition: left 450ms cubic-bezier(0.25, 0.8, 0.4, 1), top 450ms cubic-bezier(0.55, 0, 0.8, 0.6);
+}
+.pet-heart {
+  position: absolute;
+  z-index: 30;
+  font-size: 26px;
+  pointer-events: none;
+  animation: pet-heart-float 1.1s ease-out forwards;
+}
+@keyframes pet-heart-float {
+  from { opacity: 0.95; transform: translate(-50%, 0); }
+  to { opacity: 0; transform: translate(-50%, -70px); }
+}

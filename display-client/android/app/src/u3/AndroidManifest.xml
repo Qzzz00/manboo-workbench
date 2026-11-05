@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- U3 电台桌面 flavor 专属。phone flavor 不含本文件。
+         FOREGROUND_SERVICE(+MEDIA_PLAYBACK)、READ_EXTERNAL_STORAGE(maxSdk32) 主 manifest 已有，不重复声明。 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- 电池优化豁免申请：careai ROM 会在灭屏约12分钟后按 app-idle 杀前台播放服务（task-10 实锤），
+         首启由 RadioLauncherPlugin.requestBatteryExemption 拉起系统授权弹窗，用户允许后电台才能整日不断播。 -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- 应用抽屉需要枚举可启动应用（Android 11+ 包可见性） -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
+    <application>
+        <!-- 桌面声明：系统按 HOME 键/开机进入本 App。
+             showWhenLocked：配合 MainActivity.onResume 的 requestDismissKeyguard 消灭锁屏时钟层
+             （此 careai ROM 无视 locksettings set-disabled，唤醒仍出锁屏，只能 APK 内根治）。
+             screenOrientation：U3 无重力方向锁，实机验证过不锁会横过来，锁死竖屏。 -->
+        <activity
+            android:name=".MainActivity"
+            android:showWhenLocked="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".RadioPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

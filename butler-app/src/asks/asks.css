@@ -1,0 +1,91 @@
+/* 事务官问你的话、要你批的事(2026-09-25,卡 M)。只做深色、不用蓝;主按钮白底黑字,其余描边;等你的琥珀色。 */
+.ba-asks-page { position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; background: #000; color: #eee; }
+.ba-asks-page__body { flex: 1 1 auto; overflow-y: auto; padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 24px); display: flex; flex-direction: column; gap: 14px; }
+.ba-ask { display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.05); }
+.ba-ask__head { margin: 0; font-size: 12px; line-height: 1.5; color: rgba(235, 235, 235, 0.55); }
+.ba-ask__head strong { color: rgba(245, 245, 245, 0.85); font-weight: 600; }
+.ba-ask__item { display: flex; flex-direction: column; gap: 10px; }
+.ba-ask__item + .ba-ask__item { border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px; }
+.ba-ask__sub { margin: 0; font-size: 12px; color: rgba(235, 235, 235, 0.55); }
+.ba-ask__say { margin: 0; font-size: 15px; line-height: 1.7; color: #f4f4f4; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ba-ask__say--strong { font-weight: 600; }
+/* 派活那一问的大字第一行(2026-09-28,卡 UX):「把「…」派给 Claude?」比正文大一档 —— 他要先看清这个。 */
+.ba-ask__say[data-head="true"] { font-size: 19px; line-height: 1.45; font-weight: 700; }
+/* 别家收起来那一行(同上):一行名字 + 「展开看额度」,不再一整面额度压在这一问前面。 */
+.ba-ask__others { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; font-size: 12px; line-height: 1.5; color: rgba(235, 235, 235, 0.55); }
+.ba-ask__others .ba-ask__raw-toggle { align-self: baseline; }
+/* 首页点某一行进来时,这一页只摆那一件:剩下的收在这一颗后面(同上)。 */
+.ba-asks-page__more { align-self: flex-start; min-height: 44px; padding: 6px 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(245, 245, 245, 0.85); font: inherit; font-size: 14px; }
+.ba-ask__detail { margin: 0; font-size: 13px; line-height: 1.6; color: rgba(235, 235, 235, 0.72); white-space: pre-wrap; overflow-wrap: anywhere; }
+.ba-ask__scope { margin: 0; font-size: 12px; line-height: 1.55; color: #e3b76a; }
+/* 派活确认点(卡 O):能派给的几家一家一行,各带额度那一格(有数 / 不限 / 没接上:原因)。 */
+.ba-ask__options { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.ba-ask__options li { font-size: 13px; line-height: 1.5; color: rgba(235, 235, 235, 0.72); overflow-wrap: anywhere; }
+.ba-ask__options li b { font-weight: 600; color: rgba(245, 245, 245, 0.95); }
+.ba-ask__options li[data-state="unconnected"] span { color: #e3b76a; }
+.ba-ask__options li[data-chosen="true"] b { text-decoration: underline; text-underline-offset: 3px; }
+/* 上次读到的、已经老了的那个数(2026-09-26,卡 QS):这一行画淡 —— 那句话里已经写着几点读到的。 */
+.ba-ask__options li[data-stale="true"] span { color: rgba(235, 235, 235, 0.55); }
+.ba-ask__options { display: flex; flex-direction: column; gap: 8px; }
+.ba-ask__option { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.16); background: transparent; color: #f4f4f4; font: inherit; text-align: left; }
+.ba-ask__option:first-child { background: #fff; color: #111; border-color: transparent; }
+.ba-ask__option[data-on='true'] { outline: 2px solid rgba(255, 255, 255, 0.75); outline-offset: 1px; }
+.ba-ask__option:disabled { opacity: 0.5; }
+.ba-ask__option-text { font-size: 15px; font-weight: 600; line-height: 1.4; }
+.ba-ask__option-note { font-size: 12px; line-height: 1.45; opacity: 0.72; }
+/*
+ * ── 「我自己说」那个框吸底(2026-10-03,卡 claude/phone-saybox-pinned)──
+ *
+ * 维护者 10-03 上午从手机捎来:「给 Agent 发信息的输入框没有默认置顶,用起来得自己下滑,很难受。」
+ * 这一页是一张一张卡往下排,框在每张卡的最底下 —— 问题长、选项多(权限那几颗键、派活那几家)时
+ * 它就掉到屏幕外面去了,她得先滑下去才能打字。
+ *
+ * sticky bottom:那张卡还在屏上,框就浮在屏幕下沿(与会话详情那张卡的吸底同一个位置,拇指不用挪);
+ * 滑到那张卡的底了它才落回原处。不是 fixed —— 一页上可能摆着好几张卡,浮的得是**她正在看的那一张**的框。
+ * bottom 往上借一截安全区 + 10px:浮着的时候别压在手势条上;落回原处时这个数不起作用。
+ * 底色由摆它的那一页给(`--ba-ask-dock-bg`):底下那几行字不能从它身上透过来。
+ * 软键盘弹起时这一页整个的下边界收到键盘上沿(viewport/keyboard.css),框于是浮在键盘上面。
+ */
+.ba-ask__own {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  position: sticky; bottom: calc(var(--ba-safe-bottom, 0px) + 10px); z-index: 1;
+  padding: 6px 0; background: var(--ba-ask-dock-bg, transparent);
+}
+.ba-asks-page { --ba-ask-dock-bg: #0d0d0d; }
+/*
+ * 「已送到 · 10:38」(同上):送到了才有(asks/AskCards.tsx)。
+ * 它是 `.ba-ask__own` 的**第一个孩子**、占满一行(flex: 0 0 100%)—— 于是它跟着那一格一起吸底:
+ * 摆在那一格外面的话,卡一长它就滑出屏幕,等于没提示(维护者要的正是「看得见」这一下)。
+ */
+.ba-ask__sent { flex: 0 0 100%; margin: 0; font-size: 13px; line-height: 1.55; font-weight: 600; color: rgba(245, 245, 245, 0.95); }
+.ba-ask__own input::placeholder { color: rgba(235, 235, 235, 0.5); }
+.ba-ask__own input { flex: 1 1 auto; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.04); color: #f4f4f4; font: inherit; font-size: 15px; }
+.ba-ask__send, .ba-ask__yes { flex: none; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: #fff; color: #111; font: inherit; font-size: 14px; font-weight: 600; }
+.ba-ask__send:disabled, .ba-ask__yes:disabled, .ba-ask__ghost:disabled { opacity: 0.45; }
+.ba-ask__acts { display: flex; flex-wrap: wrap; gap: 8px; }
+/* text-wrap: balance:「这件事里改「某某」这个仓库都允许」在窄屏上折成两行时两行差不多长,不留一个「许」字孤零零在第二行。 */
+.ba-ask__ghost { min-height: 44px; padding: 6px 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(245, 245, 245, 0.85); font: inherit; font-size: 14px; line-height: 1.35; text-wrap: balance; }
+.ba-ask__name { white-space: nowrap; }
+.ba-ask__raw-toggle { align-self: flex-end; border: 0; background: transparent; color: rgba(235, 235, 235, 0.45); font: inherit; font-size: 12px; padding: 4px 0; }
+.ba-ask__raw { margin: 0; max-height: 180px; overflow: auto; padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); color: rgba(235, 235, 235, 0.55); font: 11px/1.5 ui-monospace, Menlo, monospace; white-space: pre-wrap; word-break: break-all; }
+.ba-ask__err { margin: 0; font-size: 13px; color: #e0908a; }
+.ba-asks-page__done { margin: 4px 2px; font-size: 13px; color: rgba(235, 235, 235, 0.55); }
+
+/*
+  「等你确认」那一条带上前因后果(2026-10-04,卡 `claude/ask-with-context`)。
+  维护者原话:「每次要确认内容的信息都很短,我都不知道发生了什么,还得自己去最近的会话找上下文,这个不好」。
+
+  那一问的原文长了先折成八行(约 140 字;手机一屏里还要留得下选项与「我自己说」那个框),
+  一颗「展开全文」摊开。**折的是显示,字一个都没少** —— 读屏、长按复制拿到的都是整段。
+*/
+.ba-ask__say[data-folded="true"] { display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden; }
+.ba-ask__header { margin: 0; font-size: 11px; letter-spacing: 0.04em; color: rgba(235, 235, 235, 0.45); }
+/* 它刚才在干什么:最近几轮那一段。与那一问之间一条细线 —— 上面是要她答的,下面是前因。 */
+.ba-ask__context { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px; }
+.ba-ask__project { margin: 0; font-size: 12px; color: rgba(235, 235, 235, 0.55); }
+/* 底下那一排小键(「不用管这条」「打开整段对话」)。 */
+.ba-ask__foot { display: flex; justify-content: flex-end; gap: 14px; }
+
+/* 别家会话在等你、答了送不回去时的选项(卡 T):只摆字,不画成按不动的按钮。 */
+.ba-ask__plain-options { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ba-ask__plain-options li { display: flex; flex-direction: column; gap: 2px; padding: 9px 12px; border-radius: 12px; border: 1px dashed rgba(255, 255, 255, 0.18); color: rgba(255, 255, 255, 0.72); }

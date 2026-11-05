@@ -1,0 +1,249 @@
+{
+  "role": "shuangsheng",
+  "kind": "motion",
+  "version": "v3",
+  "items": [
+    {
+      "id": "blink",
+      "file": "motions/blink.motion3.json",
+      "group": "blink",
+      "loop": true,
+      "kind": "idle",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "眨眼，纳入待机"
+    },
+    {
+      "id": "blow_kiss",
+      "file": "motions/blow_kiss.motion3.json",
+      "group": "blow_kiss",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "cheer",
+      "file": "motions/cheer.motion3.json",
+      "group": "cheer",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "cradle",
+      "file": "motions/cradle.motion3.json",
+      "group": "cradle",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "dance",
+      "file": "motions/dance.motion3.json",
+      "group": "dance",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "开心蹦跶一下（短动作，非全身舞）",
+      "keywords": ["跳舞", "跳一支", "蹦跶", "来一段"]
+    },
+    {
+      "id": "ear_perk",
+      "file": "motions/ear_perk.motion3.json",
+      "group": "ear_perk",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "giggle",
+      "file": "motions/giggle.motion3.json",
+      "group": "giggle",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "good_morning",
+      "file": "motions/good_morning.motion3.json",
+      "group": "good_morning",
+      "loop": false,
+      "kind": "greeting",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "早安打招呼",
+      "keywords": ["早安", "早上好", "早"]
+    },
+    {
+      "id": "greeting",
+      "file": "motions/greeting.motion3.json",
+      "group": "greeting",
+      "loop": false,
+      "kind": "greeting",
+      "emotion": "neutral",
+      "intensity": "medium",
+      "hint": "通用打招呼",
+      "keywords": ["你好", "哈喽", "hi", "嗨"]
+    },
+    {
+      "id": "happy",
+      "file": "motions/happy.motion3.json",
+      "group": "happy",
+      "loop": false,
+      "kind": "pose",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "摇摆身体思考（非高兴）",
+      "keywords": ["想想", "琢磨", "让我想", "思考一下", "寻思"]
+    },
+    {
+      "id": "hide_face",
+      "file": "motions/hide_face.motion3.json",
+      "group": "hide_face",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "idle",
+      "file": "motions/idle.motion3.json",
+      "group": "idle",
+      "loop": true,
+      "kind": "idle",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "待机主循环"
+    },
+    {
+      "id": "idle2",
+      "file": "motions/idle2.motion3.json",
+      "group": "idle2",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "angry",
+      "intensity": "light",
+      "hint": "撅嘴+摇身+摇头闹别扭",
+      "keywords": ["闹别扭", "撅嘴", "生气", "哼哼", "不理你"]
+    },
+    {
+      "id": "look_around",
+      "file": "motions/look_around.motion3.json",
+      "group": "look_around",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "nod",
+      "file": "motions/nod.motion3.json",
+      "group": "nod",
+      "loop": false,
+      "kind": "head",
+      "emotion": "neutral",
+      "intensity": "medium",
+      "hint": "点头认可",
+      "keywords": ["好的", "嗯嗯", "是的", "明白", "知道了"]
+    },
+    {
+      "id": "panic",
+      "file": "motions/panic.motion3.json",
+      "group": "panic",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "surprised",
+      "intensity": "light",
+      "hint": "\"原来如此\"顿悟（正向轻惊讶）",
+      "keywords": ["原来如此", "顿悟", "懂了", "这样啊", "啊对"]
+    },
+    {
+      "id": "pout",
+      "file": "motions/pout.motion3.json",
+      "group": "pout",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "shake",
+      "file": "motions/shake.motion3.json",
+      "group": "shake",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "俏皮可爱（非摇头否认）",
+      "keywords": ["俏皮", "可爱", "嘿嘿", "调皮", "卖萌"]
+    },
+    {
+      "id": "shy",
+      "file": "motions/shy.motion3.json",
+      "group": "shy",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "shy",
+      "intensity": "medium",
+      "hint": "害羞",
+      "keywords": ["害羞死了", "好羞", "羞羞", "害羞", "不好意思"]
+    },
+    {
+      "id": "sleepy",
+      "file": "motions/sleepy.motion3.json",
+      "group": "sleepy",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "stretch",
+      "file": "motions/stretch.motion3.json",
+      "group": "stretch",
+      "loop": false,
+      "kind": "disabled",
+      "hint": "剔除触发池",
+      "keywords": []
+    },
+    {
+      "id": "surprised",
+      "file": "motions/surprised.motion3.json",
+      "group": "surprised",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "happy",
+      "intensity": "strong",
+      "hint": "很开心的强反应（非惊讶）",
+      "keywords": ["好开心", "太棒了", "哇哦", "超级棒", "赞"]
+    },
+    {
+      "id": "swing",
+      "file": "motions/swing.motion3.json",
+      "group": "swing",
+      "loop": false,
+      "kind": "pose",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "轻摇",
+      "keywords": ["晃", "摇晃", "轻晃"]
+    },
+    {
+      "id": "think",
+      "file": "motions/think.motion3.json",
+      "group": "think",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "surprised",
+      "intensity": "medium",
+      "hint": "被吓一跳（非思考）",
+      "keywords": ["吓一跳", "吓到了", "哇啊"]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+/* 动效配角(2026-09-23)。独占 ba-fx 前缀;另有几条挂在原组件类名下,只管「包了一层之后版面照旧」。 */
+
+/* 包一层不占版面;库的外壳接过原来那一格。 */
+.ba-fx { display: contents; }
+.ba-fx > .ba-fx__beam { min-width: 0; min-height: 0; }
+
+/* 首页卡片:光的外壳是网格里的那一格,卡片撑满它。 */
+.ba-cards > .ba-fx > .ba-fx__beam { display: flex; }
+.ba-cards .ba-fx__beam > .ba-cards__card { flex: 1 1 auto; }
+
+/* 底部输入框:外壳接过 flex:1。 */
+.ba-scene__dock > .ba-fx > .ba-fx__beam { flex: 1 1 auto; min-width: 0; display: flex; }
+.ba-scene__dock .ba-fx__beam > .ba-scene__field { flex: 1 1 auto; }
+
+/* 通话页底边的声音光:一层不接点击的底板,压在三颗键下面。 */
+/* 只占底下四分之一,上沿渐隐(不出一道硬边),永远够不着球。 */
+.ba-fx__voicefloor {
+  display: block; position: absolute; left: 0; right: 0; bottom: 0; height: 26%; pointer-events: none; z-index: 0;
+  -webkit-mask-image: linear-gradient(to top, #000 55%, transparent); mask-image: linear-gradient(to top, #000 55%, transparent);
+}
+.ba-fx__voice, .ba-fx__voicebox { width: 100%; height: 100%; }
+.ba-call__dock { position: relative; z-index: 1; }
+.ba-call__captions { position: relative; z-index: 1; }

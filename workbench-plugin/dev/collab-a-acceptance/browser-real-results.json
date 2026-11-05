@@ -1,0 +1,62 @@
+[
+  {
+    "name": "桌面:弹窗开(真 /state)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "桌面:来源列出(单来源=一行「发给:」;多来源=带空档的选择)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "桌面:送进真 DSH 会话(回执「捎到了」)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "桌面:那句话真落在会话里(turns 读到)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "桌面:整页重载草稿还在(真例)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "375:这一格摆出来(真例)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "375:送到真会话(回执「捎到了」)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "375:那句话真落在会话里",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "375:断网 → 屏上说「没送到」",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "375:恢复后同句送达(turns 里出现)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "375:重载草稿还在(真例)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "375:无横向溢出",
+    "ok": true,
+    "detail": ""
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "_说明": "卡 Q:自动发现两道都判不出的那一家(Mosaic)挂进卡 M 的提问经纪人之后,/state 里的样子。电脑这边 tests/server-agent-ask.test.ts 核对它就是服务端真拼出来的那一份(提问经纪人的 id 记作 q-agent),tests/client-agent-registry.test.tsx 与手机 butler-app/tests/agentAsk.test.tsx 喂的都是它:「等你」一个数、球下与「等你确认」同一张卡。",
+  "now": "2026-09-25T02:00:00.000Z",
+  "stale": false,
+  "agents": [],
+  "sessions": [],
+  "quota": {},
+  "tasks": { "tasks": [], "sprints": [], "modules": [], "project_meta": [] },
+  "butler_inbox": { "items": [] },
+  "questions": [
+    {
+      "id": "q-agent",
+      "session_id": "workbench:agent-discovery",
+      "at": "2026-09-25T02:00:00.000Z",
+      "questions": [
+        {
+          "id": "agent-connect",
+          "header": "Mosaic 像是个 Agent",
+          "question": "要接上吗?接上以后只看它在不在跑、会话标题和最新一句,别的聊天内容不存、不往外发;只看,不动它。",
+          "detail": "为什么这么看:窗口里有对话区、输入框、发送键、「新对话」入口;回话的是不是 AI 拿不准(假模型带界面字:Mosaic)",
+          "multi": false,
+          "options": [
+            { "label": "接上", "text": "接上", "note": "顶上多一颗它的灯,会话列表里看得到它在忙什么" },
+            { "label": "不是 Agent", "text": "不是 Agent", "note": "以后不判、不读它" },
+            { "label": "先不管", "text": "先不管", "note": "先不接,7 天后再问" }
+          ]
+        }
+      ]
+    }
+  ],
+  "approvals": [],
+  "agent_registry": {
+    "entries": [],
+    "asking": [
+      {
+        "id": "com.example.mosaic",
+        "name": "Mosaic",
+        "question": "Mosaic 像是个 Agent,要接上吗?",
+        "basis": "窗口里有对话区、输入框、发送键、「新对话」入口;回话的是不是 AI 拿不准(假模型带界面字:Mosaic)",
+        "at": "2026-09-25T02:00:00.000Z"
+      }
+    ],
+    "notices": []
+  },
+  "waiting": {
+    "count": 1,
+    "items": [
+      { "key": "question:q-agent", "kind": "question", "verb": "答", "text": "事务官问你:Mosaic 像是个 Agent" }
+    ]
+  }
+}

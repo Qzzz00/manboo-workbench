@@ -1,0 +1,100 @@
+[
+  {
+    "at": "2026-10-24T01:30:43.972Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": true
+  },
+  {
+    "at": "2026-10-24T01:32:15.187Z",
+    "name": "model-pointed-own",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "at": "2026-10-24T01:32:15.382Z",
+    "name": "relay-test-account",
+    "ok": true,
+    "registered": true
+  },
+  {
+    "at": "2026-10-24T01:32:15.412Z",
+    "name": "phone-paired",
+    "ok": true
+  },
+  {
+    "at": "2026-10-24T01:32:16.427Z",
+    "name": "butler-voice",
+    "up": true
+  },
+  {
+    "at": "2026-10-24T01:32:16.539Z",
+    "name": "upstream-real-understand",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。"
+  },
+  {
+    "at": "2026-10-24T01:32:20.500Z",
+    "name": "upstream-real-reply",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.98,\"why\":\"明说要记的一件\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.99,\"why\":\"「顺便再记一下」引出的另一件，单独一条不合并\"}]}\n\n"
+  },
+  {
+    "at": "2026-10-24T01:32:32.193Z",
+    "name": "cell-p6-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:32:32.312Z",
+    "name": "upstream-real-understand",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。"
+  },
+  {
+    "at": "2026-10-24T01:32:36.941Z",
+    "name": "upstream-real-reply",
+    "said": "周四发样片。哦，对，顺便再记一下，周五交发票。",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.97,\"why\":\"首件是要记的事，她明确说「顺便再记一下」只挂第二件，首件同样入记\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.99,\"why\":\"「哦，对，顺便再记一下」引出另一件，单独一条不合并\"}]}\n\n"
+  },
+  {
+    "at": "2026-10-24T01:32:56.762Z",
+    "name": "cell-p6-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-24T01:32:56.836Z",
+    "name": "matrix-end",
+    "checksFailed": [],
+    "limitation": "电话两列是 1b 未跑;真手机未验;真云模型=真 Kimi 桥"
+  },
+  {
+    "at": "2026-10-24T01:32:58.835Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

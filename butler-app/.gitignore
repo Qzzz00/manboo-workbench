@@ -1,0 +1,19 @@
+node_modules/
+dist/
+*.tsbuildinfo
+# 由 scripts/write-build-stamp.mjs 每次构建现生(源码指纹 + 版本号),不入库。
+# version.properties 不忽略的话,构建一次就把 butler-app/ 翻成 dirty,发版那头的指纹核对当场 die。
+public/build.json
+android/version.properties
+# 由 scripts/sync-display.mjs 从 display-client 生成/拷贝,不入库
+public/display/
+public/backgrounds/
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+android/capacitor-cordova-android-plugins/

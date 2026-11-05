@@ -1,0 +1,17 @@
+{
+  "note": "语气 → 火山大模型音色参数。**这是一张配置表,不是写死的代码**(STELLA #501 的做法:映射放配置、没有对应就退回中性)。键是 channel-worker/src/tts/tone.ts 的短列表 id,改那边就要改这里(对照用例 tests/tts-tone.test.mjs)。整张表可以用环境变量 BUTLER_TTS_TONE_MAP 指向另一份 JSON 覆盖,真机上调语气不用改代码、不用发版。",
+  "fields": "emotion → audio_params.emotion(2.0 音色;V1 大模型音色同名那一格);emotion_scale → audio_params.emotion_scale(1–5,火山缺省 4);context_text → additions.context_texts[0],一句自然语言语气指令,**只有 2.0 音色(走 /api/v3/tts/unidirectional)吃**。",
+  "v1_caveat": "走 V1 那条路(今天默认音色就走它,见 volcengine.cjs 的 needsV3Voice)时,emotion 还要再经 volcengine.cjs 的 VOLC_EMOTION 收一遍 —— 填一个那张表里没有的值(比如 comfort),V1 上会退化成「不带情绪」,V3 上照发。所以这张表里的 emotion 请从 VOLC_EMOTION 的键里挑(neutral/happy/sad/angry/surprised/excited/shy/gentle)。",
+  "unverified": "2026-10-02:emotion / emotion_scale / context_texts 三个字段名与取值按火山公开文档与实测博文写(docs.volcengine.com 6561/1598757、apifox 豆包语音合成 2.0、豆包 TTS 接入手册)。这台机器上没有密钥,**一次真的火山都没跑过** —— 待真机核,见 docs/交接-1002-语气跟着话走.md。",
+  "version": 1,
+  "default_emotion_scale": 4,
+  "tones": {
+    "calm": { "context_text": "语气平静自然,像平常说话" },
+    "happy": { "emotion": "happy", "emotion_scale": 4, "context_text": "语气轻快、带点高兴" },
+    "care": { "emotion": "gentle", "emotion_scale": 4, "context_text": "语气温柔关切,慢一点" },
+    "sorry": { "emotion": "sad", "emotion_scale": 3, "context_text": "语气带点歉意,低一点" },
+    "urgent": { "emotion": "excited", "emotion_scale": 3, "context_text": "语气急一点、快一点" },
+    "soft": { "emotion": "gentle", "emotion_scale": 2, "context_text": "压低声音轻声说" },
+    "ask": { "context_text": "用询问的语气说,句尾微微上扬" }
+  }
+}

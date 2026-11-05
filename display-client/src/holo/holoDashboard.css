@@ -1,0 +1,589 @@
+/* 全息屏横屏仪表盘样式（对齐 Figma node 2010:2）。
+   ★铁律★：本文件经 App.tsx 被打进移动端主客户端 bundle，故所有规则必须 :root[data-holo] 作用域，
+   只在 holo 页(<html data-holo="1">)生效，移动端主客户端(无此属性)一律不匹配、零影响。
+
+   配色照 Figma 白调（浅白磨砂 + #404040 深灰字），Ben 定的方向。变量集中在 .holo-dash--figma，便于日后切主题。
+
+   ★老 WebView 铁律★：本面要在 ThinkSmart View（Android 8.1 出厂 **Chrome 61** WebView）上跑，
+   下面几样它一概不认，命中即**整条声明作废**（不是降级，是没有）：
+     `clamp()`(79+) `min()/max()`(79+) `inset`(87+) `aspect-ratio`(88+)
+     flex 的 `gap`(84+) 渐变双位置色标 `color 0 1px`(71+)
+   实测后果：字号全塌回 16px、播放器药丸从 240px 撑到 770px 糊满整屏、唱片不见、刻度尺整排不见。
+   故本文件的写法约定：
+     · clamp() 前面必须先写一行等值 px 兜底（老引擎丢 clamp 用兜底，现代引擎后写的 clamp 覆盖它）；
+       兜底值 = clamp 在 788px 宽视口下的解析结果，两条路径所见一致；
+     · inset / flex gap / 双位置色标 一律直接写成全浏览器通吃的等价长写，不留新语法；
+     · aspect-ratio 保留，另配 ::before padding-top 撑高兜底。 */
+
+/* —— holo 下隐藏默认主页 chrome，只留角色 + 仪表盘 —— */
+:root[data-holo] .composer,
+:root[data-holo] .messages,
+:root[data-holo] .mobile-floating-actions,
+:root[data-holo] .mobile-home-actions,
+:root[data-holo] .home-overlay,
+:root[data-holo] .stage-hint,
+:root[data-holo] .stage-status {
+  display: none !important;
+}
+
+/* —— 仪表盘根层 —— */
+:root[data-holo] .holo-dash {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  pointer-events: none;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+:root[data-holo] .holo-dash--figma {
+  --holo-ink: #404040;
+  --holo-ink-dim: #999999;
+  --holo-panel: rgba(245, 245, 245, 0.8);
+  --holo-line: #404040;
+  color: var(--holo-ink);
+}
+
+/* —— 左侧白色渐变蒙版：让左列文字压在角色上可读（Figma node 2010:8，宽约 40vw）—— */
+:root[data-holo] .holo-left-scrim {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 42%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.72) 46%,
+    rgba(255, 255, 255, 0.5) 68%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* —— 通用面板层：绝对定位，位于蒙版之上 —— */
+:root[data-holo] .holo-glass {
+  position: absolute;
+  z-index: 2;
+}
+
+/* ═══════════ 左上：日期 + 大时钟 + 天气 ═══════════ */
+:root[data-holo] .holo-clock {
+  top: 11vh;
+  left: 2.3vw;
+  width: 240px;
+  width: clamp(240px, 24vw, 300px);
+  text-align: center;
+}
+:root[data-holo] .holo-date {
+  font-size: 14px;
+  font-size: clamp(14px, 1.5vw, 18px);
+  font-weight: 500;
+  color: var(--holo-ink);
+}
+:root[data-holo] .holo-clock-time {
+  font-size: 66px;
+  font-size: clamp(58px, 8.4vw, 104px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 1px;
+  color: var(--holo-ink);
+  font-variant-numeric: tabular-nums;
+}
+:root[data-holo] .holo-weather {
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-size: clamp(14px, 1.5vw, 18px);
+  font-weight: 500;
+  color: var(--holo-ink);
+}
+:root[data-holo] .holo-weather-main {
+  display: inline-flex;
+  align-items: center;
+}
+/* gap 的 flex 版本要 Chrome 84，老 WebView 用 margin 等价代替（现代浏览器同样生效，值一致） */
+:root[data-holo] .holo-weather > * + * {
+  margin-left: 12px;
+}
+:root[data-holo] .holo-weather-main > * + * {
+  margin-left: 8px;
+}
+:root[data-holo] .holo-weather-icon {
+  font-size: 1.2em;
+}
+
+/* ═══════════ 左下：番茄钟 ═══════════ */
+/* ═══════════ 左中：黄历 + 一言（无底板悬浮） ═══════════ */
+/* 全息屏铁律：白/浅色=不显示 → 全卡纯黑字，层级只靠字号字重。
+   z-index 必须 ≥2：左蒙版 z1，不设会被蒙版盖住发白。宽度与时钟卡同款=同轴居中。 */
+:root[data-holo] .holo-almanac {
+  position: absolute;
+  z-index: 2;
+  left: 2.3vw;
+  top: 36vh;
+  width: 240px;
+  width: clamp(240px, 24vw, 300px);
+  text-align: center;
+  color: #111;
+}
+:root[data-holo] .holo-almanac-date {
+  font-size: 24px;
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+:root[data-holo] .holo-almanac-sub {
+  margin-top: 4px;
+  font-size: 14px;
+  font-size: clamp(14px, 1.5vw, 18px);
+}
+:root[data-holo] .holo-almanac-line {
+  margin-top: 10px;
+  font-size: 14px;
+  font-size: clamp(14px, 1.6vw, 18px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:root[data-holo] .holo-almanac-line + .holo-almanac-line {
+  margin-top: 6px;
+}
+:root[data-holo] .holo-almanac-tag {
+  display: inline-block;
+  margin-right: 8px;
+  font-weight: 700;
+}
+:root[data-holo] .holo-almanac-quote {
+  margin-top: 12px;
+  font-size: 13px;
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+:root[data-holo] .holo-pomodoro {
+  left: 2.3vw;
+  bottom: 4vh;
+  width: 240px;
+  width: clamp(240px, 24vw, 300px);
+  padding: 20px 15px 26px;
+  border: 1px solid var(--holo-line);
+  border-radius: 24px;
+  background: var(--holo-panel);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-align: center;
+  box-sizing: border-box;
+}
+:root[data-holo] .holo-pomo-label {
+  font-size: 16px;
+  font-size: clamp(16px, 1.8vw, 20px);
+  font-weight: 600;
+  color: var(--holo-ink);
+}
+:root[data-holo] .holo-pomo-time {
+  margin: 14px 0 16px;
+  font-size: 47px;
+  font-size: clamp(44px, 6vw, 56px);
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--holo-ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+:root[data-holo] .holo-pomo-tip {
+  margin: 10px 0 4px;
+  font-size: 12px;
+  font-size: clamp(12px, 1.3vw, 15px);
+  color: #c04a4a;
+}
+:root[data-holo] .holo-pomo-tip--rest {
+  color: #4a90c0;
+}
+/* 刻度尺：主刻度(高) + 次刻度(矮)，中央三角游标（纯装饰，对齐 Figma） */
+:root[data-holo] .holo-pomo-ruler {
+  position: relative;
+  height: 18px;
+  margin: 0 4px;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--holo-ink) 0,
+      var(--holo-ink) 1px,
+      transparent 1px,
+      transparent 13px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--holo-ink) 0,
+      var(--holo-ink) 1px,
+      transparent 1px,
+      transparent 6.5px
+    );
+  background-position: bottom, bottom;
+  background-size: 100% 16px, 100% 6px;
+  background-repeat: repeat-x;
+  opacity: 0.85;
+}
+:root[data-holo] .holo-pomo-ruler-cursor {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid var(--holo-ink);
+}
+
+/* ═══════════ 右侧：满高音乐播放器药丸 ═══════════ */
+:root[data-holo] .holo-player {
+  top: 3.6vh;
+  right: 2.3vw;
+  width: 240px;
+  width: clamp(240px, 23.3vw, 300px);
+  height: 92.5vh;
+  padding: 0 24px 20px;
+  border: 1px solid var(--holo-line);
+  border-radius: 140px 140px 24px 24px;
+  background: var(--holo-panel);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* 顶部弧形 "• MUSIC PLAYER •" 曲线文字 */
+:root[data-holo] .holo-player-arc {
+  width: 100%;
+  height: auto;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+:root[data-holo] .holo-player-arc-text {
+  fill: var(--holo-ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 4px;
+}
+
+/* —— 黑胶唱机 —— */
+/* ★唱盘是本面唯一可交互元素：点按播放/暂停、左滑下一首、右滑上一首。
+   .holo-dash 整体是 pointer-events:none（纯展示层），故此处显式开回来。
+   touch-action:none 阻止浏览器把滑动吃成滚动/缩放；user-select:none 防长按选字——
+   两者缺一，长按都会被判成文本选择并发出 pointercancel，手势直接断（掌机 PTT 踩过）。 */
+:root[data-holo] .holo-turntable {
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  /* 触摸后浏览器会给它焦点并画一圈高亮框（真机上是橙色描边）——纯展示大屏不需要焦点态 */
+  outline: none;
+  position: relative;
+  width: 72%;
+  aspect-ratio: 1;
+  margin: 2% 0 5%;
+  flex-shrink: 0;
+}
+/* 老 WebView（Chrome 61）无 aspect-ratio → 唱机盒高度塌成 0、整个唱片不见。
+   ::before 的 padding-top:100% 按自身宽度撑出正方形，现代浏览器与 aspect-ratio 同尺寸、无副作用。 */
+:root[data-holo] .holo-turntable::before {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+:root[data-holo] .holo-vinyl {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+  /* 纹路层必须 closest-side：默认 farthest-corner 的 repeating-radial 会触发本引擎圆角裁切 bug(顶部被切平)。
+     半透明沟纹叠在实底 radial 上，实底保证是完整正圆。 */
+  background:
+    repeating-radial-gradient(
+      circle closest-side at 50% 50%,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 1.5px,
+      rgba(0, 0, 0, 0) 1.5px,
+      rgba(0, 0, 0, 0) 4px
+    ),
+    radial-gradient(circle at 50% 50%, #2a2a2a 0%, #050505 72%);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+:root[data-holo] .holo-vinyl--spin {
+  animation: holo-spin 4s linear infinite;
+}
+@keyframes holo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+:root[data-holo] .holo-vinyl-label {
+  position: absolute;
+  top: 26%;
+  right: 26%;
+  bottom: 26%;
+  left: 26%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c6d9ec, #99b2cd);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.5), 0 0 0 6px rgba(0, 0, 0, 0.55);
+}
+:root[data-holo] .holo-vinyl-note {
+  font-size: 2vw;
+  color: rgba(255, 255, 255, 0.92);
+}
+:root[data-holo] .holo-vinyl-hole {
+  position: absolute;
+  width: 10%;
+  height: 10%;
+  border-radius: 50%;
+  background: #0a0a0a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+/* —— 唱臂：右上枢轴 + 斜臂 + 唱头，播放时压到唱片 —— */
+:root[data-holo] .holo-tonearm {
+  position: absolute;
+  top: -6%;
+  right: -4%;
+  width: 34%;
+  height: 60%;
+  transform-origin: 84% 12%;
+  transform: rotate(-18deg);
+  transition: transform 0.5s ease;
+}
+:root[data-holo] .holo-tonearm--on {
+  transform: rotate(6deg);
+}
+:root[data-holo] .holo-tonearm-pivot {
+  position: absolute;
+  top: 0;
+  right: 8%;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  border: 1px solid var(--holo-line);
+}
+:root[data-holo] .holo-tonearm-bar {
+  position: absolute;
+  top: 14px;
+  right: 18%;
+  width: 3px;
+  height: 100%;
+  background: var(--holo-ink);
+  border-radius: 2px;
+  transform: rotate(24deg);
+  transform-origin: top center;
+}
+:root[data-holo] .holo-tonearm-head {
+  position: absolute;
+  bottom: -4%;
+  left: 6%;
+  width: 14px;
+  height: 20px;
+  border-radius: 3px;
+  background: var(--holo-ink);
+  transform: rotate(24deg);
+}
+
+/* —— 歌名 / 歌手 + 五线谱 —— */
+:root[data-holo] .holo-song {
+  position: relative;
+  width: 100%;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+:root[data-holo] .holo-song-title {
+  font-size: 18px;
+  font-size: clamp(18px, 1.9vw, 22px);
+  font-weight: 900;
+  color: var(--holo-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:root[data-holo] .holo-song-artist {
+  margin-top: 2px;
+  font-size: 12px;
+  font-size: clamp(12px, 1.3vw, 14px);
+  font-weight: 400;
+  color: var(--holo-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:root[data-holo] .holo-song-clef {
+  position: absolute;
+  right: 4px;
+  top: -2px;
+  font-size: 22px;
+  font-size: clamp(22px, 2.4vw, 30px);
+  opacity: 0.8;
+}
+
+/* —— 波形 —— */
+:root[data-holo] .holo-player-wave {
+  width: 100%;
+  padding: 0 4px;
+  margin: 12px 0 6px;
+  flex-shrink: 0;
+}
+:root[data-holo] .holo-wave {
+  width: 100%;
+  height: 40px;
+  display: block;
+}
+
+/* —— 进度 —— */
+:root[data-holo] .holo-progress {
+  align-self: flex-start;
+  padding-left: 4px;
+  font-size: 12px;
+  font-size: clamp(12px, 1.3vw, 14px);
+  color: var(--holo-ink);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* —— 双语歌词面板 —— */
+:root[data-holo] .holo-lyrics {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  margin-top: 14px;
+  padding: 6px 20px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  box-sizing: border-box;
+  /* 上下淡出，避免硬切 */
+  mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+:root[data-holo] .holo-lyrics::-webkit-scrollbar {
+  display: none;
+}
+:root[data-holo] .holo-lyric-line {
+  margin-bottom: 14px;
+  color: var(--holo-ink-dim);
+  transition: color 0.25s;
+}
+:root[data-holo] .holo-lyric-line--on {
+  color: var(--holo-ink);
+}
+:root[data-holo] .holo-lyric-en {
+  font-size: 12px;
+  font-size: clamp(12px, 1.35vw, 14px);
+  line-height: 1.35;
+}
+:root[data-holo] .holo-lyric-line--on .holo-lyric-en {
+  font-weight: 700;
+}
+:root[data-holo] .holo-lyric-zh {
+  font-size: 12px;
+  font-size: clamp(12px, 1.35vw, 14px);
+  line-height: 1.35;
+}
+:root[data-holo] .holo-lyrics-empty {
+  margin-top: auto;
+  margin-bottom: 8vh;
+  font-size: 12px;
+  font-size: clamp(12px, 1.3vw, 14px);
+  color: var(--holo-ink-dim);
+  flex-shrink: 0;
+}
+
+/* ═══════════ 黑夜模式：黑底白字反转（:root[data-holo-theme="night"]）═══════════
+   配色仍走 --holo-ink 系列变量，仅在此翻值 → 全仪表盘文字/面板随之反转，改动集中。
+   多一个属性选择器 → 特异性高于白调默认，稳压。 */
+:root[data-holo][data-holo-theme='night'] .holo-dash--figma {
+  --holo-ink: #f2f2f2;
+  --holo-ink-dim: rgba(255, 255, 255, 0.55);
+  --holo-panel: rgba(22, 22, 22, 0.72);
+  --holo-line: #f2f2f2;
+}
+/* 黄历卡硬编码的 #111 深字 → 白（其余卡走变量已自动反转） */
+:root[data-holo][data-holo-theme='night'] .holo-almanac {
+  color: #f2f2f2;
+}
+/* 左侧渐变蒙版：白 → 黑，保证黑底上左列文字仍压得住、可读 */
+:root[data-holo][data-holo-theme='night'] .holo-left-scrim {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.72) 46%,
+    rgba(0, 0, 0, 0.5) 68%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+/* 黑胶唱片本就是黑盘，黑底上会糊掉 → 加一圈浅描边把它从背景里托出来 */
+:root[data-holo][data-holo-theme='night'] .holo-vinyl {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* ═══════════ 矮视口紧凑档（≤560px 可视高度）═══════════
+   左列三块（时钟 / 黄历 / 番茄）各自绝对定位、互不感知，靠 vh 拉开距离。视口一矮就
+   叠在一起：ThinkSmart View 横放 1280×800（CSS 788×493）实测黄历末尾那句诗正压在
+   番茄卡上沿 37px。这里把上沿抬高、间距收紧、番茄卡内边距减薄，腾出的量刚好抹平
+   （真机实测：时钟 15–130 / 黄历 148–314 / 番茄 336–473，两两不相接）。
+   常规高度的全息屏不进此档，原布局分毫不动。 */
+@media (max-height: 560px) {
+  /* 横向也挤：788×493 上左右两列各 240px + 2.3vw 内缩，只给角色留 308px，
+     角色实际画宽约 440px → 手和裙摆压在两侧面板下。收窄两列 + 贴边 + 缩窄左蒙版，
+     中间腾到 ~364px。（真机 Ben 反馈「左右太挤」后调的） */
+  :root[data-holo] .holo-clock,
+  :root[data-holo] .holo-almanac,
+  :root[data-holo] .holo-pomodoro,
+  :root[data-holo] .holo-player {
+    width: 200px;
+  }
+  :root[data-holo] .holo-clock,
+  :root[data-holo] .holo-almanac,
+  :root[data-holo] .holo-pomodoro {
+    left: 1.5vw;
+  }
+  :root[data-holo] .holo-player {
+    right: 1.5vw;
+  }
+  :root[data-holo] .holo-left-scrim {
+    width: 32%;
+  }
+  /* 200px 宽下天气整行放不下会折行，缩一档 */
+  :root[data-holo] .holo-weather {
+    font-size: 13px;
+  }
+  :root[data-holo] .holo-clock {
+    top: 3vh;
+  }
+  :root[data-holo] .holo-almanac {
+    top: 30vh;
+  }
+  :root[data-holo] .holo-pomodoro {
+    padding: 12px 12px 16px;
+  }
+  :root[data-holo] .holo-pomo-time {
+    margin: 8px 0 10px;
+  }
+}

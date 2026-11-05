@@ -1,0 +1,691 @@
+{
+  "schema_version": 1,
+  "diagram_type": "tree",
+  "meta": {
+    "title": "事务官座机 · 仓库目录",
+    "subtitle": "十二个代码目录各自独立、互不 import;另有 docs、scripts、third_party;10-23最终重钉:全部source按main@c55ff4c1取证(0.4.148热修已发布,本机已更新;稳定0.4.142)",
+    "output": "docs/梳理-全景地图-2026-10-21/archify/tree-repo.html",
+    "quality_profile": "showcase",
+    "locale": "zh-CN",
+    "repository": {
+      "url": "https://github.com/BeeeeeeeeeeeeeeenY/workbench.git",
+      "revision": "c55ff4c1ab07bf3b8c7760a64653f21ce6fe2aa6",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "layout": {
+    "direction": "right"
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "label": "desktop-workbench",
+      "sublabel": "事务官座机 · 仓库主句:在长期协作中,学会分担你的工作",
+      "sources": [
+        {
+          "path": "README.md",
+          "line": 1,
+          "end_line": 3,
+          "label": "README 开头"
+        },
+        {
+          "path": "AGENTS.md",
+          "line": 95,
+          "end_line": 109,
+          "label": "互不 import 与结构表"
+        }
+      ]
+    },
+    {
+      "id": "plugin",
+      "parent": "root",
+      "label": "workbench-plugin/",
+      "sublabel": "大脑:DSH 进程内的插件,监听 8791;TypeScript,tsdown 构建,vitest 测试",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 99,
+          "end_line": 99,
+          "label": "结构表"
+        },
+        {
+          "path": "workbench-plugin/package.json",
+          "line": 2,
+          "end_line": 10,
+          "label": "包名与入口"
+        },
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 1,
+          "end_line": 10,
+          "label": "host 半区说明"
+        }
+      ]
+    },
+    {
+      "id": "plugin-index",
+      "parent": "plugin",
+      "label": "src/index.ts",
+      "sublabel": "host 半区:在 DSH 进程里起本地 HTTP/WS 服务,持有最后一次已知快照",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "plugin-server",
+      "parent": "plugin",
+      "label": "src/server/",
+      "sublabel": "听懂/派活/规则/回电/学习/接口;Graphify service与用户层/模板来源在此,366 个文件",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "plugin-client",
+      "parent": "plugin",
+      "label": "src/client/",
+      "sublabel": "工作台/协作区/设置;产品GraphView与用户层加载,旧Wiki/Finder入口已删,237 个文件",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 10,
+          "end_line": 10,
+          "label": "界面全在浏览器 bundle"
+        }
+      ]
+    },
+    {
+      "id": "plugin-tests",
+      "parent": "plugin",
+      "label": "tests/",
+      "sublabel": "vitest;Node26自定义环境/pragma守卫已修,943 个文件;最终整包九阶段全绿,148 已发布并本机更新",
+      "sources": [
+        {
+          "path": "workbench-plugin/package.json",
+          "line": 33,
+          "end_line": 36,
+          "label": "test / build / rehearse 脚本"
+        }
+      ]
+    },
+    {
+      "id": "shell",
+      "parent": "root",
+      "label": "workbench-app/",
+      "sublabel": "桌面壳「工作台.app」:Swift 纯执行器,承载网页、按插件下发的 op 做辅助功能操作;swiftc 直接编",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 103,
+          "end_line": 103
+        },
+        {
+          "path": "workbench-app/README.md",
+          "line": 1,
+          "end_line": 4
+        },
+        {
+          "path": "workbench-app/build.sh",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "shell-sources",
+      "parent": "shell",
+      "label": "Sources/",
+      "sublabel": "39 个 Swift 文件:窗口控制、AX 原语、按包分道读窗、与插件的连接",
+      "sources": [
+        {
+          "path": "workbench-app/README.md",
+          "line": 3,
+          "end_line": 4
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "parent": "root",
+      "label": "channel-worker/",
+      "sublabel": "通话工人:电脑上的进程,进 LiveKit 房间做 VAD → 流式 ASR → 听懂 → 工具 → TTS;由插件拉起",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 104,
+          "end_line": 104
+        },
+        {
+          "path": "channel-worker/package.json",
+          "line": 2,
+          "end_line": 14,
+          "label": "包说明与 start"
+        },
+        {
+          "path": "deploy/channel-start",
+          "line": 1,
+          "end_line": 8,
+          "label": "谁来拉它"
+        }
+      ]
+    },
+    {
+      "id": "worker-src",
+      "parent": "worker",
+      "label": "src/main.ts 与通话模块",
+      "sublabel": "入口 main.ts;asr/、tts/、audio/ 子目录;callOut、twoRooms、claimGuard、understand、tools",
+      "sources": [
+        {
+          "path": "channel-worker/package.json",
+          "line": 10,
+          "end_line": 14,
+          "label": "start 脚本指向 src/main.ts"
+        }
+      ]
+    },
+    {
+      "id": "voice",
+      "parent": "root",
+      "label": "butler-server/",
+      "sublabel": "本机语音后端 8792:Express 5 + node:sqlite,只听 127.0.0.1,launchd 拉起;形象与音色配置",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 101,
+          "end_line": 101
+        },
+        {
+          "path": "butler-server/server/index.cjs",
+          "line": 1,
+          "end_line": 10,
+          "label": "入口说明"
+        },
+        {
+          "path": "butler-server/package.json",
+          "line": 2,
+          "end_line": 11
+        }
+      ]
+    },
+    {
+      "id": "voice-admin",
+      "parent": "voice",
+      "label": "admin-ui/",
+      "sublabel": "独立 Vite 工程,产物托管在 /admin/",
+      "sources": [
+        {
+          "path": "butler-server/package.json",
+          "line": 8,
+          "end_line": 11,
+          "label": "build 即构建 admin-ui"
+        }
+      ]
+    },
+    {
+      "id": "phone",
+      "parent": "root",
+      "label": "butler-app/",
+      "sublabel": "手机端:Capacitor 8 + React 19 + Vite 6,包名 ai.ben.butler;对话、接续、材料、资讯、会议、座机模式",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 102,
+          "end_line": 102
+        },
+        {
+          "path": "butler-app/README.md",
+          "line": 1,
+          "end_line": 4
+        },
+        {
+          "path": "butler-app/package.json",
+          "line": 2,
+          "end_line": 13
+        }
+      ]
+    },
+    {
+      "id": "phone-src",
+      "parent": "phone",
+      "label": "src/ · android/",
+      "sublabel": "手机源码;横屏展示从display-client构建;新协作包保护现有首页不变,247 个源码文件",
+      "sources": [
+        {
+          "path": "butler-app/README.md",
+          "line": 6,
+          "end_line": 10,
+          "label": "构建步骤"
+        }
+      ]
+    },
+    {
+      "id": "handset",
+      "parent": "root",
+      "label": "phone-bridge/",
+      "sublabel": "实体听筒:树莓派上的 Python 守护进程,LiveKit 房间里的一台设备;提机接听 / 提机即拨出;配网",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 105,
+          "end_line": 105
+        },
+        {
+          "path": "phone-bridge/README.md",
+          "line": 1,
+          "end_line": 10
+        },
+        {
+          "path": "phone-bridge/popphone.py",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "handset-files",
+      "parent": "handset",
+      "label": "popphone.py · provisiond.py · netcfg.py · pairing.py",
+      "sublabel": "话筒守护、配网守护、网络配置、配对;两个 systemd 单元;另有 route_spec.py(在家 / 出门规格,还没接线)",
+      "sources": [
+        {
+          "path": "phone-bridge/popphone.py",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "holo",
+      "parent": "root",
+      "label": "display-client/",
+      "sublabel": "展示台:Live2D/黄历/音乐,入口holo.html;状态来自本机,数据依赖按配置,593 个源码文件",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 100,
+          "end_line": 100
+        },
+        {
+          "path": "display-client/holo.html",
+          "line": 19,
+          "end_line": 20,
+          "label": "Cubism Core 与入口脚本"
+        },
+        {
+          "path": "display-client/package.json",
+          "line": 2,
+          "end_line": 8
+        }
+      ]
+    },
+    {
+      "id": "relay",
+      "parent": "root",
+      "label": "relay/",
+      "sublabel": "中转服务(云上 systemd):账号、设备、远程连接、协作区底座;Node,server/index.cjs 入口;server/ 18 个文件",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 106,
+          "end_line": 106
+        },
+        {
+          "path": "relay/server/index.cjs",
+          "line": 1,
+          "end_line": 10
+        },
+        {
+          "path": "relay/package.json",
+          "line": 2,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "installer",
+      "parent": "root",
+      "label": "installer-app/",
+      "sublabel": "「安装工作台.app」:6 个 Swift 源文件,swiftc 直接编;资源由 deploy/build-installer.sh 收好传入",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 107,
+          "end_line": 107
+        },
+        {
+          "path": "installer-app/build.sh",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "parent": "root",
+      "label": "deploy/",
+      "sublabel": "交付链路 35 个文件:裸机引导、装安装器、发热更新(热修缺省 / 稳定两通道,稳定先新机器演练)、本机房间(livekit-start)、云上 LiveKit / 中转的安装脚本、回滚与擦机演练",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 107,
+          "end_line": 107
+        },
+        {
+          "path": "deploy/bootstrap.sh",
+          "line": 1,
+          "end_line": 10
+        },
+        {
+          "path": "deploy/publish-update.sh",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "deploy-bootstrap",
+      "parent": "deploy",
+      "label": "bootstrap.sh",
+      "sublabel": "裸机一条命令:自有 node / DSH 运行时 / profile / 插件 / 启动脚本 / 开机自启 → 打开初始化页",
+      "sources": [
+        {
+          "path": "deploy/bootstrap.sh",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "deploy-publish",
+      "parent": "deploy",
+      "label": "publish-update.sh",
+      "sublabel": "发一版更新(热修缺省;稳定通道先新机器演练):体检 → 构建产物 → sha256 → 写这条通道的清单(热修 beta.json;稳定 latest.json)→ 上传",
+      "sources": [
+        {
+          "path": "deploy/publish-update.sh",
+          "line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "core",
+      "parent": "root",
+      "label": "workbench-core/",
+      "sublabel": "重构骨架:座机服务(站在插件前转发 + 只读事件流)与账(node:sqlite);尚无进程在跑;37 个文件",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 108,
+          "end_line": 108,
+          "label": "结构表"
+        },
+        {
+          "path": "workbench-core/README.md",
+          "line": 1,
+          "end_line": 7,
+          "label": "阶段 1 只做两件事"
+        },
+        {
+          "path": "workbench-core/package.json",
+          "line": 2,
+          "end_line": 19,
+          "label": "包说明与脚本"
+        }
+      ]
+    },
+    {
+      "id": "userlayer",
+      "parent": "root",
+      "label": "user-layer/",
+      "sublabel": "非本体:起步六格、布局ops.json/ops.css、notes/files/style.css及原件存档;本体经加载口消费,定制与主动删除保留",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 109,
+          "end_line": 109,
+          "label": "结构表"
+        },
+        {
+          "path": "user-layer/README.md",
+          "line": 1,
+          "end_line": 13,
+          "label": "目录与加载口"
+        },
+        {
+          "path": "workbench-plugin/package.json",
+          "line": 35,
+          "end_line": 35,
+          "label": "build 末尾拷起步层"
+        }
+      ]
+    },
+    {
+      "id": "docs",
+      "parent": "root",
+      "label": "docs/",
+      "sublabel": "设计/交接/决策/能力/验收/原型资料;递归 2489 个文件,顶层 782 篇(其中 .md 770),原型不是已接服务",
+      "sources": [
+        {
+          "path": "docs/决策记录.md",
+          "line": 1,
+          "end_line": 1
+        },
+        {
+          "path": "docs/能力清单-2026-10-09.md",
+          "line": 1,
+          "end_line": 1
+        },
+        {
+          "path": "docs/project-memory/README.md",
+          "line": 1,
+          "end_line": 1
+        }
+      ]
+    },
+    {
+      "id": "scripts",
+      "parent": "root",
+      "label": "scripts/",
+      "sublabel": "局域网/通话/响铃等探针;只起自身隔离环境,不碰个人层,数量按最终SHA核",
+      "sources": [
+        {
+          "path": "scripts/probe-lan-primary.sh",
+          "line": 1,
+          "end_line": 10,
+          "label": "局域网主路探针"
+        }
+      ]
+    },
+    {
+      "id": "thirdparty",
+      "parent": "root",
+      "label": "third_party/skills/",
+      "sublabel": "五件第三方技能(MIT,上游一字未改);派活时拷进任务工作树",
+      "sources": [
+        {
+          "path": "third_party/skills/NOTICE.md",
+          "line": 1,
+          "end_line": 6,
+          "label": "署名与许可"
+        },
+        {
+          "path": "workbench-plugin/src/server/dispatchSkills.ts",
+          "line": 1,
+          "end_line": 8,
+          "label": "派活带技能"
+        }
+      ]
+    },
+    {
+      "id": "dsh",
+      "parent": "root",
+      "label": ".dsh/skills/",
+      "sublabel": "随仓库的四个技能:例程、引导、截图验收、记忆",
+      "sources": [
+        {
+          "path": ".dsh/skills/记忆/SKILL.md",
+          "line": 1,
+          "end_line": 1
+        }
+      ]
+    },
+    {
+      "id": "agents",
+      "parent": "root",
+      "label": "AGENTS.md · README.md",
+      "sublabel": "项目说明与硬规矩:知识落仓库、接缝与卡、不可改清单",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 1,
+          "end_line": 3
+        },
+        {
+          "path": "README.md",
+          "line": 1,
+          "end_line": 3
+        }
+      ]
+    },
+    {
+      "id": "plugin-graphify",
+      "parent": "plugin-server",
+      "label": "graphify.ts",
+      "sublabel": "真实default service:安装/生成/读产物,项目AST本机解析",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/graphify.ts",
+          "line": 59,
+          "end_line": 210,
+          "label": "本机 AST/聚类/布局/JSON+HTML 流水线"
+        },
+        {
+          "path": "workbench-plugin/src/server/graphify.ts",
+          "line": 373,
+          "end_line": 416,
+          "label": "ensureUv/runInstall:bootstrap 可关、装包"
+        },
+        {
+          "path": "workbench-plugin/src/server/graphify.ts",
+          "line": 427,
+          "end_line": 545,
+          "label": "vendor 钉 hash 下载与产物暂存替换"
+        }
+      ]
+    },
+    {
+      "id": "plugin-graph-view",
+      "parent": "plugin-client",
+      "label": "GraphView.tsx",
+      "sublabel": "产品files图谱;项目/请求代次和同job终态保护,iframe读本地vendor",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/client/FilesModule.tsx",
+          "line": 30,
+          "end_line": 130,
+          "label": "files 格只挂 GraphView,本体不删 ops 素材"
+        },
+        {
+          "path": "workbench-plugin/src/client/GraphView.tsx",
+          "line": 119,
+          "end_line": 226,
+          "label": "代次校验后才 setStatus;终态封闭"
+        }
+      ]
+    },
+    {
+      "id": "userlayer-layout",
+      "parent": "userlayer",
+      "label": "起步/布局/ops.json · ops.css",
+      "sublabel": "运营模板/专属皮肤外移,product本体内置",
+      "sources": [
+        {
+          "path": "user-layer/起步/布局/ops.json",
+          "line": 1,
+          "end_line": 84,
+          "label": "ops 模板全文件,定义在用户层"
+        },
+        {
+          "path": "user-layer/起步/布局/ops.css",
+          "line": 1,
+          "end_line": 345,
+          "label": "ops 专属皮肤全文件,与本体通用皮肤分开"
+        }
+      ]
+    },
+    {
+      "id": "userlayer-widget-style",
+      "parent": "userlayer",
+      "label": "起步/小组件/{notes,files}/style.css",
+      "sublabel": "32条专属样式外移;旧目录首轮.styled缺席+同名现存组件缺style才补,已有index/manifest/style保留,不核原件指纹",
+      "sources": [
+        {
+          "path": "user-layer/起步/小组件/notes/style.css",
+          "line": 1,
+          "end_line": 24,
+          "label": "notes 专属 style.css"
+        },
+        {
+          "path": "user-layer/起步/小组件/files/style.css",
+          "line": 1,
+          "end_line": 15,
+          "label": "files 专属 style.css"
+        },
+        {
+          "path": "user-layer/起步/小组件/files/widget.json",
+          "line": 1,
+          "end_line": 11,
+          "label": "起步 files 清单:templates 仅 ops"
+        }
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "怎么读这张图",
+      "items": [
+        "现存引用仍钉旧main@115fd92b,本轮语义草稿未重钉/生成;新增Graphify、布局CSS与模板消费取证点由最终SHA补齐。",
+        "最终文件数用git ls-tree按tracked前缀计,不含node_modules/产物;docs递归文件与顶层Markdown是两个口径,不能沿用旧828篇。",
+        "官网源码在feat/site的site/,主检出没有不等于官网未做;workbench-core仍骨架无独立进程。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "互不 import",
+      "items": [
+        "十二个代码目录各自一套工具链(tsdown / Vite / swiftc / Python / Express);user-layer 不单独构建",
+        "它们只在运行时通过接口相连:8791、8792、LiveKit 房间、中转、壳的 op 通道、用户层加载口",
+        "接缝各有主人,改契约要同一分支改完所有消费方(AGENTS.md 接缝规矩)"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "交付与研发材料",
+      "items": [
+        "Graphify/二刀二及其独立验收证据本地已收,Key 与最终组合整包已收,148 热修已发布并本机更新。",
+        "docs/卡白名单/导出脱敏与failfast、Node26已修;最终开发仓用新out重导/新克隆核对,不覆盖既有开发仓,远端推送按维护者决定。",
+        "新协作A实施中,其余包待排;七人工目标条件未验,149非全套设计承诺。"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "本轮证据边界(10-23 最终重钉)",
+      "items": [
+        "全部 source 已按 main@c55ff4c1 取证重钉:旧 144 引用(123 未变/18 行漂/3 段内变)+ 新增 29 候选;逐条范围用 git 对象核过不越界。",
+        "0.4.148 热修已发布并本机更新(exec10863 exit0,七项安装 sha 匹配,current=latest=148);隔离 QA 45 项与整包九阶段全部 exit0;稳定仍 0.4.142。",
+        "机械映射不等于标签语义全验收;worker 两段已按完整函数人工改(见运行时总览)。"
+      ]
+    }
+  ]
+}

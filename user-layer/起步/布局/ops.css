@@ -1,0 +1,345 @@
+/*
+自媒体(运营)布局那一层皮肤(2026-10-04 合入运营同学 10-03 / 10-04 两段)。
+## 为什么是一整个文件、而且每一条都带 `[data-template=ops]`
+他交回来的是 `.ben-wb{--dsw-alias-bg-base:…}` 这种**全局**改法 —— 一装上,维护者那套
+产品研发布局整屏跟着变(她 10-04 原话:「我就说咋我的都变了」)。维护者当天拍板:
+**这一层只给自媒体(运营)布局,产品研发布局一个像素都不许被它改到。**
+于是这一整份里**每一条选择器都从 `OPS_THEME_SCOPE` 起头**(用例 `client-ops-theme-scope`
+逐条核对:一条漏了就红)。作用域那一格由 `Workbench.tsx` 写在 `.ben-wb` 上
+(`data-template` = `/state.template.id`);**模板整块缺席时那一格不写** —— 缺席按缺省模板
+(product)算,所以展示台、手机、老客户端、一大批用例里这一层整个不生效。
+单独一个文件的理由同 `dispatchEyesStyle.ts`:`style.ts` 同时被好几张卡改着,
+一大段皮肤挤进去必然冲突。
+## 2026-10-13:整层的紫 → 产品研发布局那套黑白灰
+维护者原话:「自媒体布局的所有紫色改成和产品研发布局的黑白灰,运营同学那边也改成这个配色了」。
+**只换颜色,选择器、层级、圆角、字号、动效时长一个字没动**(卡的边界:纯样式,不碰行为、
+不碰布局尺寸、不碰文案)。换成的全是**产品研发布局正在用的那几个变量**,不新造颜色:
+- 面板 / 卡片底:`client/surface.ts` 那套黑白微光(`--wb-surface-bg|card|soft|raised|hover`),
+  它自己从宿主令牌里抽明度、`@supports` 那一段把色相压成 0%,所以必然是灰阶;
+- 细线:`--wb-surface-line`(淡)/ `--wb-surface-edge`(重);
+- 字:`--dsw-alias-label-primary|secondary|tertiary` 与 `--wb-surface-muted|faint`;
+- 强调态 / 选中态:`--dsw-alias-state-business-primary` 与 `-tertiary` —— `client/neutralStyle.ts`
+  把这两个重定义成了主文字色与它 10% 的淡底(2026-09-24「改成白色底黑字吧,中性一点,这是全局的」);
+- 原来那一圈紫光:白光压到一成以内(`--wb-ops-glow` / `--wb-ops-sheen`,都是 `--wb-surface-ink` 的 color-mix);
+- 遮罩与投影本来就是半透明黑,原样留着。
+**这一层不再重定义 `--dsw-alias-*` 里任何一个**(改前它把 bg / label / border / button 整套
+都接管了)。两套布局从此读同一套令牌 —— 那才叫"同一套黑白灰";用例 `client-ops-no-purple-20261013`
+钉这件事。两档语义色照 10-04 留着:球的「等你确认」琥珀、「失败」红(同 neutralStyle「语义色不动」)。
+换掉的原值(档案,改前按源码数出来的;夹具表在用例里):
+`#a78bfa` `#c4b5fd` `#6d28d9` `#8b5cf6` `#7c3aed` `#9f7aea` 六个点缀色与它们的 rgba
+(`139,92,246` / `167,139,250` / `196,181,253` / `124,58,237` / `109,40,217` / `76,29,149`);
+紫调的黑 `#09080c` `#0d0b12` `#100b18` `#111016` `#17141f` `#201a2c` `#17131f` `#17151c`
+`#17121f` `#211b2b` `#0c0a10` `#0b0910` `#0a0810` `#160d25` 与它们的 rgba;
+紫调的字 `#f4f0fb` `#f5f1fa` `#c9c1d6` `#d9cff0` `#cfc3e6` `#8f879c` `#958da2`;
+球那一圈灰紫光 `rgba(155,145,190,.055)`。
+三处**删掉没换**的(删掉就等于落回产品研发布局那一档,这正是维护者要的):
+窗口槽页签三颗状态点(原来三档紫)、主按钮那组 `--ben-btn-*`(原来紫底白字 ——
+落回 neutralStyle 的白底黑字)、根上那层紫色径向光。
+## 跟了他什么、没跟什么(2026-10-04 原样留着)
+**跟了**:整套卡片层级、六格(选题 / 发布 / 复盘 / 素材 / 随手记 / 消耗)的底、
+窗位叠与事务官窗口槽那一套、他 10-04 那段「窗口槽可读性修复」(字号放大、光晕调低、
+去掉大面积径向光)。
+**没跟**(维护者 10-04 点名):
+- `[data-notice=working]` 那一档青色球 —— 维护者硬规矩「球不要蓝」,执行中的颜色与形态
+  (莫比乌斯环)保持现状,这一层一个字不碰;
+- `[data-notice=neutral]` / `[data-notice=completed]` 改 `#fff` —— **现状已经是白**
+  (`particleStyle.ts` 里那两条取的是 `var(--dsw-alias-label-primary)`),写死 `#fff` 反而
+  在浅色主题里把球变成看不见的白,属于改掉现有约定;
+- 数据复盘那几个**账号**的线色改成五档紫 —— 见 `docs/交接-1004-运营补丁合入.md`。
+  这里跟的是复盘图那两条底 / 填充(`.rviz-track` / `.rviz-fill`)。 */
+
+/* ── 自媒体布局 · 黑白灰(运营同学 2026-10-03,10-04 合入并限定作用域;10-13 去紫)──────────
+   这一层自己只留四个名字,值全是产品研发布局在用的那几个变量 —— 要调深浅改这四行,
+   别在下面一条条写死颜色。 */
+.ben-wb[data-template=ops]{
+  --wb-ops-line:var(--wb-surface-line);
+  --wb-ops-edge:var(--wb-surface-edge);
+  --wb-ops-glow:color-mix(in srgb,var(--wb-surface-ink) 8%,transparent);
+  --wb-ops-sheen:color-mix(in srgb,var(--wb-surface-ink) 14%,transparent);
+  color:var(--dsw-alias-label-primary);
+  background:var(--wb-surface-bg);
+}
+
+/* 所有小组件使用同一层级、边框、圆角与阴影。 */
+.ben-wb[data-template=ops] :is(.ben-wb__card,.ben-wb__module,.ben-wb__wg,.ben-wb__butler,.ben-wb__footbar,.ben-wb__daily-pop){
+  position:relative;
+  isolation:isolate;
+  border-color:var(--wb-ops-edge);
+  background:var(--wb-surface-card);
+  border-radius:12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 30px rgba(0,0,0,.22);
+}
+.ben-wb[data-template=ops] :is(.ben-wb__card,.ben-wb__module,.ben-wb__wg)::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-2px;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(115deg,transparent 14%,var(--wb-ops-glow) 32%,var(--wb-ops-sheen) 48%,var(--wb-ops-glow) 62%,transparent 80%);
+  background-size:260% 100%;
+  opacity:.4;
+  filter:blur(8px);
+  animation:wb-ops-sheen 9s ease-in-out infinite;
+}
+.ben-wb[data-template=ops] :is(.ben-wb__card,.ben-wb__module,.ben-wb__wg)::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),inset 0 0 22px rgba(255,255,255,.025);
+  animation:wb-ops-breathe 5.8s ease-in-out infinite;
+}
+.ben-wb[data-template=ops] :is(.ben-wb__card,.ben-wb__module,.ben-wb__wg):hover{
+  border-color:color-mix(in srgb,var(--wb-surface-ink) 30%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 12px 36px rgba(0,0,0,.28),0 0 24px var(--wb-ops-glow);
+}
+.ben-wb[data-template=ops] :is(.ben-wb__card,.ben-wb__module,.ben-wb__wg):hover::before{opacity:.72;animation-duration:4.8s}
+.ben-wb[data-template=ops] :is(.ben-wb__ttl,.ben-wb__card-title,.ben-wb__module-title){color:var(--dsw-alias-label-primary);letter-spacing:.025em}
+.ben-wb[data-template=ops] :is(button,input,select,textarea){accent-color:var(--dsw-alias-label-primary)}
+.ben-wb[data-template=ops] :is(button,input,select,textarea):focus-visible{outline:2px solid var(--ben-focus)!important;outline-offset:2px}
+/* 实心底上的字取底色反色 —— 同 neutralStyle 那一条规矩。 */
+.ben-wb[data-template=ops] ::selection{background:var(--dsw-alias-label-primary);color:var(--dsw-alias-bg-base)}
+.ben-wb[data-template=ops] *{scrollbar-color:color-mix(in srgb,var(--wb-surface-ink) 32%,transparent) transparent}
+
+/* 标签、筛选、切换器保持一种状态语言。 */
+.ben-wb[data-template=ops] :is(.ben-wb__viewswitch button,.ben-wb__dock-tab,.ben-wb__usage-segbtn,.ben-wb__pub-views button,.ben-wb__review-range button)[data-on="true"],
+.ben-wb[data-template=ops] :is(.ben-wb__dock-tab,.ben-wb__usage-segbtn)[aria-selected="true"]{
+  color:var(--dsw-alias-label-primary)!important;
+  border-color:var(--dsw-alias-state-business-primary)!important;
+  background:var(--dsw-alias-state-business-tertiary)!important;
+  box-shadow:inset 0 0 18px var(--wb-ops-glow),0 0 14px var(--wb-ops-glow);
+}
+.ben-wb[data-template=ops] :is(.ben-wb__topics-new,.ben-wb__pub-bar button,.ben-wb__review-acts button,.ben-wb__butler-pause):hover{
+  color:var(--dsw-alias-label-primary)!important;border-color:var(--wb-ops-edge)!important;background:var(--wb-surface-hover)!important;
+}
+
+/* 创作者模块:选题、发布、复盘、素材统一为同一层级的卡片加灰阶响应。 */
+.ben-wb[data-template=ops] .ben-wb__topics-col{background:var(--wb-surface-soft);border-color:var(--wb-ops-edge);border-radius:10px}
+.ben-wb[data-template=ops] .ben-wb__topics-card{background:var(--wb-surface-bg);border-color:var(--wb-ops-line);border-radius:8px}
+.ben-wb[data-template=ops] .ben-wb__topics-head:hover{background:var(--wb-surface-hover)}
+.ben-wb[data-template=ops] .ben-wb__topics-tag{background:var(--dsw-alias-state-business-tertiary);color:var(--wb-surface-muted)}
+.ben-wb[data-template=ops] .ben-wb__pub-day{background:var(--wb-surface-soft);border-radius:7px!important}
+.ben-wb[data-template=ops] .ben-wb__pub-day:hover{background:var(--wb-surface-hover)!important;border-color:var(--wb-ops-edge)!important}
+.ben-wb[data-template=ops] .ben-wb__pub-day[data-today="true"]{background:var(--dsw-alias-state-business-tertiary)!important;border-color:var(--dsw-alias-state-business-primary)!important;box-shadow:inset 0 0 16px var(--wb-ops-glow)}
+.ben-wb[data-template=ops] :is(.ben-wb__review-chart,.ben-wb__review-card,.ben-wb__usage-card){background:var(--wb-surface-bg);border-color:var(--wb-ops-line)}
+.ben-wb[data-template=ops] :is(.ben-wb__review-fill,.ben-wb__usage-rankfill){background:linear-gradient(90deg,var(--wb-surface-faint),var(--wb-surface-ink))!important;box-shadow:0 0 12px var(--wb-ops-glow)}
+
+/* 后加装组件原先使用独立硬编码色,此处统一接入主题。 */
+.ben-wb[data-template=ops] :is(.creator-files,.creator-notes,.ct-body,.cp-body){color:var(--dsw-alias-label-primary)}
+.ben-wb[data-template=ops] :is(.cf-folder,.cf-file,.ct-card,.ct-form,.cp-day,.cp-existing){
+  background:var(--wb-surface-card)!important;
+  border-color:var(--wb-ops-line)!important;
+  border-radius:10px!important;
+}
+.ben-wb[data-template=ops] :is(.cf-folder,.cf-file,.ct-card,.cp-day):hover{
+  background:var(--wb-surface-hover)!important;border-color:var(--wb-ops-edge)!important;
+}
+.ben-wb[data-template=ops] :is(.cf-icon,.cf-arrow,.ct-badge,.cp-add,.cp-day-top small){color:var(--dsw-alias-label-primary)!important}
+.ben-wb[data-template=ops] :is(.ct-primary,.cp-primary){
+  background:var(--wb-surface-raised)!important;
+  color:var(--dsw-alias-label-primary)!important;
+  border-color:var(--wb-ops-edge)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 7px 20px rgba(0,0,0,.34)!important;
+}
+.ben-wb[data-template=ops] :is(.ct-primary,.cp-primary):hover{
+  background:var(--wb-surface-hover)!important;
+  border-color:color-mix(in srgb,var(--wb-surface-ink) 30%,transparent)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 24px rgba(0,0,0,.42),0 0 16px var(--wb-ops-glow)!important;
+}
+.ben-wb[data-template=ops] :is(.ct-tabs button[aria-pressed="true"],.cp-tabs button[aria-pressed="true"],.cf-tabs button[aria-pressed="true"],[data-selected="true"]){background:var(--dsw-alias-state-business-tertiary)!important;border-color:var(--dsw-alias-state-business-primary)!important;color:var(--dsw-alias-label-primary)!important}
+.ben-wb[data-template=ops] :is(.ct-modal,.cp-panel){background:var(--wb-surface-card)!important;border-color:var(--wb-ops-edge)!important;color:var(--dsw-alias-label-primary)!important;box-shadow:0 28px 110px rgba(0,0,0,.72)!important}
+
+/* 随手记:他那一格在这一层里也跟着这套灰阶(产品研发布局下是 air/notes.js 里的中性令牌,不碰)。 */
+.ben-wb[data-template=ops] .creator-notes{--cn-border:var(--wb-ops-edge)}
+.ben-wb[data-template=ops] .creator-notes-compose{background:var(--wb-surface-soft)}
+.ben-wb[data-template=ops] .creator-notes-item{background:linear-gradient(110deg,var(--wb-ops-glow),transparent)}
+.ben-wb[data-template=ops] .creator-notes-save{border-color:var(--wb-ops-edge);background:var(--dsw-alias-state-business-tertiary)}
+.ben-wb[data-template=ops] .creator-notes-save:hover:not(:disabled){background:var(--wb-surface-hover)}
+
+/* 数据复盘只使用灰阶;账号仍以不同深浅区分。 */
+.ben-wb[data-template=ops] .rviz-track{background:var(--wb-surface-bg)!important;border-color:var(--wb-ops-line)!important}
+.ben-wb[data-template=ops] .rviz-fill{box-shadow:0 0 12px var(--wb-ops-glow)!important}
+
+@media (prefers-reduced-motion:no-preference){
+  .ben-wb[data-template=ops] :is(button,.ben-wb__card,.ben-wb__topics-card,.cf-folder,.cf-file,.ct-card,.cp-day){transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+}
+@keyframes wb-ops-sheen{
+  0%,100%{background-position:0% 50%;transform:scale(.995)}
+  50%{background-position:100% 50%;transform:scale(1.004)}
+}
+@keyframes wb-ops-breathe{
+  0%,100%{opacity:.48}
+  50%{opacity:.9}
+}
+@media (prefers-reduced-motion:reduce){
+  .ben-wb[data-template=ops] :is(.ben-wb__card,.ben-wb__module,.ben-wb__wg)::before,
+  .ben-wb[data-template=ops] :is(.ben-wb__card,.ben-wb__module,.ben-wb__wg)::after{animation:none}
+}
+
+/* ── 事务官窗口槽:灰阶智能中枢 ── */
+.ben-wb[data-template=ops] .ben-wb__dock{
+  position:relative;
+  padding:8px 9px 7px;
+  margin-bottom:9px;
+  border:1px solid var(--wb-ops-line);
+  border-radius:12px;
+  background:var(--wb-surface-card);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 26px rgba(0,0,0,.22);
+}
+.ben-wb[data-template=ops] .ben-wb__dock::after{
+  content:"";
+  position:absolute;
+  left:11px;
+  right:11px;
+  bottom:-1px;
+  height:1px;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--wb-surface-ink) 62%,transparent),color-mix(in srgb,var(--wb-surface-ink) 24%,transparent),transparent);
+  background-size:220% 100%;
+  animation:wb-ops-line 7s ease-in-out infinite;
+}
+.ben-wb[data-template=ops] .ben-wb__dock-tabs{gap:7px}
+.ben-wb[data-template=ops] .ben-wb__dock-tab{
+  position:relative;
+  overflow:visible;
+  border-color:var(--wb-ops-line);
+  background:var(--wb-surface-soft);
+  border-radius:8px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.ben-wb[data-template=ops] .ben-wb__dock-tab[data-current="true"]{
+  border-color:var(--wb-ops-edge);
+  background:var(--wb-surface-raised);
+  box-shadow:inset 0 -2px 0 var(--dsw-alias-state-business-primary),0 0 16px var(--wb-ops-glow);
+}
+.ben-wb[data-template=ops] .ben-wb__dock-tab[data-current="true"]::after{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:-1px;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--wb-surface-ink) 70%,transparent),var(--wb-surface-ink),color-mix(in srgb,var(--wb-surface-ink) 70%,transparent),transparent);
+  background-size:200% 100%;
+  box-shadow:0 0 9px color-mix(in srgb,var(--wb-surface-ink) 48%,transparent);
+  animation:wb-ops-line 3.8s linear infinite;
+}
+.ben-wb[data-template=ops] .ben-wb__dock-tab[data-current="true"] .ben-wb__dock-tab-name{color:var(--dsw-alias-label-primary)}
+.ben-wb[data-template=ops] .ben-wb__dock-tab-name:hover{background:var(--wb-surface-hover);color:var(--dsw-alias-label-primary)}
+.ben-wb[data-template=ops] .ben-wb__dock-tab-close:hover{background:var(--wb-surface-hover);color:var(--dsw-alias-label-primary)}
+/* 三颗状态点原来是三档紫。在办那一颗本体就是白、等你那一颗本体是琥珀(语义色不动),
+   这一层不再盖它们;只有办完那一颗留着 —— 本体那一档是蓝,自媒体布局这一层里不该出现蓝。 */
+.ben-wb[data-template=ops] .ben-wb__dock-badge[data-tone="done"] .ben-wb__dock-badge-dot{background:var(--wb-surface-faint);color:var(--dsw-alias-bg-base);box-shadow:0 0 8px var(--wb-ops-glow)}
+
+.ben-wb[data-template=ops] .ben-wb__slot-stack{
+  isolation:isolate;
+  border-radius:15px;
+  background:radial-gradient(circle at 50% 10%,var(--wb-ops-glow),transparent 42%);
+}
+.ben-wb[data-template=ops] .ben-wb__slot-body{
+  border:1px solid var(--wb-ops-edge);
+  border-radius:14px;
+  background:
+    linear-gradient(90deg,var(--wb-surface-ink) 0 18px,transparent 18px) 0 0/42px 1px no-repeat,
+    linear-gradient(var(--wb-surface-ink) 0 18px,transparent 18px) 0 0/1px 42px no-repeat,
+    linear-gradient(270deg,var(--wb-surface-ink) 0 18px,transparent 18px) 100% 0/42px 1px no-repeat,
+    linear-gradient(var(--wb-surface-ink) 0 18px,transparent 18px) 100% 0/1px 42px no-repeat,
+    linear-gradient(90deg,var(--wb-surface-faint) 0 18px,transparent 18px) 0 100%/42px 1px no-repeat,
+    linear-gradient(0deg,var(--wb-surface-faint) 0 18px,transparent 18px) 0 100%/1px 42px no-repeat,
+    linear-gradient(270deg,var(--wb-surface-faint) 0 18px,transparent 18px) 100% 100%/42px 1px no-repeat,
+    linear-gradient(0deg,var(--wb-surface-faint) 0 18px,transparent 18px) 100% 100%/1px 42px no-repeat,
+    var(--wb-surface-bg);
+  box-shadow:inset 0 0 36px var(--wb-ops-glow),0 12px 38px rgba(0,0,0,.24),0 0 22px var(--wb-ops-glow);
+  transition:border-color .2s ease,box-shadow .2s ease;
+}
+.ben-wb[data-template=ops] .ben-wb__slot-body:hover{border-color:color-mix(in srgb,var(--wb-surface-ink) 30%,transparent);box-shadow:inset 0 0 40px var(--wb-ops-glow),0 14px 42px rgba(0,0,0,.29),0 0 28px var(--wb-ops-glow)}
+.ben-wb[data-template=ops] .ben-wb__slot-body[data-snapped="true"]{border-color:var(--dsw-alias-state-business-primary);box-shadow:inset 0 0 0 1px rgba(255,255,255,.045),0 0 25px var(--wb-ops-glow)}
+.ben-wb[data-template=ops] .ben-wb__slot-body[data-hover="true"]{border-color:var(--dsw-alias-label-primary);box-shadow:inset 0 0 46px var(--wb-ops-glow),0 0 32px var(--wb-ops-sheen)}
+.ben-wb[data-template=ops] .ben-wb__slot-hover-hint{color:var(--dsw-alias-label-primary);text-shadow:0 0 13px color-mix(in srgb,var(--wb-surface-ink) 46%,transparent);letter-spacing:.06em}
+.ben-wb[data-template=ops] .ben-wb__dock-note{background:var(--wb-surface-card);border-color:var(--wb-ops-line);color:var(--wb-surface-faint)}
+
+/* 事务官粒子舞台只换承载界面的光色,**不改变粒子参数、不改执行中那一档的颜色与形态**。 */
+.ben-wb[data-template=ops] .ben-wb__items--particle{
+  position:absolute;
+  background:var(--wb-surface-bg);
+}
+.ben-wb[data-template=ops] .ben-wb__items--particle::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  pointer-events:none;
+  opacity:.42;
+  background:linear-gradient(115deg,transparent 35%,var(--wb-ops-glow) 49%,transparent 63%);
+  background-size:240% 100%;
+  animation:wb-ops-scan 11s ease-in-out infinite;
+}
+.ben-wb[data-template=ops] .ben-wb__particle-orb::before{
+  content:"";
+  position:absolute;
+  inset:14%;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle,var(--wb-ops-sheen),var(--wb-ops-glow) 38%,transparent 68%);
+  filter:blur(18px);
+  animation:wb-ops-aura 5.6s ease-in-out infinite;
+}
+.ben-wb[data-template=ops] .ben-wb__particle-focus article,
+.ben-wb[data-template=ops] .ben-wb__particle-storage .ben-wb__result-folder{
+  border-color:var(--wb-ops-line);
+  background:var(--wb-surface-soft);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.ben-wb[data-template=ops] .ben-wb__items--particle .ben-wb__composer{
+  border-color:var(--wb-ops-edge);
+  background:var(--wb-surface-card);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 32px rgba(0,0,0,.28);
+}
+.ben-wb[data-template=ops] .ben-wb__items--particle .ben-wb__composer:focus-within{border-color:var(--dsw-alias-state-business-primary);box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 10px 34px rgba(0,0,0,.32),0 0 22px var(--wb-ops-glow)}
+.ben-wb[data-template=ops] .ben-wb__particle-actions button:hover{border-color:var(--wb-ops-edge);background:var(--wb-surface-hover);color:var(--dsw-alias-label-primary)}
+
+@keyframes wb-ops-line{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes wb-ops-scan{0%,100%{background-position:0% 50%;opacity:.18}50%{background-position:100% 50%;opacity:.48}}
+@keyframes wb-ops-aura{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.045)}}
+@media (prefers-reduced-motion:reduce){
+  .ben-wb[data-template=ops] .ben-wb__dock::after,
+  .ben-wb[data-template=ops] .ben-wb__dock-tab[data-current="true"]::after,
+  .ben-wb[data-template=ops] .ben-wb__items--particle::before,
+  .ben-wb[data-template=ops] .ben-wb__particle-orb::before{animation:none}
+}
+
+/* ── 他 10-04 那段「事务官窗口槽可读性修复」(同样只给自媒体布局)────────────────────
+   去掉大面积径向光、把球的光晕调低并停掉呼吸缩放、把事项标题 / 进度 / 输入框 / 按钮
+   的字号放大。排在上面那一段之后:它就是用来盖掉上面那几条的。 */
+.ben-wb[data-template=ops] .ben-wb__items--particle{
+  background:var(--wb-surface-bg);
+}
+.ben-wb[data-template=ops] .ben-wb__items--particle::before{
+  opacity:.12;
+  background:linear-gradient(115deg,transparent 39%,color-mix(in srgb,var(--wb-surface-ink) 4%,transparent) 50%,transparent 61%);
+  animation-duration:16s;
+}
+.ben-wb[data-template=ops] .ben-wb__particle-orb::before{
+  inset:25%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--wb-surface-ink) 6%,transparent),transparent 66%);
+  filter:blur(13px);
+  animation:none;
+}
+.ben-wb[data-template=ops] .ben-wb__particle-orb[data-notice="confirmation"]>.ben-wb__orb{--orb-color:#edbd65;--orb-glow:rgba(237,189,101,.24)}
+.ben-wb[data-template=ops] .ben-wb__particle-orb[data-notice="failed"]>.ben-wb__orb{--orb-color:#ef7777;--orb-glow:rgba(239,119,119,.26)}
+.ben-wb[data-template=ops] .ben-wb__particle-mode{font-size:17px;font-weight:560;line-height:1.45;letter-spacing:.01em}
+.ben-wb[data-template=ops] .ben-wb__orb-counts{font-size:12px;line-height:1.6;color:var(--dsw-alias-label-secondary)}
+.ben-wb[data-template=ops] .ben-wb__items-report{font-size:12px;line-height:1.55}
+.ben-wb[data-template=ops] .ben-wb__task-stage-heading{font-size:12px}
+.ben-wb[data-template=ops] .ben-wb__task-constellation strong{font-size:15px;line-height:1.45;font-weight:560}
+.ben-wb[data-template=ops] :is(.ben-wb__task-progress,.ben-wb__task-latest,.ben-wb__task-ask,.ben-wb__task-item){font-size:12px;line-height:1.55}
+.ben-wb[data-template=ops] :is(.ben-wb__task-agents,.ben-wb__task-agents>span.ben-wb__task-agents-name){font-size:11px}
+.ben-wb[data-template=ops] .ben-wb__particle-storage strong{font-size:13px;line-height:1.55}
+.ben-wb[data-template=ops] :is(.ben-wb__particle-storage button small,.ben-wb__particle-storage h4,.ben-wb__folder-empty){font-size:11px}
+.ben-wb[data-template=ops] .ben-wb__composer .ben-wb__items-input{font-size:15px;line-height:1.65}
+.ben-wb[data-template=ops] .ben-wb__composer-caption{font-size:12px}
+.ben-wb[data-template=ops] :is(.ben-wb__particle-actions button,.ben-wb__eyes-actions button){font-size:12px;min-height:30px;padding:6px 10px}

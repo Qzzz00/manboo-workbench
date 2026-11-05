@@ -1,0 +1,18 @@
+{
+  "role": "rattan",
+  "kind": "motion",
+  "version": "v3",
+  "items": [
+    {
+      "id": "idle",
+      "file": "待机.motion3.json",
+      "group": "idle",
+      "loop": true,
+      "kind": "idle",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "唯一待机循环",
+      "keywords": []
+    }
+  ]
+}

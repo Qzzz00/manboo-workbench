@@ -1,0 +1,15 @@
+/* 兼容样式(2026-10-23,分层二刀二第三轮):与 files/index.js 里那份 <style> 的
+   「2026-10-23(分层二刀二)」块逐字同源。升级迁移见 契约.md 的「style.css」一节。 */
+.ben-wb .creator-files .cf-tabs{gap:6px;margin-bottom:12px}
+.ben-wb .creator-files .cf-tabs button{display:inline-flex;align-items:center;gap:6px;min-height:29px;padding:5px 9px;border:0;border-radius:6px;background:var(--wb-soft);box-shadow:none;color:var(--wb-ink);font-size:11px;font-weight:400}
+.ben-wb .creator-files .cf-tabs button:is(.active,[aria-pressed=true],[aria-selected=true],[data-on=true]){color:var(--wb-ink);font-weight:600;box-shadow:none}
+.ben-wb .creator-files>div>p.cf-note:first-child{display:none}
+.ben-wb .creator-files .cf-file-head strong{color:var(--wb-ink);font-size:11px;font-weight:400}
+.ben-wb .creator-files .cf-file-head .cf-note{color:var(--wb-sub);font-size:11px;font-weight:400;letter-spacing:0}
+.ben-wb .creator-files .cf-search{min-height:0;margin-bottom:6px;padding:6px 9px;border:0;border-radius:6px;background:var(--wb-soft);color:var(--wb-ink);font-size:11px}
+.ben-wb .creator-files .cf-file{gap:10px;padding:10px 0;border:0;border-bottom:var(--wb-hair) solid var(--wb-line);border-radius:0;background:transparent;box-shadow:none}
+.ben-wb .creator-files .cf-file:last-child{border-bottom:0}
+.ben-wb .creator-files .cf-file-name{color:var(--wb-ink);font-size:11.5px;font-weight:500}
+.ben-wb .creator-files .cf-file-path{margin-top:3px;color:var(--wb-faint);font-size:10px;opacity:1}
+.ben-wb .creator-files .cf-icon{width:16px;height:16px;color:var(--wb-sub)}
+.ben-wb .creator-files .cf-arrow{width:12px;height:12px;color:var(--wb-faint);font-size:12px}

@@ -1,0 +1,806 @@
+/* 掌机桌面（Anbernic RG Rotate）：720×720 物理方屏，density 240 → CSS 视口 480×480。
+   与电台桌面不同，这里**不做画布缩放**——视口就是 480×480，所有尺寸按真实 CSS 像素写。
+   （电台是 480×640 设计画布 + transform:scale(--radio-scale) 铺满，那套数值搬过来会大一倍。）
+
+   ★高度一律 var(--app-height)，绝不写 100dvh：Chrome<108 的 WebView（掌机是 Chrome 99）
+   不认 dvh，整条声明失效后元素高度塌 0，配合 overflow:hidden 会把整个 UI 裁没。
+   见记忆 dvh-appheight-oldwebview-trap。 */
+.hh-root {
+  position: relative;
+  width: 100%;
+  height: var(--app-height, 100vh);
+  background: #101014;
+  color: #fff;
+  /* ★必须是 clip 不能是 hidden。
+     overflow:hidden 只是「隐藏溢出」，容器本身**仍然是可滚动容器**——里面那条 200% 宽的
+     页轨切走之后，浏览器为了把仍带焦点的按钮拉回视野，会把本容器横向滚 192px，
+     于是整页歪掉（实测：切到游戏页后 scrollLeft=192，返回按钮跑到屏外）。
+     掌机全靠十字键操作、焦点一直在动，这个必然复现。
+     overflow:clip 根本不建立滚动容器，从结构上杜绝。Chrome 90+ 支持，掌机是 Chrome 99。
+     ——刻意不写 `overflow:hidden; overflow:clip` 的渐进增强双声明：CSS 压缩器会把前一条
+     当死代码删掉（dvh 那次的教训），留着也没用。 */
+  overflow: clip;
+}
+
+/* 两页横向排布、整体平移切页。用 transform 而非切 display：有动效且不触发重排。 */
+.hh-pages {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  transition: transform 260ms ease;
+  /* 横向由掌机页面状态机处理，纵向仍留给 ROM / 应用列表滚动。设置层是兄弟节点，
+     不会吃到这条规则，所以横向 range 滑块不受影响。 */
+  touch-action: pan-y;
+}
+.hh-root[data-page='games'] .hh-pages {
+  transform: translateX(-50%);
+}
+
+.hh-page {
+  position: relative;
+  width: 50%;
+  height: 100%;
+}
+
+/* ---- 时间日期 ----
+   复用屏保的 ClockWidget 组件（.ss-clock-time / .ss-colon / .ss-clock-date），
+   但样式按方屏另抄一份并限定在 .hh-clock 内——直接 import screensaver.css 会把
+   屏保整套布局变量拖进来。数值比屏保小一号：这里角色是主角，时间是配角。 */
+.hh-clock {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  text-align: center;
+  pointer-events: none; /* 别挡住角色的点击（军师功能要点角色） */
+  color: #fff;
+}
+.hh-clock .ss-clock-time {
+  font-size: 56px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65);
+}
+.hh-clock .ss-colon {
+  margin: 0 0.05em;
+  transition: opacity 0.2s;
+}
+.hh-clock .ss-colon-dim {
+  opacity: 0.25;
+}
+.hh-clock .ss-clock-date {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 300;
+  opacity: 0.8;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* 天气：日期正下方一行（Ben 要求从右上角三层挪到这里并成一行）。
+   在 .hh-clock 里，跟着时钟一起居中；拿不到数据时组件 return null，这行就不占位。 */
+.hh-weather-row {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 7px;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 300;
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+}
+.hh-weather-row .hh-weather-icon { font-size: 16px; }
+.hh-weather-row .hh-weather-temp { font-variant-numeric: tabular-nums; }
+.hh-weather-row .hh-weather-cond { opacity: 0.85; }
+.hh-weather-row .hh-weather-city { opacity: 0.7; }
+
+/* ---- 导航按钮 ---- */
+.hh-nav {
+  position: absolute;
+  z-index: 2;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.hh-nav--to-games {
+  right: 12px;
+  bottom: 12px;
+}
+.hh-nav--to-home {
+  left: 12px;
+  top: 12px;
+}
+
+/* ---- 游戏格 ----
+   AppDrawerBody 吐的是 .radio-appgrid / .radio-appicon / .radio-empty 三个类，
+   但 radio.css 里 .radio-appgrid 压根没有定义（电台那边的抽屉网格是裸的），
+   .radio-appicon 那套又是设计画布坐标。所以这里全部自己写，并**限定在 .hh-games 内**，
+   免得污染电台。刻意不 import radio.css：那会把电台的画布变量一起拖进来。 */
+/* ★原生渲染路径：角色由 WebView **之下**的 GLSurfaceView 画（SurfaceView 穿透），
+   所以从窗口到舞台之间任何「整面不透明」的层都会把角色盖死。
+   index.css 的 html.native-live2d 规则只透明化了 html/body，本根容器带着自己的
+   background，不让出来就是一片纯色——真机实测正是这个症状：GL 稳跑 58fps、
+   模型也 loaded，屏幕上却只有背景色和按钮，角色完全不可见。
+   背景色改由原生清屏负责（日志里的 setBackground {"color":"#14090f"}）。 */
+html.native-live2d .hh-root {
+  background: transparent;
+}
+
+.hh-games {
+  position: absolute;
+  inset: 0;
+  padding: 52px 12px 12px; /* 顶部给「‹ 返回」让位 */
+  overflow-y: auto;
+  /* 游戏格页不显示角色，给它自己的不透明底：否则原生态下会透出 GL 清屏色，
+     且切页平移时能看到下面的角色半途穿帮。 */
+  background: #101014;
+}
+
+.hh-games .radio-appgrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 480px 视口下每格约 105px，图标 64 + 文字 */
+  gap: 14px 6px;
+}
+
+.hh-games .radio-appicon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+}
+
+.hh-games .radio-appicon img {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hh-games .radio-appicon span {
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+  /* 模拟器名字有长有短（「Snes9x EX+」vs「NES.emu」），限两行省略，避免格子高度参差 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hh-games .radio-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+
+/* ---- 平台 tab（GBA / NDS / PSP / PS1） ----
+   顶部一排，只出有游戏的平台。「‹ 返回」占着左上角、「应用 ›」占着右上角，
+   所以 tab 行由 .hh-games 的 padding-top 让在它们下面。 */
+.hh-platforms {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.hh-platform {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* 选中态：平台色实心。aria-pressed 既是状态也是可访问性，不另立 class。 */
+.hh-platform[aria-pressed='true'] {
+  background: var(--hh-platform-color, #6f5bd6);
+  color: #fff;
+}
+
+.hh-platform-count {
+  font-size: 11px;
+  opacity: 0.65;
+}
+
+/* ---- 游戏格（ROM 本体，不是模拟器） ----
+   3 列封面网格。封面是 /<平台>/covers/<同名>.png（见 handheldCovers.ts），
+   没配封面就回落平台色块 + 游戏名首字。名字一行省略，格子高度才齐。 */
+.hh-romgrid {
+  display: grid;
+  /* ★必须 minmax(0, 1fr) 不能是 1fr：1fr 的 min-width 是 auto，
+     「口袋妖怪 漆黑的魅影 5.0EX 无尽混沌 BW」这种长名字（nowrap）会把所在列整根撑大，
+     另外两列被挤到屏幕外——真机第一版实测就是这个症状。 */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 10px;
+}
+
+.hh-rom {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  text-align: left;
+}
+
+/* 封面位：1:1 方形 + object-fit:cover 居中裁切。
+   ★为什么是方形而不是 4:3 或竖版：实际封面量下来 GBA/NDS/PS1 的盒图本来就接近正方
+   （320×286 这类，卡带盒就是方的），只有 PSP 是 185×320 的竖长 UMD 盒。
+   方格对前三家几乎零裁切、对 PSP 裁上下留主视觉，而且行高与 4:3 时相近，密度不掉。 */
+.hh-rom-cover,
+.hh-rom-cart {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  background: var(--hh-platform-color, #4a3aa8);
+}
+
+.hh-rom-cover {
+  object-fit: cover;
+  display: block;
+}
+
+/* 没有封面时的回落：平台色块 + 游戏名首字。 */
+.hh-rom-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.18), inset 0 6px 0 rgba(255, 255, 255, 0.1);
+}
+
+.hh-rom-name {
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 平台配色：tab 选中态与封面回落色块共用同一个变量。
+   加平台就在这里加一行（ROM_SOURCES 的 dir 即选择器的值）。 */
+.hh-rom[data-platform='GBA'],
+.hh-platform[data-platform='GBA'] {
+  --hh-platform-color: #6f5bd6;
+}
+.hh-rom[data-platform='NDS'],
+.hh-platform[data-platform='NDS'] {
+  --hh-platform-color: #3778c2;
+}
+.hh-rom[data-platform='PS1'],
+.hh-platform[data-platform='PS1'] {
+  --hh-platform-color: #5f6470;
+}
+.hh-rom[data-platform='PSP'],
+.hh-platform[data-platform='PSP'] {
+  --hh-platform-color: #c07a1e;
+}
+
+/* 应用抽屉入口：Aiboo 接管 HOME 之后这是唯一能去系统设置的路，别删。 */
+.hh-apps-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+}
+
+.hh-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 60%;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+.hh-empty-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+/* 主页左下角的设置入口。与右下角「游戏 ›」对称，互不遮挡。 */
+.hh-nav--settings {
+  left: 12px;
+  bottom: 12px;
+  padding: 8px 14px;
+  font-size: 17px;
+  line-height: 1;
+}
+
+/* ---- 设置面板 ----
+   盖在整个根之上（不占横轨的一页）：横轨是「首页↔游戏」那条主动线，
+   多塞一页会让左右滑动变得难预期。 */
+.hh-settings {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #101014;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.hh-settings-head {
+  position: relative;
+  flex: 0 0 auto;
+  height: 52px;
+}
+.hh-settings-back {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+}
+.hh-settings-title {
+  display: block;
+  line-height: 52px;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* ★底部留白 = 底条高度（240 设备像素 = 160 CSS px）+ 8px 余量。
+   设置页开着时下面压着一条**真实**底条做实时预览，不留白滑块会被它盖住。
+   （底条是 FLAG_NOT_TOUCHABLE 触摸穿透，所以只是视觉遮挡，不影响拖动。） */
+.hh-settings-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0 14px 168px;
+}
+
+/* 角色选择器：三只横排，选中态加亮边。 */
+.hh-settings-avatars {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+.hh-settings-avatar {
+  flex: 1 1 0;
+  padding: 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+.hh-settings-avatar--on {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.hh-settings-group + .hh-settings-group {
+  margin-top: 18px;
+}
+.hh-settings-group-title {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 6px;
+}
+.hh-settings-hint {
+  margin: 0 0 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.hh-settings-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 14px;
+}
+.hh-settings-row > span:first-child {
+  flex: 0 0 40px;
+}
+.hh-settings-row input[type='range'] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.hh-settings-val {
+  flex: 0 0 40px;
+  text-align: right;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+
+.hh-settings-reset {
+  margin-top: 4px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+}
+
+.hh-settings-emu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  text-align: left;
+}
+.hh-settings-emu-name { flex: 0 0 auto; font-size: 14px; }
+.hh-settings-emu-sub { flex: 1 1 auto; font-size: 11px; color: rgba(255, 255, 255, 0.4); }
+.hh-settings-emu-go { flex: 0 0 auto; color: rgba(255, 255, 255, 0.35); }
+
+.hh-settings-launcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.hh-settings-launcher-status {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+}
+.hh-settings-launcher-btn {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* 军师：服务器地址 / 设备 token 输入框。 */
+.hh-settings-input {
+  flex: 1;
+  min-width: 0;
+  margin-left: 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  font-size: 13px;
+}
+
+/* ---- Figma handheld UI refresh (2026-08-04) ---- */
+.hh-root {
+  font-family: 'Alibaba PuHuiTi 2.0', 'Alibaba PuHuiTi', system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  background: #000;
+}
+
+.hh-page--home {
+  overflow: clip;
+}
+
+.hh-home-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: center / cover no-repeat url('/backgrounds/radio-dj-bg.png');
+  opacity: 1;
+  transition: opacity 120ms linear;
+  pointer-events: none;
+}
+.hh-home-curtain.is-ready { opacity: 0; }
+
+.hh-home-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hh-home-gradient--top {
+  top: 0;
+  height: 133.333px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.05) 69.844%,
+    rgba(0, 0, 0, 0.03) 79.151%,
+    rgba(0, 0, 0, 0.015) 88.294%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.hh-home-gradient--bottom {
+  bottom: 0;
+  height: 133.333px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.015) 11.706%,
+    rgba(0, 0, 0, 0.03) 20.849%,
+    rgba(0, 0, 0, 0.05) 30.156%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
+.hh-home-clock {
+  position: absolute;
+  left: 50%;
+  top: 32px;
+  transform: translateX(-50%);
+  z-index: 2;
+  color: #fff;
+  pointer-events: none;
+  text-shadow: 0 0.667px 1.333px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.hh-home-time {
+  font-size: 64px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.hh-home-time span {
+  display: inline;
+}
+
+.hh-home-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+.hh-home-date {
+  font-size: 13.333px;
+  line-height: 1.35;
+  font-weight: 400;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.hh-home-clock .hh-weather-row {
+  justify-content: center;
+  gap: 3px;
+  margin-top: 0;
+  font-size: 13.333px;
+  line-height: 1.35;
+  font-weight: 400;
+  text-shadow: 0 0.667px 1.333px rgba(0, 0, 0, 0.25);
+}
+
+.hh-home-clock .hh-weather-icon,
+.hh-home-clock .hh-weather-city {
+  display: none;
+}
+
+.hh-home-actions {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  /* 电话栏占整条底部以便居中，但左右入口必须在它上面接收触摸。 */
+  z-index: 3;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.hh-home-action {
+  width: 29.333px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-shadow: 0 0.667px 1.333px rgba(0, 0, 0, 0.25);
+}
+
+.hh-home-action img {
+  width: 29.333px;
+  height: 29.333px;
+  display: block;
+}
+
+.hh-home-action span {
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 13.333px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.hh-home-callbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  height: 133.333px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hh-home-call {
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.hh-home-call img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hh-games {
+  padding: 16px;
+  background: #262626;
+  color: #fff;
+  overflow-y: auto;
+}
+
+.hh-games-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+}
+
+.hh-games-back {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.hh-games-back img {
+  width: 36px;
+  height: 36px;
+  display: block;
+}
+
+.hh-apps-toggle {
+  position: static;
+  height: 36px;
+  min-width: 84px;
+  padding: 6.667px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6.667px;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+.hh-apps-toggle img {
+  width: 13.333px;
+  height: 13.333px;
+  display: block;
+}
+
+.hh-platforms {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 13.333px 0 16px;
+}
+
+.hh-platform {
+  height: 36px;
+  padding: 6.667px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+.hh-platform[aria-pressed='true'] {
+  background: #f9f385;
+  color: #404040;
+}
+
+.hh-platform-count {
+  display: none;
+}
+
+.hh-romgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.hh-rom {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  overflow: clip;
+}
+
+.hh-rom-cover,
+.hh-rom-cart {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  background: var(--hh-platform-color, #4a3aa8);
+}
+
+.hh-rom-cover {
+  display: block;
+  object-fit: cover;
+}
+
+.hh-rom-cart {
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.hh-rom-name {
+  display: none;
+}

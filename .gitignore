@@ -1,0 +1,41 @@
+# 构建产物与依赖
+node_modules/
+dist/
+lib/
+*.tsbuildinfo
+.DS_Store
+*.log
+__pycache__/
+.pnpm-store/
+output/
+outputs/
+graphify-out/
+
+# 下面这些 lib/ 是源码目录，不是构建产物（旧仓 .gitignore 已有同类例外）。
+# 放行它们，避免新仓后续新增源码被静默忽略；首提交另有 git add -f 兜底。
+!butler-server/server/lib/
+!display-client/src/lib/
+!display-client/src/screensaver/lib/
+
+# 本地配置与凭据（示例用 .env.example）
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.keystore
+*.jks
+*.mobileprovision
+*.provisionprofile
+keystore.properties
+id_rsa*
+id_ed25519*
+.netrc
+
+# 编辑器 / 本机缓存
+.serena/
+.claude/settings.local.json
+.worktrees/

@@ -1,0 +1,25 @@
+// 原生 Live2D 渲染核心（宿主无关 library）：主 App(:app) 与低端机纯原生 APK(:liteapp) 共享。
+// Cubism Core aar 只参与编译（compileOnly）；运行时由各 application module 把 aar 打进 APK
+// ——与 :cubism-framework 同一模式（AGP 不允许 library module 直接依赖本地 aar）。
+plugins { id 'com.android.library' }
+
+android {
+    namespace = "com.llm.live2d.nativelive2d"
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    compileOnly(fileTree(dir: '../libs51', include: ['Live2DCubismCore.aar']))
+    api project(':cubism-framework-51')
+    testImplementation "junit:junit:$junitVersion"
+}

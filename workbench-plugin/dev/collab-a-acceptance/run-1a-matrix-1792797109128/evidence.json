@@ -1,0 +1,90 @@
+[
+  {
+    "at": "2026-10-23T23:11:49.286Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": true
+  },
+  {
+    "at": "2026-10-23T23:12:31.033Z",
+    "name": "model-pointed-own",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T23:12:31.086Z",
+    "name": "relay-test-account",
+    "ok": true,
+    "registered": true
+  },
+  {
+    "at": "2026-10-23T23:12:31.095Z",
+    "name": "phone-paired",
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T23:12:32.105Z",
+    "name": "butler-voice",
+    "up": true
+  },
+  {
+    "at": "2026-10-23T23:12:32.142Z",
+    "name": "upstream-real-understand",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我"
+  },
+  {
+    "at": "2026-10-23T23:12:39.726Z",
+    "name": "upstream-real-reply",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"原话明说「建个待办」且要求建之前先确认，记而不派、挂起等她点头\",\"confirm\":true}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-23T23:12:53.889Z",
+    "name": "cell-v3-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样片",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T23:12:53.923Z",
+    "name": "upstream-real-understand",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我"
+  },
+  {
+    "at": "2026-10-23T23:12:58.099Z",
+    "name": "upstream-real-reply",
+    "said": "建个待办:周四下午给客户发样片,建之前你问过我",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"who\":\"Claude\",\"risk\":\"none\",\"confidence\":0.97,\"why\":\"明说是待办且要建之前先问过她\",\"confirm\":true}]}\n\n"
+  },
+  {
+    "at": "2026-10-23T23:13:28.898Z",
+    "name": "cell-v3-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样片",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T23:13:28.911Z",
+    "name": "matrix-end",
+    "checksFailed": [],
+    "limitation": "电话两列是 1b 未跑;真手机未验;真云模型=真 Kimi 桥"
+  },
+  {
+    "at": "2026-10-23T23:13:30.641Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

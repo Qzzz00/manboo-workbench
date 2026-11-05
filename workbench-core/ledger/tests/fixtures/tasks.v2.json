@@ -1,0 +1,61 @@
+{
+  "version": 2,
+  "tasks": [
+    {
+      "id": "8f0c2a7e-0000-4000-8000-000000000001",
+      "title": "写下周的选题",
+      "status": "todo",
+      "project_id": "p-video",
+      "source": "manual",
+      "created_at": "2026-10-18T02:00:00.000Z",
+      "updated_at": "2026-10-18T02:00:00.000Z"
+    },
+    {
+      "id": "8f0c2a7e-0000-4000-8000-000000000002",
+      "title": "修登录页",
+      "status": "doing",
+      "project_id": "p-app",
+      "assignee": "codex",
+      "source": "manual",
+      "dispatch": {
+        "family": "codex",
+        "status": "running",
+        "hand": "cli",
+        "cwd": "/Users/x/app",
+        "started_at": "2026-10-19T08:00:00.000Z",
+        "session_id": "thr-1"
+      },
+      "created_at": "2026-10-19T07:55:00.000Z",
+      "updated_at": "2026-10-19T08:00:00.000Z"
+    },
+    {
+      "id": "8f0c2a7e-0000-4000-8000-000000000003",
+      "title": "问问 Claude 片头要不要换",
+      "status": "confirm",
+      "source": "phone",
+      "client_dispatch": {
+        "hand": "window",
+        "family": "claude",
+        "status": "replied",
+        "at": "2026-10-19T09:00:00.000Z",
+        "text": "片头要不要换",
+        "session_id": "sess-9",
+        "turn_id": "turn-3",
+        "reply_state": "replied",
+        "reply": "建议换"
+      },
+      "dispatch": {
+        "family": "claude",
+        "status": "done",
+        "hand": "api",
+        "started_at": "2026-10-19T08:30:00.000Z",
+        "ended_at": "2026-10-19T08:40:00.000Z"
+      },
+      "created_at": "2026-10-19T08:29:00.000Z",
+      "updated_at": "2026-10-19T09:05:00.000Z"
+    }
+  ],
+  "sprints": [],
+  "modules": [],
+  "project_meta": []
+}

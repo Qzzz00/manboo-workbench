@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- API 24/25 无 adaptive icon 的兜底：背景圆 + 前景剪影 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/ic_launcher_bg" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/ic_launcher_fg" />
+</layer-list>

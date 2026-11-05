@@ -1,0 +1,112 @@
+{
+  "note": "由 butler-app/scripts/render-filler-audio.mjs 生成,**别手改**。换了音色就重跑一遍那个脚本。",
+  "version": 2,
+  "scene": "chat",
+  "generated_at": "2026-10-02T13:12:09.265Z",
+  "only": [
+    "ack"
+  ],
+  "total_bytes": 82110,
+  "lines": [
+    {
+      "id": "think-1",
+      "kind": "thinking",
+      "text": "我想想。",
+      "file": "think-1.m4a",
+      "bytes": 7849,
+      "ms": 1101,
+      "trimmed_ms": 171
+    },
+    {
+      "id": "think-2",
+      "kind": "thinking",
+      "text": "稍等一下。",
+      "file": "think-2.m4a",
+      "bytes": 9295,
+      "ms": 1318,
+      "trimmed_ms": 170
+    },
+    {
+      "id": "think-3",
+      "kind": "thinking",
+      "text": "让我看看。",
+      "file": "think-3.m4a",
+      "bytes": 7913,
+      "ms": 1106,
+      "trimmed_ms": 166
+    },
+    {
+      "id": "think-4",
+      "kind": "thinking",
+      "text": "嗯,我想一下。",
+      "file": "think-4.m4a",
+      "bytes": 10259,
+      "ms": 1487,
+      "trimmed_ms": 169
+    },
+    {
+      "id": "think-5",
+      "kind": "thinking",
+      "text": "等我一下。",
+      "file": "think-5.m4a",
+      "bytes": 6554,
+      "ms": 862,
+      "trimmed_ms": 386
+    },
+    {
+      "id": "tool-scan-projects",
+      "kind": "tool",
+      "tool": "scan_projects",
+      "text": "我看一下你的仓库,大概几秒。",
+      "file": "tool-scan-projects.m4a",
+      "bytes": 15277,
+      "ms": 2296,
+      "trimmed_ms": 392
+    },
+    {
+      "id": "tool-any",
+      "kind": "tool",
+      "text": "我查一下,稍等。",
+      "file": "tool-any.m4a",
+      "bytes": 10651,
+      "ms": 1535,
+      "trimmed_ms": 337
+    },
+    {
+      "id": "ack-1",
+      "kind": "ack",
+      "text": "嗯。",
+      "file": "ack-1.m4a",
+      "bytes": 2478,
+      "ms": 205,
+      "trimmed_ms": 875
+    },
+    {
+      "id": "ack-2",
+      "kind": "ack",
+      "text": "嗯哼。",
+      "file": "ack-2.m4a",
+      "bytes": 4282,
+      "ms": 478,
+      "trimmed_ms": 1010
+    },
+    {
+      "id": "ack-3",
+      "kind": "ack",
+      "text": "对。",
+      "file": "ack-3.m4a",
+      "bytes": 3007,
+      "ms": 269,
+      "trimmed_ms": 1003
+    },
+    {
+      "id": "ack-4",
+      "kind": "ack",
+      "text": "嗯嗯。",
+      "file": "ack-4.m4a",
+      "bytes": 4545,
+      "ms": 534,
+      "trimmed_ms": 954
+    }
+  ]
+}

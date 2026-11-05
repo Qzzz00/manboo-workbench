@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- API 24/25 兜底 launcher 图标；API 26+ 被 mipmap-anydpi-v26 的 adaptive icon 覆盖 -->
+    <item name="ic_launcher" type="mipmap">@drawable/ic_launcher_legacy</item>
+</resources>

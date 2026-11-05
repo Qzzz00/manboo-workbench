@@ -1,0 +1,28 @@
+{
+  "name": "@ben/workbench-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "座机服务:阶段 1 只站在插件前面转发,并把插件 /live 的广播翻成只读事件流。",
+  "type": "module",
+  "main": "lib/core.js",
+  "bin": {
+    "workbench-core": "lib/core.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node lib/core.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "tsdown"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.0",
+    "@types/ws": "^8.18.1",
+    "tsdown": "^0.22.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8",
+    "ws": "^8.21.3"
+  }
+}

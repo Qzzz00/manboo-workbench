@@ -1,0 +1,110 @@
+--- Multica/LICENSE@7a81f73ca2cd29a92e3808503dc11fa8a2ffb0fe
++++ LICENSE.draft.txt
+@@ -1,3 +1,7 @@
+-# Multica License
+-
+-Multica is provided under the terms of the Apache License, Version 2.0 —
++DRAFT — NOT AN EFFECTIVE LICENSE GRANT.
++Identity and contact fields are intentionally unfilled.
++See README.md in this directory for draft status and source provenance.
++
++# 事务官座机 License
++
++事务官座机 is provided under the terms of the Apache License, Version 2.0 —
+@@ -7 +11 @@
+-Part I and Part II together constitute the "Multica License". Neither part
++Part I and Part II together constitute the "事务官座机 License". Neither part
+@@ -15,6 +19,7 @@
+-In this Multica License, "the producer" means Index Labs (Hong Kong)
+-Limited, the company that develops and distributes Multica. Commercial
+-licenses and branding waivers may be requested at
+-https://www.multica.ai/contact-sales.
+-
+-1. Multica may be utilized commercially, including as a backend service for
++In this 事务官座机 License, "the producer" means
++____________________ [RIGHTS_HOLDER_LEGAL_NAME],
++the individual or legal entity that develops and distributes 事务官座机.
++Commercial licenses and branding waivers may be requested at
++____________________ [COMMERCIAL_CONTACT_URL].
++
++1. 事务官座机 may be utilized commercially, including as a backend service for
+@@ -25,2 +30,2 @@
+-      license from the producer, you may not use the Multica source code
+-      to provide a hosted service to third parties, or embed Multica as a
++      license from the producer, you may not use the 事务官座机 source code
++      to provide a hosted service to third parties, or embed 事务官座机 as a
+@@ -30 +35 @@
+-      - This restriction applies to offering Multica (in whole or
++      - This restriction applies to offering 事务官座机 (in whole or
+@@ -44 +49 @@
+-        Multica License, including conditions (b) and (c) below and
++        事务官座机 License, including conditions (b) and (c) below and
+@@ -51,2 +56,2 @@
+-      Multica LOGO, the Multica product name, or the copyright and
+-      attribution information displayed by a Multica user interface.
++      事务官座机 LOGO, the 事务官座机 product name, or the copyright and
++      attribution information displayed by a 事务官座机 user interface.
+@@ -55 +60 @@
+-        "Multica user interface" means any user interface derived, in whole
++        "事务官座机 user interface" means any user interface derived, in whole
+@@ -58,6 +63,5 @@
+-        `apps/web/`, `apps/desktop/`, `apps/mobile/`, `packages/views/`,
+-        and `packages/ui/` directories when running Multica from the raw
+-        source code, the frontend container image (published as
+-        `ghcr.io/multica-ai/multica-web`) when running Multica with
+-        Docker, and any compiled desktop or mobile application built from
+-        that code. That enumeration is illustrative rather than
++        `workbench-plugin/src/client/`, `workbench-app/`, `butler-app/`,
++        `display-client/`, `butler-server/admin-ui/`, and `installer-app/`
++        directories when running 事务官座机 from the raw source code,
++        any packaged frontend or display build, and any compiled desktop
++        or mobile application built from that code. That enumeration is illustrative rather than
+@@ -67,4 +71,5 @@
+-      - This restriction is inapplicable to uses of Multica that do not
+-        involve a Multica user interface, such as running only the
+-        `server/` backend, the daemon, or the CLI without redistributing
+-        or operating any Multica user interface. Such uses remain subject
++      - This restriction is inapplicable to uses of 事务官座机 that do not
++        involve a 事务官座机 user interface, such as running only the
++        `workbench-plugin/src/server/` or `butler-server/` backend,
++        the worker processes, or the CLI without redistributing
++        or operating any 事务官座机 user interface. Such uses remain subject
+@@ -74,2 +79,2 @@
+-      product or service built on Multica's backend, daemon, or CLI
+-      without a Multica user interface, you must retain all copyright,
++      product or service built on 事务官座机's backend, worker processes, or CLI
++      without a 事务官座机 user interface, you must retain all copyright,
+@@ -78,2 +83,2 @@
+-      documentation that the product is built on Multica, including a link
+-      to https://github.com/multica-ai/multica.
++      documentation that the product is built on 事务官座机, including a link
++      to ____________________ [PUBLIC_PROJECT_URL].
+@@ -89,3 +94,3 @@
+-2. Contributions: By submitting a contribution to Multica, you agree that:
+-
+-   a. The producer can adjust this Multica License to be more strict or
++2. Contributions: By submitting a contribution to 事务官座机, you agree that:
++
++   a. The producer can adjust this 事务官座机 License to be more strict or
+@@ -97 +102 @@
+-   c. Your contribution is submitted under this Multica License as a whole,
++   c. Your contribution is submitted under this 事务官座机 License as a whole,
+@@ -102 +107 @@
+-   a. This entire file is the Multica License. Part I (these additional
++   a. This entire file is the 事务官座机 License. Part I (these additional
+@@ -108 +113 @@
+-      Multica License as a whole — Part I and Part II together — and not
++      事务官座机 License as a whole — Part I and Part II together — and not
+@@ -116 +121 @@
+-   d. If you redistribute Multica or a derivative work of it, you must
++   d. If you redistribute 事务官座机 or a derivative work of it, you must
+@@ -118,3 +123,3 @@
+-      satisfy the Multica License or section 4(a) of Part II.
+-
+-© 2025-2026 Index Labs (Hong Kong) Limited
++      satisfy the 事务官座机 License or section 4(a) of Part II.
++
++© 2026 ____________________ [RIGHTS_HOLDER_LEGAL_NAME]
+@@ -128 +133 @@
+-the Multica License as described in condition 3 above.
++the 事务官座机 License as described in condition 3 above.

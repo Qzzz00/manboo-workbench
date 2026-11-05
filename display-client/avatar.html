@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 竖屏首页的形象区(2026-10-01):只有形象舞台,手机壳用 iframe 嵌它。见 src/display/avatarMain.tsx。 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>形象</title>
+    <style>html, body, #root { margin: 0; height: 100%; background: #0f0f0f; overflow: hidden; }</style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="/live2dcubismcore.min.js"></script>
+    <script type="module" src="/src/display/avatarMain.tsx"></script>
+  </body>
+</html>

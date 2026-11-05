@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# DSH 工作台启动脚本(launchd: ~/Library/LaunchAgents/ai.deepseek.dsh.plist 调用)。
+# 安装位置:~/.dsh/bin/dsh-start(cp 本文件过去并 chmod 755)。
+#
+# 2026-09-07 事故恢复:原脚本随 ~/.dsh 一起被删,本文件按存活进程的环境变量与
+# docs/交接-0827-项目区EPERM与自有node.md 复原,并存进仓库以免再丢。
+#
+# 为什么用自有 node(~/.dsh/node):macOS「文稿文件夹」授权认二进制。借别人家会自动
+# 更新的 node(Codex 运行时缓存)= 把授权寿命交给别人的发版节奏(0827 事故)。
+# 升级 node 要有意为之;换过文件后系统会重新弹授权框,点允许即可。
+set -euo pipefail
+
+# 打开文件上限(2026-09-28,维护者本机真机崩溃「EMFILE: too many open files, watch」):
+# launchd 给的软上限只有 256,后台要盯着各家 AI 的会话记录,一涨破就整个挂掉。
+# 先试 65536,不行退 10240;都调不上也照常启动(不挡开机)。
+ulimit -n 65536 2>/dev/null || ulimit -n 10240 2>/dev/null || true
+
+export DSH_HOME="$HOME/.dsh"
+export DSH_NODE="$DSH_HOME/node/bin/node"
+export PATH="$DSH_HOME/node/bin:$DSH_HOME/advisors/bin:$HOME/.local/bin:$HOME/.kimi-code/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+export DSH_TELEMETRY_DISABLED=1
+export DSH_PERMISSION_MODE=workspace-write
+# 工作台插件(8791)对热点网段开放;缺省 127.0.0.1 不出本机。
+export WORKBENCH_HOST=0.0.0.0
+# 事务官开会话时的工作目录(一事项一会话,0.2.15 起)。
+#
+# **这里不再写死**(2026-09-18 桌面安装包):它由 ~/.dsh/workbench/app.json 的 `butler_cwd` 决定,
+# 界面上是 设置 → 目录 → 「事务官仓库目录」。理由是环境变量**压着** app.json ——
+# 在这儿写死一个路径,等于把设置里那一栏废掉;而双击安装包装机的那台电脑上,
+# 根本没有 desktop-workbench 这个仓库,写死哪一条都是错的。
+#
+# 真要临时指到别处(灰度、调试),在这一行下面自己加一句 export 就行,它仍然优先。
+#
+# **不设任何一台机器自己的代理或转发地址**(2026-09-25,卡 R 补,统筹拍板):这份脚本随安装包与热更新
+# 发给每一台机器,DSH 与它起的每一个命令行 Agent 都继承这里的环境。原来这里有一行把 Claude 的请求
+# 转给维护者本机的一个代理端口 —— 别的机器上那个端口没人听,维护者这台后来也没有了,
+# 于是 DSH 起的 `claude` 命令行全都连不上。守门用例(tests/package-files-guard.test.ts)盯着这一类。
+
+cd "$DSH_HOME/runtime"
+# --no-open:dsh web 默认每次启动都拉一次系统浏览器(2026-09-17 Ben:「重启 DSH 总在 Chrome 里打开一次,搞得很困惑」)。
+# 工作台有自己的壳,不要它开浏览器。
+exec "$DSH_NODE" "$DSH_HOME/runtime/node_modules/@deepseek-ai/dsh/lib/bin.js" web --host 127.0.0.1 --port 3080 --no-open

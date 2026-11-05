@@ -1,0 +1,48 @@
+{
+  "commit": "7a81f73ca2cd29a92e3808503dc11fa8a2ffb0fe",
+  "repository": "https://github.com/multica-ai/multica",
+  "files": {
+    "LICENSE": "ec78c4feacec52c7dad8ed5ffdd79033fc8c58e320a3c5ebe9a00286cab37f63",
+    "NOTICE": "ae1d27215675c4305be1b51a31a913b936a56c2d2266c234ca140596b9a04eab",
+    "CONTRIBUTING.md": "b4e5818ab64d2a256473c424bc2a18626ae8478c364d4574b57879a05c80ff74"
+  },
+  "retrieved_on": "2026-10-21",
+  "adaptation_status": "draft-not-effective",
+  "adaptations": [
+    {
+      "field": "project_name",
+      "original": "Multica",
+      "replacement": "事务官座机"
+    },
+    {
+      "field": "producer_and_contact",
+      "original": "In this 事务官座机 License, \"the producer\" means Index Labs (Hong Kong)\nLimited, the company that develops and distributes 事务官座机. Commercial\nlicenses and branding waivers may be requested at\nhttps://www.multica.ai/contact-sales.",
+      "replacement": "In this 事务官座机 License, \"the producer\" means\n____________________ [RIGHTS_HOLDER_LEGAL_NAME],\nthe individual or legal entity that develops and distributes 事务官座机.\nCommercial licenses and branding waivers may be requested at\n____________________ [COMMERCIAL_CONTACT_URL]."
+    },
+    {
+      "field": "ui_examples",
+      "original": "        `apps/web/`, `apps/desktop/`, `apps/mobile/`, `packages/views/`,\n        and `packages/ui/` directories when running 事务官座机 from the raw\n        source code, the frontend container image (published as\n        `ghcr.io/multica-ai/multica-web`) when running 事务官座机 with\n        Docker, and any compiled desktop or mobile application built from\n        that code.",
+      "replacement": "        `workbench-plugin/src/client/`, `workbench-app/`, `butler-app/`,\n        `display-client/`, `butler-server/admin-ui/`, and `installer-app/`\n        directories when running 事务官座机 from the raw source code,\n        any packaged frontend or display build, and any compiled desktop\n        or mobile application built from that code."
+    },
+    {
+      "field": "backend_examples",
+      "original": "        `server/` backend, the daemon, or the CLI without redistributing",
+      "replacement": "        `workbench-plugin/src/server/` or `butler-server/` backend,\n        the worker processes, or the CLI without redistributing"
+    },
+    {
+      "field": "non_ui_examples",
+      "original": "      product or service built on 事务官座机's backend, daemon, or CLI",
+      "replacement": "      product or service built on 事务官座机's backend, worker processes, or CLI"
+    },
+    {
+      "field": "project_url",
+      "original": "https://github.com/multica-ai/multica.",
+      "replacement": "____________________ [PUBLIC_PROJECT_URL]."
+    },
+    {
+      "field": "copyright_holder",
+      "original": "© 2025-2026 Index Labs (Hong Kong) Limited",
+      "replacement": "© 2026 ____________________ [RIGHTS_HOLDER_LEGAL_NAME]"
+    }
+  ]
+}

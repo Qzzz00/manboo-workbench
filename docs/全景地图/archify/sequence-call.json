@@ -1,0 +1,437 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "一通来电 · 从卡片到听筒再到挂断",
+    "subtitle": "8791 排来电 → 工人领走并广播 ring → 手机响、听筒等人提机 → 一轮对话 → 挂断;10-23最终重钉:全部source按main@c55ff4c1取证(0.4.148热修已发布,本机已更新;稳定0.4.142)",
+    "output": "docs/梳理-全景地图-2026-10-21/archify/sequence-call.html",
+    "quality_profile": "showcase",
+    "locale": "zh-CN",
+    "repository": {
+      "url": "https://github.com/BeeeeeeeeeeeeeeenY/workbench.git",
+      "revision": "c55ff4c1ab07bf3b8c7760a64653f21ce6fe2aa6",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "participants": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "用户",
+      "sublabel": "拿起 / 放下听筒",
+      "sources": [
+        {
+          "path": "phone-bridge/README.md",
+          "line": 1,
+          "end_line": 10,
+          "label": "提机接听、放回挂断"
+        }
+      ]
+    },
+    {
+      "id": "handset",
+      "type": "external",
+      "label": "实体听筒",
+      "sublabel": "树莓派",
+      "sources": [
+        {
+          "path": "phone-bridge/popphone.py",
+          "line": 200,
+          "end_line": 219,
+          "label": "叉簧 GPIO17 监听"
+        },
+        {
+          "path": "phone-bridge/phone_state.py",
+          "line": 190,
+          "end_line": 204,
+          "label": "收到 ring → RINGING,不出声"
+        },
+        {
+          "path": "phone-bridge/phone_state.py",
+          "line": 124,
+          "end_line": 158,
+          "label": "接听 / 拨出才推麦"
+        }
+      ]
+    },
+    {
+      "id": "phone",
+      "type": "frontend",
+      "label": "手机 App",
+      "sublabel": "响铃与震动在这",
+      "sources": [
+        {
+          "path": "butler-app/src/channel/roomLink.ts",
+          "line": 484,
+          "end_line": 491,
+          "label": "注册 wb.rpc 文本流处理器"
+        },
+        {
+          "path": "butler-app/src/call/useIncoming.ts",
+          "line": 1,
+          "end_line": 14,
+          "label": "常驻房间收 ring,负责响铃"
+        }
+      ]
+    },
+    {
+      "id": "livekit",
+      "type": "cloud",
+      "label": "LiveKit 房间",
+      "sublabel": "云上或本机",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/channel.ts",
+          "line": 1636,
+          "end_line": 1689,
+          "label": "票:按来路签,在家本机签、外网经中转"
+        },
+        {
+          "path": "deploy/aliyun-livekit-setup.sh",
+          "line": 5,
+          "end_line": 10,
+          "label": "云上那台的域名必须给、不带缺省(M7)与端口"
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "type": "backend",
+      "label": "通话工人",
+      "sublabel": "常驻房间",
+      "sources": [
+        {
+          "path": "channel-worker/src/agent.ts",
+          "line": 3823,
+          "end_line": 3846,
+          "label": "按自己那间房领(M6)"
+        },
+        {
+          "path": "channel-worker/src/callOut.ts",
+          "line": 949,
+          "end_line": 966,
+          "label": "编 ring 行并广播"
+        },
+        {
+          "path": "channel-worker/src/agent.ts",
+          "line": 3694,
+          "end_line": 3709,
+          "label": "处理 answer"
+        }
+      ]
+    },
+    {
+      "id": "voice",
+      "type": "backend",
+      "label": "语音后端",
+      "sublabel": "8792 · 三家云",
+      "sources": [
+        {
+          "path": "channel-worker/src/tts/butlerTts.ts",
+          "line": 440,
+          "end_line": 446,
+          "label": "合成发往 8792 流式接口"
+        },
+        {
+          "path": "butler-server/server/routes/api/asr.cjs",
+          "line": 81,
+          "end_line": 88,
+          "label": "/api/asr → 火山识别"
+        }
+      ]
+    },
+    {
+      "id": "plugin",
+      "type": "backend",
+      "label": "工作台插件",
+      "sublabel": ":8791 callOut",
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/callOut.ts",
+          "line": 157,
+          "end_line": 164,
+          "label": "响铃还是只通知"
+        },
+        {
+          "path": "workbench-plugin/src/server/callOut.ts",
+          "line": 310,
+          "end_line": 334,
+          "label": "卡片状态转成来电事件"
+        },
+        {
+          "path": "workbench-plugin/src/server/http.ts",
+          "line": 17209,
+          "end_line": 17226,
+          "label": "POST /call/claim 只认回环;带 room 就按房间领"
+        }
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "from": 166,
+      "to": 284,
+      "label": "排队与领活"
+    },
+    {
+      "from": 290,
+      "to": 436,
+      "label": "振铃"
+    },
+    {
+      "from": 444,
+      "to": 617,
+      "label": "接听与开口"
+    },
+    {
+      "from": 625,
+      "to": 852,
+      "label": "一轮对话"
+    },
+    {
+      "from": 860,
+      "to": 954,
+      "label": "挂断"
+    }
+  ],
+  "messages": [
+    {
+      "id": "claim",
+      "from": "worker",
+      "to": "plugin",
+      "y": 180,
+      "label": "POST /call/claim(每 2 秒;手机或听筒在房里才领)",
+      "variant": "dashed"
+    },
+    {
+      "id": "claimed",
+      "from": "plugin",
+      "to": "worker",
+      "y": 210,
+      "label": "到点的 queued → ringing,交出来",
+      "variant": "return",
+      "note": "ask / relay / failed 响铃;confirm / done 看开关;夜间只通知"
+    },
+    {
+      "id": "ring",
+      "from": "worker",
+      "to": "livekit",
+      "y": 298,
+      "label": "文本流广播 ring(wb.rpc)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ring-phone",
+      "from": "livekit",
+      "to": "phone",
+      "y": 328,
+      "label": "ring 事件"
+    },
+    {
+      "id": "ringing",
+      "from": "phone",
+      "to": "user",
+      "y": 358,
+      "label": "响铃 + 震动(铃声只在手机上)"
+    },
+    {
+      "id": "ring-handset",
+      "from": "livekit",
+      "to": "handset",
+      "y": 388,
+      "label": "ring 事件",
+      "note": "听筒只进「可提机接听」,不出声;60 秒没人接记 missed"
+    },
+    {
+      "id": "pickup",
+      "from": "user",
+      "to": "handset",
+      "y": 453,
+      "label": "拿起听筒(叉簧松开)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "answer",
+      "from": "handset",
+      "to": "livekit",
+      "y": 483,
+      "label": "call/answer + 推麦克风音轨"
+    },
+    {
+      "id": "answered",
+      "from": "livekit",
+      "to": "worker",
+      "y": 513,
+      "label": "answer → ring.answer,把接话对象钉到这只听筒"
+    },
+    {
+      "id": "greet-tts",
+      "from": "worker",
+      "to": "voice",
+      "y": 543,
+      "label": "开场白 /api/tts/stream"
+    },
+    {
+      "id": "greet-audio",
+      "from": "voice",
+      "to": "worker",
+      "y": 573,
+      "label": "音频",
+      "variant": "return"
+    },
+    {
+      "id": "greet-play",
+      "from": "worker",
+      "to": "livekit",
+      "y": 603,
+      "label": "播到房间,听筒里响起"
+    },
+    {
+      "id": "speak",
+      "from": "user",
+      "to": "handset",
+      "y": 643,
+      "label": "说一句"
+    },
+    {
+      "id": "mic",
+      "from": "handset",
+      "to": "livekit",
+      "y": 673,
+      "label": "麦克风音轨(USB 声卡,不走蓝牙)"
+    },
+    {
+      "id": "asr",
+      "from": "livekit",
+      "to": "worker",
+      "y": 703,
+      "label": "音频 → VAD → 识别(有凭据直连火山,否则经 8792)"
+    },
+    {
+      "id": "understand",
+      "from": "worker",
+      "to": "plugin",
+      "y": 733,
+      "label": "POST /butler/understand(最多等 400ms)"
+    },
+    {
+      "id": "understood",
+      "from": "plugin",
+      "to": "worker",
+      "y": 763,
+      "label": "listened / none",
+      "variant": "return",
+      "note": "超时或 none → 交给工人自己的接话模型"
+    },
+    {
+      "id": "reply",
+      "from": "worker",
+      "to": "livekit",
+      "y": 840,
+      "label": "回话 TTS(经 8792)播到房间"
+    },
+    {
+      "id": "hangup",
+      "from": "user",
+      "to": "handset",
+      "y": 880,
+      "label": "放下听筒"
+    },
+    {
+      "id": "hangup-rpc",
+      "from": "handset",
+      "to": "livekit",
+      "y": 910,
+      "label": "call/hangup,撤掉麦克风"
+    },
+    {
+      "id": "ended",
+      "from": "livekit",
+      "to": "worker",
+      "y": 940,
+      "label": "hangup → 结束这通,交通话记录(不建卡)",
+      "variant": "return"
+    }
+  ],
+  "activations": [
+    {
+      "participant": "worker",
+      "from": 175,
+      "to": 945,
+      "type": "backend"
+    },
+    {
+      "participant": "plugin",
+      "from": 205,
+      "to": 768,
+      "type": "backend"
+    },
+    {
+      "participant": "livekit",
+      "from": 293,
+      "to": 945,
+      "type": "cloud"
+    },
+    {
+      "participant": "phone",
+      "from": 323,
+      "to": 363,
+      "type": "frontend"
+    },
+    {
+      "participant": "handset",
+      "from": 383,
+      "to": 915,
+      "type": "external"
+    },
+    {
+      "participant": "voice",
+      "from": 538,
+      "to": 578,
+      "type": "backend"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "谁决定什么",
+      "items": [
+        "排不排、响不响:8791 的 callOut 按卡片状态与规则定;工人只是来领",
+        "ring 只广播一次:手机出铃声,听筒不出声只等提机;提机后由工人绑定接话对象",
+        "麦克风只在接听 / 拨出时推轨;待机不推",
+        "二刀一通知范围只过滤哪些事件生成,响不响仍由callOutRings/静默等原策略决定;额度消息不变成来电。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "前置条件",
+      "items": [
+        "手机或听筒先在房间里:手机的票按连接规格:在家本机房间、出门回落云(M4),听筒先问 8791;工人只在有 wb-phone-* 时才领活",
+        "8791 看管两条工人(M6):本机房间一条、云房间一条,各领各房的电话;同一通先接先得,另一边收铃(twoRooms.ts)",
+        "工人常驻房间,不是来电时才进;断线 1 秒到 60 秒退避重进",
+        "没来电时拿起听筒 = 直接接通事务官(call/start),流程从「接听」那段开始",
+        "听筒归实验开关「座机听筒」:关着时 8791 挡下它的一切请求(外部机器默认关)"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "图里的省略",
+      "items": [
+        "没画中转:它只出票和凭据,不在通话路径上",
+        "手机接听与听筒接听是两条等价的路,这里画的是听筒",
+        "识别有两条路:有火山凭据时工人直连,否则 VAD 分段后经 8792",
+        "M4在家本机房间/出门回落云有历史真手机证据;M5/M8/M9及最终main同组句子/嘈杂没有本轮通过证据。",
+        "Key终审及最终工人消费者需按最终SHA补核;假模型/文字工人QA不等于真手机音频或真实供应商兼容。"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "本轮证据边界(10-23 最终重钉)",
+      "items": [
+        "全部 source 已按 main@c55ff4c1 取证重钉(16 引用:12 未变/4 行漂,含 M6 按房领与 answer 平移)。",
+        "0.4.148 热修已发布并本机更新(exec10863 exit0);隔离 QA 45 项与整包九阶段全部 exit0;稳定仍 0.4.142。"
+      ]
+    }
+  ]
+}

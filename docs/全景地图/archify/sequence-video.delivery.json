@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "f22d80ce-aa89-40c4-be61-c7bfd592d556",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/sequence-video.json",
+  "output": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/sequence-video.html",
+  "specification": {
+    "sha256": "def599890f1e9e605570edc5d8973c21834a72b3aacf90a2ac9b3341565b4d5e",
+    "bytes": 10011
+  },
+  "artifact": {
+    "sha256": "e0af069660fec833d417ed3331e854e0ba06714a936f2c4e00aceea6e4190d5c",
+    "bytes": 830416
+  }
+}

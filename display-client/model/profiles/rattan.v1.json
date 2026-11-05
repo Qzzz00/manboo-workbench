@@ -1,0 +1,34 @@
+{
+  "role": "rattan",
+  "schemaVersion": "v1",
+  "driver": "v2",
+  "motions": [
+    { "file": "待机.motion3", "kind": "idle" }
+  ],
+  "expressions": [
+    { "file": "1.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "loli.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "大Q.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "2.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "3.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "4.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "5.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "6.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "7.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "8.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "9.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "10.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "11.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "14.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "13.exp3", "kind": "costume", "slot": "earwear" },
+    { "file": "15.exp3", "kind": "costume", "slot": "outfit" },
+    { "file": "16.exp3", "kind": "costume", "slot": "headwear" },
+    { "file": "17.exp3", "kind": "costume", "slot": "headwear" },
+    { "file": "18.exp3", "kind": "costume", "slot": "hair" }
+  ],
+  "excluded": [
+    { "file": "12.exp3", "reason": "VTS 测试无变化，暂剔除待引擎内验证" },
+    { "file": "19.exp3", "reason": "VTS 测试无变化，暂剔除待引擎内验证" },
+    { "file": "20.exp3", "reason": "飞头效果，硬开关，绝不触发" }
+  ]
+}

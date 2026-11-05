@@ -1,0 +1,98 @@
+{
+  "name": "huashu-nuwa",
+  "repo": "https://github.com/alchaincyf/nuwa-skill",
+  "commit": "7812110bf7e5a2b01b6aa5a738568044121bbfa2",
+  "license": "MIT",
+  "kept": [
+    "LICENSE",
+    "SKILL.md",
+    "references/about-author.md",
+    "references/extraction-framework.md",
+    "references/fidelity-scorecard.md",
+    "references/skill-template.md",
+    "scripts/merge_research.py",
+    "scripts/quality_check.py"
+  ],
+  "dropped": [
+    {
+      "path": "examples/",
+      "why": "公众人物的蒸馏结果,与本产品无关,不随产品分发"
+    },
+    {
+      "path": "scripts/download_subtitles.sh",
+      "why": "下载 YouTube 字幕;只用本地语料模式"
+    },
+    {
+      "path": "scripts/srt_to_transcript.py",
+      "why": "配合字幕下载;只用本地语料模式"
+    },
+    {
+      "path": "promo/",
+      "why": "宣传素材"
+    },
+    {
+      "path": "assets/",
+      "why": "宣传图"
+    },
+    {
+      "path": ".github/",
+      "why": "上游仓库的社区检查流程"
+    },
+    {
+      "path": "6-agents-parallel.png",
+      "why": "宣传图"
+    },
+    {
+      "path": "advisory-board.png",
+      "why": "宣传图"
+    },
+    {
+      "path": "cover-distill-minds.png",
+      "why": "宣传图"
+    },
+    {
+      "path": "wechat-qrcode.jpg",
+      "why": "宣传图"
+    },
+    {
+      "path": "x-thread-en.md",
+      "why": "宣传文案"
+    },
+    {
+      "path": "README",
+      "why": "仓库介绍(五种语言),执行 Agent 不读"
+    },
+    {
+      "path": "COMMUNITY.md",
+      "why": "上游社区说明"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "why": "上游贡献说明"
+    },
+    {
+      "path": ".gitignore",
+      "why": "上游仓库配置"
+    }
+  ],
+  "patches": [],
+  "reviewed": [
+    {
+      "file": "scripts/merge_research.py",
+      "network": "none",
+      "writes": "none（只读 <skill>/references/research/*.md 并打印）",
+      "subprocess": "none",
+      "env": "none",
+      "note": "纯只读统计，无风险。"
+    },
+    {
+      "file": "scripts/quality_check.py",
+      "network": "none",
+      "writes": "none（只读传入的 SKILL.md 并打印）",
+      "subprocess": "none",
+      "env": "none",
+      "note": "纯正则质量检查，无风险。"
+    }
+  ],
+  "reviewed_at": "2026-10-21"
+}

@@ -1,0 +1,25 @@
+// Live2D Cubism SDK for Java **5-r.1** 的 Framework 源码 module（整拷官方 SDK，未改源码）。
+// 为什么要这个并列版本：5-r.2 起官方砍掉了 armeabi-v7a 的 Core .so，
+// 而 ThinkSmart View(APQ8053) 是 32 位 armv7l 内核，只能用 5-r.1。
+// Java 侧与 native 侧必须同版本 —— 只换 .so 会崩 NoSuchFieldError(renderOrders)。
+plugins { id 'com.android.library' }
+
+android {
+    namespace = "com.live2d.sdk.cubism.framework"
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    compileOnly(fileTree(dir: '../libs51', include: ['Live2DCubismCore.aar']))
+    testImplementation "junit:junit:$junitVersion"
+}

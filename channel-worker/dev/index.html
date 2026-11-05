@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>通道层测试页</title>
+<!--
+  只为本机验一遍而存在的页面,**不进生产 UI**(手机那一侧是下一张卡)。
+  能做四件事:进房、说话听回复、发文件、收文件。
+
+  为什么是一个自己起的小静态服务而不是 file://:
+    - getUserMedia 只在安全上下文里给麦克风,127.0.0.1 算安全上下文,file:// 不一定;
+    - 8791 的 CORS 只放行回环来源,file:// 的 Origin 是 null,过不去。
+  起法见同目录 serve.mjs。
+-->
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 15px/1.7 -apple-system, "PingFang SC", sans-serif; margin: 0; padding: 24px; max-width: 760px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .wbdev-sub { opacity: .65; margin: 0 0 20px; font-size: 13px; }
+  fieldset { border: 1px solid rgba(128,128,128,.35); border-radius: 10px; margin: 0 0 16px; padding: 12px 16px; }
+  legend { padding: 0 6px; font-weight: 600; font-size: 13px; }
+  button { font: inherit; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(128,128,128,.5);
+           background: transparent; color: inherit; cursor: pointer; margin-right: 8px; }
+  button:disabled { opacity: .4; cursor: default; }
+  .wbdev-state { font-variant-numeric: tabular-nums; }
+  .wbdev-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #999; margin-right: 6px; }
+  .wbdev-dot[data-on="1"] { background: #2ea043; }
+  #wbdev-log { font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap;
+               background: rgba(128,128,128,.10); border-radius: 8px; padding: 10px 12px; height: 280px; overflow: auto; }
+  input[type=file] { font: inherit; }
+  code { background: rgba(128,128,128,.15); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<h1>通道层测试页</h1>
+<p class="wbdev-sub">进房 · 说话 · 发文件 · 收文件。凭证向工作台要(<code>POST /channel/token</code>),这个页面不知道任何密钥。</p>
+
+<fieldset>
+  <legend>连接</legend>
+  <div>
+    工作台:<code id="wbdev-workbench">http://127.0.0.1:8795</code>
+    <span class="wbdev-state"><span class="wbdev-dot" id="wbdev-dot"></span><span id="wbdev-status">未连接</span></span>
+  </div>
+  <p>
+    <button id="wbdev-join">进房</button>
+    <button id="wbdev-leave" disabled>离开</button>
+    <button id="wbdev-mute" disabled>静音</button>
+    <button id="wbdev-check">查通道状态</button>
+  </p>
+</fieldset>
+
+<fieldset>
+  <legend>文件</legend>
+  <p><input type="file" id="wbdev-file" disabled> <button id="wbdev-send" disabled>发给电脑</button></p>
+  <p class="wbdev-sub" style="margin:0">电脑发过来的文件会出现在下面的记录里,并自动下载。</p>
+</fieldset>
+
+<fieldset>
+  <legend>记录(带毫秒时间戳:算端到端延迟就靠它)</legend>
+  <div id="wbdev-log"></div>
+</fieldset>
+
+<script src="./livekit-client.umd.min.js"></script>
+<script>
+(() => {
+  'use strict'
+  // 独有前缀 wbdev- :这个页面将来可能被塞进别的壳里看,样式和 id 都不许和工作台撞。
+  const WBDEV_TOPIC = 'wb-file'
+  const params = new URLSearchParams(location.search)
+  const workbench = params.get('workbench') || 'http://127.0.0.1:8795'
+  document.getElementById('wbdev-workbench').textContent = workbench
+
+  const logEl = document.getElementById('wbdev-log')
+  const dotEl = document.getElementById('wbdev-dot')
+  const statusEl = document.getElementById('wbdev-status')
+  const joinBtn = document.getElementById('wbdev-join')
+  const leaveBtn = document.getElementById('wbdev-leave')
+  const muteBtn = document.getElementById('wbdev-mute')
+  const checkBtn = document.getElementById('wbdev-check')
+  const fileInput = document.getElementById('wbdev-file')
+  const sendBtn = document.getElementById('wbdev-send')
+
+  /** 每一条都带毫秒时间戳 —— 「说完到听见第一个字」这个数就是从这里读的,不靠感觉。 */
+  function log(line) {
+    const now = new Date()
+    const stamp = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`
+    logEl.textContent += `${stamp}  ${line}\n`
+    logEl.scrollTop = logEl.scrollHeight
+  }
+
+  function setConnected(on, text) {
+    dotEl.dataset.on = on ? '1' : '0'
+    statusEl.textContent = text
+    joinBtn.disabled = on
+    leaveBtn.disabled = !on
+    muteBtn.disabled = !on
+    fileInput.disabled = !on
+    sendBtn.disabled = !on
+  }
+
+  let room
+  let muted = false
+
+  async function token() {
+    const res = await fetch(`${workbench}/channel/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ suffix: 'page', name: '测试页' }),
+    })
+    const body = await res.json()
+    if (!res.ok) throw new Error(body.error || `取凭证失败(${res.status})`)
+    return body
+  }
+
+  checkBtn.addEventListener('click', async () => {
+    try {
+      const res = await fetch(`${workbench}/channel/status`)
+      log(`通道状态:${JSON.stringify(await res.json())}`)
+    } catch (err) {
+      log(`查不到通道状态:${err.message}`)
+    }
+  })
+
+  joinBtn.addEventListener('click', async () => {
+    try {
+      setConnected(false, '取凭证……')
+      const ticket = await token()
+      log(`凭证到手:房间 ${ticket.room},身份 ${ticket.identity},服务器 ${ticket.url}`)
+
+      room = new LivekitClient.Room({ adaptiveStream: true, dynacast: true })
+
+      room.on(LivekitClient.RoomEvent.ParticipantConnected, p => log(`${p.identity} 进来了`))
+      room.on(LivekitClient.RoomEvent.ParticipantDisconnected, p => log(`${p.identity} 走了`))
+      room.on(LivekitClient.RoomEvent.Disconnected, () => { setConnected(false, '已断开'); log('断开了') })
+
+      // 听事务官说话:订到音频轨就接到一个 <audio> 上。
+      room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, _pub, participant) => {
+        if (track.kind !== LivekitClient.Track.Kind.Audio) return
+        log(`订到 ${participant.identity} 的音频轨`)
+        const el = track.attach()
+        el.autoplay = true
+        document.body.appendChild(el)
+      })
+
+      // 「她开始说话了」的那一刻:算延迟用的就是这条与「我说完」那条的时间差。
+      room.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, (speakers) => {
+        const names = speakers.map(s => s.identity).join('、')
+        if (names) log(`正在说话:${names}`)
+      })
+
+      // 字幕:框架会把两边的转写经 transcription 发过来,能看见「它听成了什么」。
+      room.on(LivekitClient.RoomEvent.TranscriptionReceived, (segments, participant) => {
+        for (const seg of segments) {
+          if (!seg.text) continue
+          log(`[字幕 ${participant ? participant.identity : '?'}${seg.final ? '' : '…'}] ${seg.text}`)
+        }
+      })
+
+      // 收文件。
+      room.registerByteStreamHandler(WBDEV_TOPIC, async (reader, info) => {
+        const name = reader.info.name || '文件'
+        log(`${info.identity} 发来文件:${name}`)
+        const chunks = await reader.readAll()
+        const blob = new Blob(chunks)
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = name
+        a.click()
+        URL.revokeObjectURL(url)
+        log(`收下了:${name}(${blob.size} 字节)`)
+      })
+
+      await room.connect(ticket.url, ticket.token)
+      await room.localParticipant.setMicrophoneEnabled(true)
+      setConnected(true, `在房里(${ticket.identity})`)
+      log('进房了,麦克风开着。说一句试试。')
+    } catch (err) {
+      setConnected(false, '没进去')
+      log(`进不去:${err.message}`)
+    }
+  })
+
+  leaveBtn.addEventListener('click', async () => {
+    await room?.disconnect()
+    setConnected(false, '已断开')
+  })
+
+  muteBtn.addEventListener('click', async () => {
+    muted = !muted
+    await room?.localParticipant.setMicrophoneEnabled(!muted)
+    muteBtn.textContent = muted ? '取消静音' : '静音'
+    log(muted ? '麦克风关了' : '麦克风开了')
+  })
+
+  sendBtn.addEventListener('click', async () => {
+    const file = fileInput.files?.[0]
+    if (!file) { log('先挑一个文件'); return }
+    try {
+      log(`开始发:${file.name}(${file.size} 字节)`)
+      await room.localParticipant.sendFile(file, { topic: WBDEV_TOPIC })
+      log(`发完了:${file.name}`)
+    } catch (err) {
+      log(`没发出去:${err.message}`)
+    }
+  })
+
+  setConnected(false, '未连接')
+  log('页面就绪。先确认 livekit-server 与工人都起着(点「查通道状态」)。')
+})()
+</script>
+</body>
+</html>

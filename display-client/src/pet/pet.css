@@ -1,0 +1,478 @@
+/* 桌宠浮窗页样式：整页透明（不引屏保的 body#000 全局黑底，否则高端 Pixi 路径下桌宠成黑方块）。
+   只保留 Live2DScene 舞台定位所需的最小规则。 */
+
+html,
+body,
+#pet-root {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Live2DScene 根容器（屏保同款 class）：铺满、构图交给 JS auto-fit。 */
+.ss-live2d-stage,
+.ss-live2d-stage--dj {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform: none;
+}
+
+/* 上半身模式的软边渐隐：底部 alpha 渐变让角色淡出，避免透明背景下的「赛博截肢」硬切。
+   本规则只对 Pixi 路径（DOM canvas）生效——CSS 遮罩盖不到原生 GL 的 SurfaceView（独立系统图层）。
+   原生路径已由 GL 侧擦 alpha 实现（NativeLive2DRenderer.drawBottomFade），
+   经 Live2DScene 的 bottomFade prop 下发，数值与本处的 76%/98% 保持一致——改这里记得同步改那边。 */
+.pet-fade .ss-live2d-stage {
+  -webkit-mask-image: linear-gradient(to bottom, #000 76%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 76%, transparent 98%);
+}
+
+/* 通话 UI 复用主 App 的 CallOverlay（样式在 src/call.css，pet 页已 import）。原自写 .pet-call-* 已移除。 */
+
+/* 桌宠浮窗小窗：CallOverlay 尺寸是主 App 全屏设计的，这里缩小按钮/间距/内边距（仅覆盖 .pet-call-scope 内，
+   不动主 App/call.css）。通话时长/状态文字按 Ben 要求不改。 */
+.pet-call-scope .call-overlay { padding: 14px 10px 18px; }
+.pet-call-scope .call-controls { gap: 22px; }
+.pet-call-scope .call-hangup,
+.pet-call-scope .call-mic,
+.pet-call-scope .call-cam-btn {
+  width: 46px;
+  height: 46px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+.pet-call-scope .call-hangup svg,
+.pet-call-scope .call-mic svg,
+.pet-call-scope .call-cam-btn svg { width: 20px; height: 20px; }
+.pet-call-scope .call-cam--pip { width: 64px; height: 92px; }
+
+/* 有背景时浮窗呈圆角卡片（overflow 裁到圆角）。透明悬浮态不加此类=角色自由、不裁切。 */
+.pet-card {
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+/* 背景开关开启时的角色背景层（在角色之下）。仅 Pixi 路径会渲染本层——原生 GL 路径下本层会盖住
+   WebView 之下的 SurfaceView（角色被挡没），故原生路径不渲染本层，背景改由 GL 侧 cover 铺满
+   （pet/main.tsx 的 nativeBg → setNativeScreensaverBackground）。 */
+.pet-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ============================================
+   底条模式（掌机 720×240 满宽横条，?strip=1）
+   游戏画面顶在屏幕上方，这条黑边整条归 Aiboo：左侧角色，右侧对话/功能。
+   ★不给整条加不透明底：底条压着的是系统壁纸或游戏的黑边，透明才不突兀；
+   需要衬托的只有对话气泡自己。
+   ============================================ */
+.pet-strip .ss-live2d-stage,
+.pet-strip .ss-live2d-stage--dj {
+  /* 角色只占左侧一个正方形（条高=条宽），构图仍交给 JS auto-fit。
+     用 aspect-ratio 而不是写死 240px：换设备/换条高都不用改这里。 */
+  left: 0;
+  right: auto;
+  width: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.pet-strip-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  /* 左边给角色让出一个正方形；用 100% 高度表达，同样不写死像素。 */
+  left: 100vh;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  /* 面板整体不吃触摸（别抢角色的点击），只有气泡自己收回来——见下。 */
+  pointer-events: none;
+}
+
+.pet-strip-bubble {
+  max-width: 100%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(20, 20, 26, 0.72);
+  color: #fff;
+  /* 13px：面板只有 320 CSS px 宽，15px 时每行才 17 字，一屏放不下几句话。 */
+  font-size: 13px;
+  line-height: 1.45;
+  max-height: 140px;
+  /* ★★答案滚不动的根因就在这一行的上一版：父级 `.pet-strip-panel` 是
+     `pointer-events:none`，而它是继承的 —— 于是命中测试整块跳过面板，
+     `.pet-strip-answer` 那个滚动容器**永远收不到手指**（Ben 真机「划不动」）。
+     原生侧的 FLAG_NOT_TOUCHABLE 早就按状态摘掉了，问题从来不在浮窗穿透，在这儿。
+     只把气泡收回来：角色区域和面板空白处照旧穿透给下层的游戏。 */
+  pointer-events: auto;
+  /* ★flex column + 下面 answer 的 min-height:0，是「视口高度 == 看得见的高度」的关键。
+     上一版气泡 `max-height:140px;overflow:hidden` 而答案自己写死 `max-height:116px`，
+     两套高度各算各的，中间还夹着「你问：…」那行（约 21px）：
+     140 − 20(padding) − 21 = 99 < 116 → 答案视口底部被父层切掉约 17px，
+     **滚到底最后一行仍在 clip 外面**。现在高度由 flex 分配，不会再对不上。 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* loading 剪影占位：F10 呼出到 Live2D 出画真机实测约 2.5 秒，这段时间窗口全透明，
+   观感就是「按了没反应」（其中 model loaded 那段最重，300 参数的双生尤甚）。
+   先用角色剪影顶上，Live2DScene onReady 后由 React 摘掉（见 src/pet/main.tsx）。
+   ★素材是「纯黑 + alpha」的形状图（烘焙时就把 RGB 清零了，PNG 因此只有几 KB）；
+   浓淡与呼吸都在这里出，以后想换风格改 CSS 即可，不用重烤。
+   ★invert(1) 把它翻成白色：底条压着的通常是游戏的**黑色 letterbox**
+   （Ben 的 RetroArch 配的是 custom_viewport 720×480 @ y=0），黑剪影落在黑边上等于没有。
+   再叠一层暗色 drop-shadow，掉到浅色壁纸上也仍有轮廓。 */
+.pet-strip-silhouette {
+  position: absolute;
+  left: 0;
+  right: auto;
+  bottom: 0;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  z-index: 1;
+  opacity: 0.34;
+  filter: invert(1) drop-shadow(0 0 6px rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+  animation: pet-strip-breathe 1.6s ease-in-out infinite;
+}
+
+/* 呼吸：让「正在加载」是活的，而不是一张卡住的死图。 */
+@keyframes pet-strip-breathe {
+  0%,
+  100% {
+    opacity: 0.34;
+  }
+  50% {
+    opacity: 0.16;
+  }
+}
+
+/* 军师面板：回答比占位文案长（服务端限 150 字），识别出的问题用小一号弱化色单独一行。 */
+.pet-strip-bubble--err {
+  background: rgba(80, 24, 24, 0.78);
+}
+
+.pet-strip-transcript {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+  flex: 0 0 auto;
+}
+
+/* ★答案区可滚动而不是省略号截断：一屏放不下时用户要能滑着看完
+   （原来是 -webkit-line-clamp:4 直接切掉，后半段管教要素永远看不见——Ben 实报）。
+   ★高度**不再写死**（原来是 max-height:116px）：那个数和气泡的 140px 是两套各算各的，
+   夹上「你问：…」那行就对不上，滚到底最后一行还在父层 clip 外。现在吃 flex 剩余空间，
+   `min-height:0` 是必需的——flex 子项默认 min-height:auto 会被内容撑开而根本不滚。
+   overscroll-behavior 防止滑到头把事件透给下层。 */
+.pet-strip-answer {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 朗读游标：零宽但有真实行高的盒子，`scrollIntoView({block:'nearest'})` 靠它定位。
+   纯空 span 没有布局盒，滚动会落不准。 */
+.pet-strip-cursor {
+  display: inline-block;
+  width: 0;
+  height: 1.45em;
+  vertical-align: text-bottom;
+}
+
+/* 兜底角标：把「网上搜的，不保证对」从正文里请出去（那句占 22 字 = 31% 可视面积）。 */
+.pet-strip-badge {
+  float: right;
+  margin: -2px 0 2px 8px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(180, 120, 20, 0.85);
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* ---- Figma handheld bottom strip (720x240 physical -> 480x160 CSS) ---- */
+.pet-strip {
+  background: transparent !important;
+  color: #fff;
+  font-family: 'Alibaba PuHuiTi 2.0', 'Alibaba PuHuiTi', system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  overflow: hidden;
+}
+
+.pet-strip::before {
+  content: '';
+  position: absolute;
+  left: 192.667px;
+  right: 0;
+  top: 0;
+  /* 右侧黑色内容区只到状态栏上沿；底部 32px 留给全宽连续状态栏。 */
+  bottom: var(--pet-strip-right-panel-bottom, 32px);
+  z-index: 0;
+  background: #000;
+  pointer-events: none;
+}
+
+.pet-strip .ss-live2d-stage,
+.pet-strip .ss-live2d-stage--dj {
+  left: -6px;
+  right: auto;
+  top: var(--pet-strip-model-top, 0px);
+  bottom: auto;
+  width: 192.667px;
+  height: 100%;
+  aspect-ratio: auto;
+  /* 角色要从底栏上方探出来；面板仍可点击，舞台本身不接触摸。 */
+  z-index: var(--pet-strip-model-layer, 2);
+  pointer-events: none;
+}
+
+.pet-strip-silhouette {
+  left: -6px;
+  right: auto;
+  bottom: var(--pet-strip-silhouette-bottom, 0px);
+  width: 192.667px;
+  height: 100%;
+  aspect-ratio: auto;
+  object-position: center bottom;
+  z-index: var(--pet-strip-model-layer, 2);
+}
+
+.pet-strip-panel {
+  position: absolute;
+  inset: 0;
+  /* z-index:auto 不创建 stacking context；右侧按钮才能单独升到模型之上。 */
+  z-index: auto;
+  padding: 0;
+  pointer-events: auto;
+}
+
+.pet-strip-panel--controls::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--pet-strip-statusbar-height, 32px);
+  z-index: var(--pet-strip-statusbar-layer, 1);
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+/* 原生路径的底栏由 GL 在模型之前绘制；DOM 再画一次会永远盖在 SurfaceView 模型之上。 */
+html.native-live2d .pet-strip-panel--controls::after {
+  display: none;
+}
+
+.pet-strip-controls {
+  position: absolute;
+  left: 176px;
+  top: 16px;
+  width: 288px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: var(--pet-strip-controls-layer, 3);
+}
+
+.pet-strip-control {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 96px;
+  padding: 16px 6.667px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5.333px;
+}
+
+.pet-strip-control img {
+  width: 29.333px;
+  height: 29.333px;
+  display: block;
+}
+
+.pet-strip-control span {
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13.333px;
+  line-height: 1.2;
+  font-weight: 900;
+  opacity: 0.5;
+}
+
+.pet-strip-statusbar {
+  position: absolute;
+  left: auto;
+  right: 16px;
+  top: 133.333px;
+  z-index: var(--pet-strip-statusbar-layer, 1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #ccc;
+  font-size: 13.333px;
+  line-height: 1.2;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.pet-strip-statusitem {
+  display: flex;
+  align-items: center;
+  gap: 5.333px;
+  white-space: nowrap;
+}
+
+.pet-strip-statusitem img {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.pet-strip-statusitem--signal {
+  color: #8ce471;
+}
+
+.pet-strip-panel--chat {
+  left: 186.667px;
+  right: 16px;
+  width: auto;
+}
+
+.pet-strip-chatlog {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 107.333px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 5.333px;
+  overflow: hidden;
+}
+
+.pet-strip-chatrow {
+  display: flex;
+  width: 100%;
+}
+
+.pet-strip-chatrow--assistant {
+  justify-content: flex-start;
+}
+
+.pet-strip-chatrow--user {
+  justify-content: flex-end;
+}
+
+.pet-strip-bubble {
+  max-width: 100%;
+  padding: 5.333px 8px;
+  border-radius: 0 8px 8px;
+  background: rgba(245, 245, 245, 0.2);
+  backdrop-filter: blur(26.667px);
+  -webkit-backdrop-filter: blur(26.667px);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 10.667px;
+  line-height: 14.667px;
+  font-weight: 900;
+  overflow: hidden;
+}
+
+.pet-strip-bubble--user {
+  border-radius: 8px 0 8px 8px;
+  background: #f9f385;
+  color: #404040;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.pet-strip-bubble--err {
+  background: rgba(80, 24, 24, 0.78);
+  color: #fff;
+}
+
+.pet-strip-badge {
+  float: right;
+  margin: -1px 0 2px 5.333px;
+  padding: 1px 4px;
+  border-radius: 5.333px;
+  background: rgba(180, 120, 20, 0.85);
+  font-size: 7.333px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.pet-strip-chat-actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 118px;
+  height: 34.667px;
+  display: flex;
+  align-items: stretch;
+  gap: 10.667px;
+}
+
+.pet-strip-exit-chat,
+.pet-strip-ptt {
+  height: 34.667px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13.333px;
+  line-height: 1.2;
+  font-weight: 900;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pet-strip-exit-chat {
+  width: 84px;
+  border: 1.333px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+}
+
+.pet-strip-ptt {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  padding: 0 10.667px;
+}
+
+.pet-strip-waveform {
+  width: 154px;
+  height: 32px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}

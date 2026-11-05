@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:largeHeap="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+
+        <!-- 屏保（Daydream / Screen saver）：充电+闲置时由系统拉起 -->
+        <service
+            android:name=".Live2DDreamService"
+            android:exported="true"
+            android:label="@string/screensaver_name"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.dream"
+                android:resource="@xml/dream_info" />
+        </service>
+
+        <!--
+          Live2D 动态壁纸：不受屏保「必须插电」的限制（那条卡在 framework 的
+          config_dreamsEnabledOnBattery，adb 改不了），且锁屏也持续渲染。
+          ★独立进程：CubismFramework.startUp/cleanUp 是全局静态的，壁纸常驻而主 App 随时启动，
+          同进程内两者会互相踩。代价是模型纹理多一份内存。
+        -->
+        <service
+            android:name=".Live2DWallpaperService"
+            android:exported="true"
+            android:label="@string/wallpaper_name"
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:process=":wallpaper">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/live2d_wallpaper" />
+        </service>
+
+        <!-- 通知读取（需用户在系统设置手动授予通知使用权） -->
+        <service
+            android:name=".AibooNotificationListener"
+            android:exported="true"
+            android:label="@string/screensaver_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- 通勤播客锁屏续播：原生前台媒体 Service（ExoPlayer 口播列表 + 循环床）。
+             生命周期独立于屏保 DreamService，灭屏/拆 WebView 后音频继续。 -->
+        <service
+            android:name=".CommuteAudioService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <!-- 桌宠浮窗前台服务：持有 WindowManager overlay 窗（角色 + 拖动 + 通话）。specialUse + microphone。
+             ★microphone 必需：Android 10+ 后台/overlay 采集麦克风，FGS 不含 microphone 类型会拿到静音
+             （权限授了、采集"成功"但音频空）→ 通话时 bot 听不到用户说话。加 microphone 类型才有真实上行音频。 -->
+        <service
+            android:name=".Live2DOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse|microphone">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="live2d_desktop_pet_overlay" />
+        </service>
+
+        <!-- 屏保设置页（作为 DreamService 的 settingsActivity；系统设置里点屏保齿轮进入） -->
+        <activity
+            android:name=".ScreensaverSetupActivity"
+            android:exported="true"
+            android:label="@string/screensaver_settings_title" />
+        <receiver
+            android:name=".AibooWidgetProvider"
+            android:exported="true"
+            android:label="Aiboo 角色">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+    </application>
+
+    <!-- Permissions -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 后台 DJ 播放：锁屏后保持 CPU 运行，确保 WebView 音频调度不被冻结 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 通勤播客前台媒体 Service：锁屏后台连续播放 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <!-- 桌宠浮窗：悬浮窗 overlay + 前台服务(specialUse) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- 桌宠浮窗通话：overlay 前台 Service 采集麦克风须声明 microphone FGS 类型(否则后台采集静音) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <!-- 语音通话(RTC)：麦克风采集需要 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- 拍照：相机捕获需要 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 相册选图：仅 Android 12 及以下读取所选图片需要；13+ 用系统相册选择器免权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <!-- 屏保日历卡片：读取日历事件（运行时权限，在屏保设置页申请） -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <!-- 屏保天气跟随本地：粗略定位（运行时权限，在屏保设置页申请） -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 吧唧 BLE P0：Android 12+ 运行时权限；neverForLocation 免定位。旧机型兼容 maxSdk=30。 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+    <!-- 签名级权限，运行时经一次性 adb pm grant 授予（自用）：一键应用屏保 + 自授通知使用权
+         adb shell pm grant com.llm.live2d android.permission.WRITE_SECURE_SETTINGS -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+
+    <!-- 无摄像头设备也可安装（仅相册功能可用） -->
+    <uses-feature android:name="android.software.live_wallpaper" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+</manifest>

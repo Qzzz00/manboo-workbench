@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="690" viewBox="0 0 640 690" role="img" aria-labelledby="title desc">
+  <title id="title">从日常协作中学习：行为与习惯已实现，风格与界面开发中</title>
+  <desc id="desc">用户的日常选择与纠正形成带证据的候选；重复出现后进入下一次同类任务试用，再按对应判据保留或撤回。每次协作继续积累与校正，决策习惯支持查询和撤销，配置工作目录后写入进化日志。行为记录与决策习惯已实现，风格学习与统一管理界面正在开发。</desc>
+  <defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0L6 3.5L0 7" fill="none" stroke="#bdc2c5" stroke-width="1.2"/></marker></defs>
+  <rect width="640" height="690" rx="6" fill="#080b0c"/>
+  <g font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+    <text x="36" y="48" fill="#f1f2f3" font-size="32" font-weight="650">从日常协作中学习</text>
+    <text x="36" y="87" fill="#bdc2c5" font-size="22">行为与习惯已实现 · 风格与界面开发中</text>
+    <rect x="52" y="120" width="552" height="92" rx="6" fill="#111516" stroke="#778086"/>
+    <text x="72" y="156" fill="#bdc2c5" font-size="22">01</text>
+    <text x="114" y="156" fill="#f1f2f3" font-size="26" font-weight="550">日常选择与纠正</text>
+    <text x="72" y="192" fill="#bdc2c5" font-size="23">三端操作 · 对事务官的原话</text>
+    <path d="M328 212V231" fill="none" stroke="#bdc2c5" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="52" y="236" width="552" height="92" rx="6" fill="#111516" stroke="#778086"/>
+    <text x="72" y="272" fill="#bdc2c5" font-size="22">02</text>
+    <text x="114" y="272" fill="#f1f2f3" font-size="26" font-weight="550">形成有证据的候选</text>
+    <text x="72" y="308" fill="#bdc2c5" font-size="23">重复出现才试用 · 风格候选附原话</text>
+    <path d="M328 328V347" fill="none" stroke="#bdc2c5" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="52" y="352" width="552" height="92" rx="6" fill="#111516" stroke="#778086"/>
+    <text x="72" y="388" fill="#bdc2c5" font-size="22">03</text>
+    <text x="114" y="388" fill="#f1f2f3" font-size="26" font-weight="550">下一次同类任务先试用</text>
+    <text x="72" y="424" fill="#bdc2c5" font-size="23">风格 · 分派 · 联系时机 · 常规确认</text>
+    <path d="M328 444V463" fill="none" stroke="#bdc2c5" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="52" y="468" width="552" height="92" rx="6" fill="#111516" stroke="#778086"/>
+    <text x="72" y="504" fill="#bdc2c5" font-size="22">04</text>
+    <text x="114" y="504" fill="#f1f2f3" font-size="26" font-weight="550">根据后续证据保留或撤回</text>
+    <text x="72" y="540" fill="#bdc2c5" font-size="23">各类判据验证 · 纠正与撤回继续留证</text>
+    <path d="M52 514H24V166H46" fill="none" stroke="#bdc2c5" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="36" y="605" fill="#f1f2f3" font-size="24">每次协作，继续积累与校正</text>
+    <text x="36" y="648" fill="#bdc2c5" font-size="22">各步留证据 · 决策习惯可查询、可撤销</text>
+  </g>
+</svg>

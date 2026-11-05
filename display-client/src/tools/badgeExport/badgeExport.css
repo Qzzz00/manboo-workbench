@@ -1,0 +1,320 @@
+/* 电子吧唧素材导出工具页样式（桌面浏览器专用，独立于 App，全部 .bex- 前缀避免污染）。 */
+
+.bex-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: auto;
+  background: #0d0f1a;
+  color: #e8e9f0;
+  font: 13px/1.6 system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+.bex-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #23263a;
+}
+
+.bex-header h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.bex-header-sub {
+  color: #8a8fa8;
+  font-size: 12px;
+}
+
+.bex-status {
+  margin-left: auto;
+  color: #7cd992;
+  font-size: 12px;
+}
+
+.bex-status--error {
+  color: #ff8a8a;
+}
+
+.bex-main {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  align-items: flex-start;
+}
+
+/* —— 左侧：466×466 视口 —— */
+
+.bex-stage-col {
+  flex: 0 0 auto;
+  max-width: 520px;
+}
+
+.bex-stage-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #2c3050;
+  border-radius: 8px;
+  background:
+    repeating-conic-gradient(#161927 0% 25%, #1c2033 0% 50%) 0 0 / 24px 24px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.bex-stage-wrap:active {
+  cursor: grabbing;
+}
+
+.bex-stage-wrap--selecting {
+  cursor: crosshair;
+}
+
+.bex-stage,
+.bex-stage canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 圆形屏参考线：圈外压暗 + 虚线圆边界（仅 DOM 覆盖层，不会被抓进帧） */
+.bex-circle-mask {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed rgba(124, 217, 146, 0.75);
+  box-shadow: 0 0 0 2000px rgba(5, 6, 12, 0.55);
+  pointer-events: none;
+}
+
+/* 框选层与已选区域 */
+.bex-select-layer {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.bex-region-box {
+  position: absolute;
+  border: 1px dashed #ffb454;
+  background: rgba(255, 180, 84, 0.12);
+  pointer-events: none;
+}
+
+.bex-region-tag {
+  position: absolute;
+  left: 0;
+  top: -18px;
+  white-space: nowrap;
+  font-size: 11px;
+  color: #ffb454;
+}
+
+.bex-stage-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  color: #8a8fa8;
+  font-size: 12px;
+}
+
+/* 抓帧缩略图（最近一组） */
+.bex-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.bex-thumbs figure {
+  margin: 0;
+  text-align: center;
+}
+
+.bex-thumbs img {
+  display: block;
+  max-width: 92px;
+  max-height: 92px;
+  border: 1px solid #2c3050;
+  border-radius: 4px;
+  background:
+    repeating-conic-gradient(#161927 0% 25%, #1c2033 0% 50%) 0 0 / 12px 12px;
+}
+
+.bex-thumbs figcaption {
+  max-width: 92px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #8a8fa8;
+  font-size: 10px;
+}
+
+/* —— 右侧：控制面板 —— */
+
+.bex-panel {
+  flex: 1 1 auto;
+  min-width: 340px;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bex-panel section {
+  border: 1px solid #23263a;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #121525;
+}
+
+.bex-panel h2 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #aab0cf;
+}
+
+.bex-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 6px 0;
+}
+
+.bex-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #c9cde3;
+}
+
+.bex-row input[type='range'] {
+  flex: 1 1 120px;
+}
+
+.bex-row input[list],
+.bex-row input[type='number'],
+.bex-row select {
+  background: #0d0f1a;
+  color: #e8e9f0;
+  border: 1px solid #2c3050;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.bex-row input[type='number'] {
+  width: 64px;
+}
+
+.bex-row .bex-outdir {
+  background: #0d0f1a;
+  color: #e8e9f0;
+  border: 1px solid #2c3050;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 12px;
+  width: 160px;
+}
+
+.bex-row input[list] {
+  width: 150px;
+}
+
+.bex-num {
+  min-width: 34px;
+  color: #7cd992;
+  font-variant-numeric: tabular-nums;
+}
+
+.bex-root button {
+  background: #1d2138;
+  color: #e8e9f0;
+  border: 1px solid #34395c;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.bex-root button:hover:not(:disabled) {
+  background: #272c4a;
+}
+
+.bex-root button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 主操作按钮（全套对齐连拍） */
+.bex-root button.bex-primary {
+  background: #274a33;
+  border-color: #3f7a52;
+  color: #b8f2c5;
+}
+
+.bex-root button.bex-primary:hover:not(:disabled) {
+  background: #2f5a3f;
+}
+
+/* 表情按钮墙 */
+.bex-expr-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bex-expr-list .bex-expr--on {
+  background: #274a33;
+  border-color: #7cd992;
+  color: #b8f2c5;
+}
+
+.bex-hint {
+  margin: 8px 0 0;
+  color: #676d8c;
+  font-size: 11px;
+}
+
+.bex-region-fields label {
+  gap: 4px;
+  color: #8a8fa8;
+}
+
+.bex-records {
+  margin: 0 0 8px;
+  padding-left: 18px;
+  color: #aab0cf;
+  font-size: 12px;
+  max-height: 160px;
+  overflow: auto;
+}
+
+/* 说话连拍：锚点残差超容差的帧标红 */
+.bex-anchor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bex-anchor-chip {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #1d2138;
+  color: #8a8fa8;
+}
+
+.bex-anchor-chip--bad {
+  background: #4a2323;
+  color: #ff8a8a;
+  border: 1px solid #7a3f3f;
+}

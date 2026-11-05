@@ -1,0 +1,2896 @@
+{
+ "from": "工作台诊断包-20261002-193929/日志/channel-worker.log*(09-27 ~ 10-02)",
+ "calls": [
+  [
+   {
+    "text": "让豆包办公查一下。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)"
+   },
+   {
+    "text": "国庆节放几天假，然后他回复你之后，你打电话给我。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 6,
+    "gen": 30159
+   }
+  ],
+  [
+   {
+    "text": "让豆包办公，帮我查一下国庆放几天假。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)"
+   },
+   {
+    "text": "然后。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "这一回合没有识别结果(开场白/补话),按要办事走"
+   },
+   {
+    "text": "他查完了，你看到结果把。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "你打个电话给我吧。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "这一回合没有识别结果(开场白/补话),按要办事走",
+    "first": 2629,
+    "gen": 9690
+   },
+   {
+    "text": "对，开始吧。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "刚才让豆包去查国庆节放假那个事情，换给 Codex 去做。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3762,
+    "gen": 12555
+   },
+   {
+    "text": "都对，开工。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你能告诉我现在电脑上有几个 agent 吗？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3317,
+    "gen": 14201
+   },
+   {
+    "text": "行，帮我接豆包工作做什么呢？你让他帮我查国庆节放几天假。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2732,
+    "gen": 15620
+   },
+   {
+    "text": "都对，蔡公。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "我让你派的就是豆包工作。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2932
+   },
+   {
+    "text": "现在电脑上你确认有哪一家是可以干活的，你就派哪一家，OK，快点。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你现在什么都做不了。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1149,
+    "gen": 11356
+   },
+   {
+    "text": "先这样吧。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "chat",
+    "reason": "闲聊的词「先这样」",
+    "first": 1417,
+    "gen": 2603
+   }
+  ],
+  [
+   {
+    "text": "今天天气怎么样？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 883,
+    "gen": 9825
+   },
+   {
+    "text": "你能做什么？",
+    "asked": true,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「你能做什么」",
+    "first": 1934,
+    "gen": 6010
+   },
+   {
+    "text": "现在能够给别人拜火了吗？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 2275,
+    "gen": 11701
+   },
+   {
+    "text": "挂了。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "chat",
+    "reason": "闲聊的词「挂了」",
+    "first": 1421,
+    "gen": 2049
+   }
+  ],
+  [
+   {
+    "text": "讲两句好听的，听一听。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 996
+   },
+   {
+    "text": "我让你说点好听的，听一听你讲的什么东西。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「你讲」",
+    "first": 734,
+    "gen": 4030
+   },
+   {
+    "text": "有哪些音色可以换来听一听？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1223,
+    "gen": 13661
+   },
+   {
+    "text": "我想要那种比较机械的那种，就你知道那种，就是那种机器人的声音，你知道吧？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2155,
+    "gen": 16950
+   },
+   {
+    "text": "不太行，换吧。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1480,
+    "gen": 16551
+   },
+   {
+    "text": "不行，有没有熊大的声音啊？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2612,
+    "gen": 13499
+   },
+   {
+    "text": "这个还 OK，先这样吧，拜拜。",
+    "asked": true,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「先这样」"
+   }
+  ],
+  [
+   {
+    "text": "讲两句好听的，听听。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 816
+   },
+   {
+    "text": "我想想好听的拓麻歌子，可不干这种活。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1145
+   },
+   {
+    "text": "给你换个名字吧，别叫自己狗东西了。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你叫小笨蛋。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3122,
+    "gen": 2625
+   },
+   {
+    "text": "好，我先问你叫什么名字啊？",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「你叫什么」",
+    "first": 1104,
+    "gen": 1769
+   },
+   {
+    "text": "那我叫什么名字啊？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1836,
+    "gen": 1622
+   },
+   {
+    "text": "你能做什么事啊？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "短句问事「什么事」",
+    "first": 1435
+   },
+   {
+    "text": "先这样吧，拜拜。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "chat",
+    "reason": "闲聊的词「先这样」",
+    "first": 1797,
+    "gen": 2193
+   }
+  ],
+  [
+   {
+    "text": "我怎么感觉你在骂我啊？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1230,
+    "gen": 6098
+   }
+  ],
+  [
+   {
+    "text": "你已经改名字叫小笨蛋了，你忘了。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1033,
+    "gen": 2828
+   },
+   {
+    "text": "派个活给那个 Codex。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "要办事的词「派个」"
+   },
+   {
+    "text": "问一下他。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 701
+   },
+   {
+    "text": "今天几号国庆节什么时候开始放假？什么时候结束？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "回复你了就给我打电话。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 4,
+    "gen": 17276
+   },
+   {
+    "text": "就一件事。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "就一件事，你就问清楚国庆的放假是什么情况就好，他回复你，你就回复我。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3
+   },
+   {
+    "text": "你直接把信息发给他不完了吗？为什么要挂事项啊？你有病吧？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "问事项(butlerRoute)",
+    "first": 1682
+   },
+   {
+    "text": "你直接在 Codex 里面开一条新的会话问他就好了。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2829
+   }
+  ],
+  [
+   {
+    "text": "你。",
+    "asked": false,
+    "tools": [],
+    "first": 593,
+    "gen": 2921
+   },
+   {
+    "text": "你说你有件事要等我确认一下，是什么事？你说啊？",
+    "asked": false,
+    "tools": [],
+    "first": 792,
+    "gen": 6719
+   },
+   {
+    "text": "你就不能把选项问出来，然后我告诉你，你去点吗？",
+    "asked": false,
+    "tools": [],
+    "first": 580,
+    "gen": 3667
+   },
+   {
+    "text": "你倒是把选项给出来呀？",
+    "asked": false,
+    "tools": [],
+    "first": 1009,
+    "gen": 14873
+   },
+   {
+    "text": "番茄牛肉小火锅吧？就那个番茄小火锅，牛肉加豆腐加菌菇那个。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 3066,
+    "gen": 7195
+   },
+   {
+    "text": "你点，我说了要你点，这是个测试，你他妈听看不懂吗？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   }
+  ],
+  [
+   {
+    "text": "什么事啊？",
+    "asked": false,
+    "tools": [],
+    "first": 780,
+    "gen": 12053
+   },
+   {
+    "text": "那你打电话给我干嘛？",
+    "asked": false,
+    "tools": [],
+    "first": 764,
+    "gen": 8702
+   },
+   {
+    "text": "做一件新的事情。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "打开那个办公，那个什么豆？豆包办公还是豆包工作的？我不知道，你去问问他，你去问问他国庆节的放假安排是怎么样的？国务院发的。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2,
+    "gen": 16791
+   },
+   {
+    "text": "你随便搞一条都可以，你新开一条行不行啊？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 3062
+   },
+   {
+    "text": "开始。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2311
+   }
+  ],
+  [
+   {
+    "text": "给豆包信息，豆包办公啊？那个智能体发个信息。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)"
+   },
+   {
+    "text": "问一下，呃。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "热水的沸点是多少度？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1373,
+    "gen": 20551
+   },
+   {
+    "text": "随便猜一个新的窗口。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2062,
+    "gen": 13108
+   },
+   {
+    "text": "新开一条。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2779
+   },
+   {
+    "text": "国庆。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2480
+   },
+   {
+    "text": "放什么狗屁啊？里面是空的啊？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 914,
+    "gen": 10556
+   },
+   {
+    "text": "盖掉。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2459,
+    "gen": 6294
+   },
+   {
+    "text": "我现在都帮你，已经把那个框打开，那个绘画打开了，你还要怎么样啊？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你说你叫什么？",
+    "asked": true,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「你叫什么」",
+    "first": 611,
+    "gen": 1769
+   },
+   {
+    "text": "我已经说过好多遍了，你叫小笨蛋。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 525,
+    "gen": 3566
+   },
+   {
+    "text": "给豆包办公发个信息，问他国庆的放假安排。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)",
+    "first": 1655
+   },
+   {
+    "text": "国庆。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 928
+   },
+   {
+    "text": "我都说了国庆了，你为什么又要又问一遍呢？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1795
+   },
+   {
+    "text": "里面没有字，你盖掉。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1412
+   },
+   {
+    "text": "我都说盖掉了，你给我盖掉，让我给他复出，妈的，里面没有字，你个傻逼。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "给豆包办公发一条信息问他国庆节的，国务院发的放假安排。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)",
+    "first": 1667,
+    "gen": 5479
+   },
+   {
+    "text": "国庆那一条。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 586,
+    "gen": 8267
+   },
+   {
+    "text": "新开一个工作任务，新开一个绘画，再问一次。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2888,
+    "gen": 11587
+   },
+   {
+    "text": "行，那换一个，再 codex 里面新开一条会话，问他国庆节国务院的放假安排是什么？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 389,
+    "gen": 5121
+   },
+   {
+    "text": "现在回去豆包办公那里。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "用那个就是点击那个新工作任务。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "同样的，还是问国务院国庆节的放假安排是什么样的？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 6111,
+    "gen": 3851
+   },
+   {
+    "text": "我让你新开。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "找到微信，然后找到 Ben，给他发一条信息说我好想回家。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2951,
+    "gen": 7762
+   },
+   {
+    "text": "你实际上点的是。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "豆包不是微信。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": []
+   }
+  ],
+  [
+   {
+    "text": "口袋4那边是不是有一条要确认的？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 2745,
+    "gen": 15622
+   },
+   {
+    "text": "对。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2483,
+    "gen": 6893
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 937,
+    "gen": 8971
+   },
+   {
+    "text": "茶。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 580,
+    "gen": 2313
+   },
+   {
+    "text": "你顺便打开微信，找到 Ben，给他发一个信息说我好想回家。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   }
+  ],
+  [
+   {
+    "text": "打开那个豆包办公，然后开一个新的会话窗口。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "问一下中秋月饼什么比较好吃？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 6971,
+    "gen": 13216
+   },
+   {
+    "text": "撤掉，把那个微信的撤掉，然后往豆包办公里送去吧。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "我总感觉你在骂我，打开那个。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "豆包办公。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "那我可以给 call x 信息吗？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 605
+   },
+   {
+    "text": "你告诉他，让他加速。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2692,
+    "gen": 11631
+   },
+   {
+    "text": "没关系，他已经在修了，先这样吧，拜拜。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "chat",
+    "reason": "闲聊的词「先这样」",
+    "first": 1439,
+    "gen": 2358
+   }
+  ],
+  [
+   {
+    "text": "给豆包办公发信息问中秋节月饼的事情，新开一个窗口问。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)"
+   }
+  ],
+  [
+   {
+    "text": "你帮我定一下豆包那边，他如果等一下给你发信息了，你就给我打电话，好吗？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)",
+    "first": 3049
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 1177,
+    "gen": 13070
+   },
+   {
+    "text": "我只是想知道说。",
+    "asked": true,
+    "tools": []
+   },
+   {
+    "text": "呃，月饼哪个品类的比较好吃？",
+    "asked": true,
+    "tools": [],
+    "first": 587,
+    "gen": 10171
+   },
+   {
+    "text": "你就问他呗。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2901,
+    "gen": 9410
+   },
+   {
+    "text": "答案是中秋那一条了。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 3199,
+    "gen": 9383
+   },
+   {
+    "text": "对，是那一条，快点。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2336,
+    "gen": 7472
+   }
+  ],
+  [
+   {
+    "text": "打开豆包办公，在中秋那一条里面。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)"
+   },
+   {
+    "text": "问他。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "五仁月饼大概多少钱？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3311,
+    "gen": 10836
+   },
+   {
+    "text": "没问题，拜拜。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "chat",
+    "reason": "闲聊的词「拜拜」"
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 835,
+    "gen": 11052
+   },
+   {
+    "text": "再详细讲讲。",
+    "asked": false,
+    "tools": [],
+    "first": 791,
+    "gen": 14905
+   },
+   {
+    "text": "怎么卡住了？",
+    "asked": false,
+    "tools": [],
+    "first": 434,
+    "gen": 14449
+   },
+   {
+    "text": "好了，知道了，拜拜。",
+    "asked": false,
+    "tools": [],
+    "first": 749,
+    "gen": 3176
+   }
+  ],
+  [
+   {
+    "text": "手机。",
+    "asked": false,
+    "tools": [],
+    "first": 583
+   },
+   {
+    "text": "我已经解决掉了。",
+    "asked": false,
+    "tools": [],
+    "first": 930
+   },
+   {
+    "text": "在那个关掉就好了。",
+    "asked": false,
+    "tools": [],
+    "first": 887
+   },
+   {
+    "text": "那个你关他就好了。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 1892,
+    "gen": 8182
+   },
+   {
+    "text": "现在把任务都取消掉，都关闭掉。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 1781,
+    "gen": 6195
+   },
+   {
+    "text": "好的。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2316,
+    "gen": 11125
+   }
+  ],
+  [
+   {
+    "text": "你说什么？",
+    "asked": false,
+    "tools": [],
+    "first": 783,
+    "gen": 9077
+   },
+   {
+    "text": "先放着，呃，你帮我打开微信输入法吧。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2578
+   },
+   {
+    "text": "对的。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   }
+  ],
+  [
+   {
+    "text": "好的。",
+    "asked": false,
+    "tools": [],
+    "gen": 2190
+   }
+  ],
+  [
+   {
+    "text": "我现在能接到他的电话了。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "我更新完之后他主动打过来。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "他自己说，自己自言自语。",
+    "asked": false,
+    "tools": [],
+    "first": 562
+   }
+  ],
+  [
+   {
+    "text": "你能听到我说话吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 571,
+    "gen": 2316
+   }
+  ],
+  [
+   {
+    "text": "啊，通了，接通了。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 630
+   },
+   {
+    "text": "OK，是0，再说一遍。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你能听到我声音吗？",
+    "asked": false,
+    "tools": [],
+    "first": 636,
+    "gen": 2473
+   },
+   {
+    "text": "啊？你还知道我是谁啊？我是否需要完成引导？",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "工作台最快的引导我，还对我对工作台的操作还不熟悉。",
+    "asked": false,
+    "tools": [],
+    "first": 2,
+    "gen": 8926
+   },
+   {
+    "text": "好啊好啊。",
+    "asked": false,
+    "tools": [],
+    "first": 695,
+    "gen": 4775
+   },
+   {
+    "text": "好的。",
+    "asked": false,
+    "tools": []
+   }
+  ],
+  [
+   {
+    "text": "喂，听到吗？",
+    "asked": false,
+    "tools": [],
+    "first": 738,
+    "gen": 4564
+   },
+   {
+    "text": "哪件事？",
+    "asked": true,
+    "tools": [],
+    "first": 1068
+   },
+   {
+    "text": "啊？那个是不先不管了。",
+    "asked": true,
+    "tools": []
+   },
+   {
+    "text": "15关什么时候？",
+    "asked": true,
+    "tools": []
+   },
+   {
+    "text": "事不关，什么时候给我引导。",
+    "asked": true,
+    "tools": [],
+    "first": 1015,
+    "gen": 7513
+   },
+   {
+    "text": "那怎么办？还没回，我现在比较着急啊。",
+    "asked": false,
+    "tools": [],
+    "first": 804,
+    "gen": 4095
+   },
+   {
+    "text": "好的。",
+    "asked": false,
+    "tools": []
+   }
+  ],
+  [
+   {
+    "text": "问下豆包什么时候？深圳什么时候下雨？近7天。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 668,
+    "gen": 3827
+   }
+  ],
+  [
+   {
+    "text": "问一下豆包。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)"
+   },
+   {
+    "text": "近7天深圳的天气是怎么样的？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 687,
+    "gen": 7570
+   },
+   {
+    "text": "不是不是，是问单独新建一个对话，问一下豆包最近几天的天气怎么样？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)",
+    "first": 10688,
+    "gen": 6824
+   }
+  ],
+  [
+   {
+    "text": "近7天深圳的天气有结果了吗？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2687,
+    "gen": 7136
+   },
+   {
+    "text": "用一句话总结。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3091,
+    "gen": 5729
+   },
+   {
+    "text": "好。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 850,
+    "gen": 8402
+   }
+  ],
+  [
+   {
+    "text": "问一下 GPT 近7天深圳的天气怎么样？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)",
+    "first": 1544,
+    "gen": 7021
+   },
+   {
+    "text": "新建对话，然后问一下。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "给某条会话捎话(butlerRoute)",
+    "first": 1923
+   },
+   {
+    "text": "怎么会没开成呢？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 963,
+    "gen": 9367
+   },
+   {
+    "text": "你要怎么弄？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1088,
+    "gen": 7750
+   },
+   {
+    "text": "好的。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「好的」",
+    "first": 933,
+    "gen": 27375
+   }
+  ],
+  [
+   {
+    "text": "能听，你能听到我声音吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 884,
+    "gen": 2593
+   },
+   {
+    "text": "现在有哪个智能体在工作？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3130,
+    "gen": 5130
+   },
+   {
+    "text": "你能帮我，就是我现在发现一个问题。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "啊，就是工作台的 bug 的话，我能不能直接发给你，让你去修改完善？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 976,
+    "gen": 15306
+   },
+   {
+    "text": "工作台自己就这套流程啊？就是这样的，我要事务官指派 AI 去干活，故障呢由，主要由以下三种，呃，第一个是，呃你。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "你口头答应了，但实际上没有指派事务官去干活。嗯，第二个。呃，事务官无法给智能体发布命令文本，发出命令文本导致智能体无法。",
+    "asked": true,
+    "tools": [],
+    "first": 3,
+    "route": "act",
+    "reason": "这一回合没有识别结果(开场白/补话),按要办事走"
+   },
+   {
+    "text": "要开启任务，第三个，呃，智能体在任务结束后。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "不打电话过来有，嗯，性格比较长时间。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "这一回合没有识别结果(开场白/补话),按要办事走",
+    "first": 883,
+    "gen": 14735
+   },
+   {
+    "text": "是的是的，是这样。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1006,
+    "gen": 14264
+   },
+   {
+    "text": "好的，去吧。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「好的」",
+    "first": 915
+   }
+  ],
+  [
+   {
+    "text": "什么事？",
+    "asked": false,
+    "tools": [],
+    "first": 1233
+   },
+   {
+    "text": "擎天柱。",
+    "asked": true,
+    "tools": [],
+    "first": 824,
+    "gen": 4456
+   },
+   {
+    "text": "重新做，让他。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   }
+  ],
+  [
+   {
+    "text": "我发现这台是关掉。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "啊，就是很便捷，对对对。",
+    "asked": false,
+    "tools": [],
+    "first": 811
+   },
+   {
+    "text": "就是在手推开水用。",
+    "asked": false,
+    "tools": [],
+    "first": 1
+   },
+   {
+    "text": "是的，主要是这个东西呢？它更好的一点就是它的一个系统，它的一个系统上它的可以。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "根据个人来自定义。",
+    "asked": false,
+    "tools": [],
+    "first": 852
+   },
+   {
+    "text": "就是自己的一个工作，工作台。",
+    "asked": false,
+    "tools": [],
+    "first": 346
+   }
+  ],
+  [
+   {
+    "text": "你能帮我确认。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "为什么？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1261
+   },
+   {
+    "text": "15关没办法执行工作吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 712
+   },
+   {
+    "text": "你休息了吗？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 833,
+    "gen": 6208
+   },
+   {
+    "text": "对，这件事也没有落实。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "问事项(butlerRoute)",
+    "first": 1693,
+    "gen": 14186
+   }
+  ],
+  [
+   {
+    "text": "那个座机它不响啊？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   }
+  ],
+  [
+   {
+    "text": "什么事？",
+    "asked": false,
+    "tools": [],
+    "first": 744,
+    "gen": 8291
+   },
+   {
+    "text": "嗯，重做一次。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2413,
+    "gen": 3175
+   }
+  ],
+  [
+   {
+    "text": "你能听到我说话吗？",
+    "asked": false,
+    "tools": [],
+    "first": 639,
+    "gen": 3631
+   },
+   {
+    "text": "可以听到，是吧？嗯，这把你的声音调大一说，大说话大声一点。",
+    "asked": false,
+    "tools": [],
+    "first": 750,
+    "gen": 2540
+   },
+   {
+    "text": "听不清楚啊。",
+    "asked": false,
+    "tools": [],
+    "first": 615,
+    "gen": 6878
+   },
+   {
+    "text": "对，去查一下吧。",
+    "asked": false,
+    "tools": [],
+    "first": 713,
+    "gen": 6163
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 594,
+    "gen": 7120
+   }
+  ],
+  [
+   {
+    "text": "6分钟后提醒我。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 744,
+    "gen": 4742
+   },
+   {
+    "text": "对，6分钟后之后打电话提醒我。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2352,
+    "gen": 3228
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 1676
+   },
+   {
+    "text": "不要做了。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 1633,
+    "gen": 8574
+   },
+   {
+    "text": "不是同一个账号，然后座机，座机，现在的他登是常亮的，就是绿灯。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   },
+   {
+    "text": "杨幂，就那个树莓派部长屋吗？",
+    "asked": true,
+    "tools": []
+   },
+   {
+    "text": "那个树莓派它是绿的，我已经打开了。",
+    "asked": true,
+    "tools": [],
+    "first": 5,
+    "gen": 12038
+   },
+   {
+    "text": "不是同一个账号，座机现在是打开的。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "绿灯。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "手机。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   },
+   {
+    "text": "开启蓝牙了，然后允许附近设备权限。",
+    "asked": false,
+    "tools": []
+   }
+  ],
+  [
+   {
+    "text": "请你帮我解决一个问题。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 758
+   },
+   {
+    "text": "我想想啊。",
+    "asked": true,
+    "tools": [],
+    "route": "chat",
+    "reason": "短句寒暄「啊」",
+    "first": 486
+   },
+   {
+    "text": "嗯，你说，哎，为什么我的你的声音不能再座机上面显示啊？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 882
+   }
+  ],
+  [
+   {
+    "text": "能听到我声音吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "让我看看。",
+    "asked": true,
+    "tools": [],
+    "first": 850,
+    "route": "act",
+    "reason": "这一回合没有识别结果(开场白/补话),按要办事走"
+   }
+  ],
+  [
+   {
+    "text": "你能听到我声音吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 550,
+    "gen": 3931
+   },
+   {
+    "text": "嗯，你把我打开豆包，并且查询今天深圳天气怎么样？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2816,
+    "gen": 11521
+   },
+   {
+    "text": "好的。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「好的」"
+   }
+  ],
+  [
+   {
+    "text": "yes，今天深圳天气怎么样？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 2748
+   },
+   {
+    "text": "问问 kodas 吧，不要问豆包了。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2530
+   },
+   {
+    "text": "日发。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "今天天气怎么样？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "直接问 code dance。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2,
+    "gen": 19374
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 1105,
+    "gen": 8048
+   }
+  ],
+  [
+   {
+    "text": "帮我打开豆包。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1293,
+    "gen": 6969
+   },
+   {
+    "text": "那你能帮我做什么？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 681,
+    "gen": 11154
+   },
+   {
+    "text": "你能否在2分钟后给我打电话？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1338,
+    "gen": 9396
+   },
+   {
+    "text": "好。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你能给我发消息吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 687
+   },
+   {
+    "text": "那你能安排豆包帮我干活不？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1611,
+    "gen": 5826
+   },
+   {
+    "text": "那豆包。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "跟我汇报今天的训练的天气怎么样？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2
+   },
+   {
+    "text": "深圳的天气，今天深圳的天气。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1497
+   },
+   {
+    "text": "对的。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 4680,
+    "gen": 5874
+   }
+  ],
+  [
+   {
+    "text": "什么事？",
+    "asked": false,
+    "tools": [],
+    "first": 799
+   },
+   {
+    "text": "你帮我。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "写一下日志吧，这个，这个 BUG，日志，日志文案 AI 修复一下。",
+    "asked": false,
+    "tools": [],
+    "first": 3
+   },
+   {
+    "text": "对。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 3077,
+    "gen": 14703
+   }
+  ],
+  [
+   {
+    "text": "小笨蛋。",
+    "asked": false,
+    "tools": [],
+    "first": 699,
+    "gen": 8556
+   },
+   {
+    "text": "你说什么？",
+    "asked": true,
+    "tools": [],
+    "first": 1003
+   },
+   {
+    "text": "我听不懂你说什么。",
+    "asked": false,
+    "tools": [],
+    "first": 1199
+   },
+   {
+    "text": "你没有去行动了。",
+    "asked": true,
+    "tools": [],
+    "first": 728,
+    "gen": 5557
+   },
+   {
+    "text": "嗯，去吧。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ]
+   }
+  ],
+  [
+   {
+    "text": "豆包办公。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "first": 2432
+   }
+  ],
+  [
+   {
+    "text": "喂，能听到声音吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1012,
+    "gen": 3633
+   },
+   {
+    "text": "喂。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "短句寒暄「喂」"
+   }
+  ],
+  [
+   {
+    "text": "让豆包查一下。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)"
+   },
+   {
+    "text": "国庆放假多少天？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 690
+   },
+   {
+    "text": "今年国庆卖多少天？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 612,
+    "gen": 5050
+   },
+   {
+    "text": "是的。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3127,
+    "gen": 4973
+   }
+  ],
+  [
+   {
+    "text": "能听到我说话吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1125,
+    "gen": 3220
+   },
+   {
+    "text": "喂。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "短句寒暄「喂」"
+   },
+   {
+    "text": "能听到我说话吗？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 649,
+    "gen": 6075
+   },
+   {
+    "text": "让豆包查询一下。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "国庆7天的天气怎么样？深圳的。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 793
+   },
+   {
+    "text": "是的。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2497
+   },
+   {
+    "text": "看见了。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你帮我查一下为什么你，我在座机上无法听到你的声音？",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 6634
+   },
+   {
+    "text": "花花回来了，深圳国庆7天天气出炉，整体是先雨后晴，气温逐天下降。表格日期天气气温备注，10月1日今天晴转阵雨，25到33摄氏度，白天炎热，夜间起雨。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "没什么吩咐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "让豆包查询一下，让豆包帮我关掉音乐吧，网易云的音乐。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2
+   },
+   {
+    "text": "对。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2631,
+    "gen": 3959
+   }
+  ],
+  [
+   {
+    "text": "现在有谁在干活？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1239
+   },
+   {
+    "text": "好的，就这样吧。",
+    "asked": true,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「好的」"
+   }
+  ],
+  [
+   {
+    "text": "你说呀？",
+    "asked": false,
+    "tools": [],
+    "first": 1181
+   }
+  ],
+  [
+   {
+    "text": "今天我想发布一条视频，是参赛，是工作台的参赛视频，我要制作1分钟关于产品演示的一个视频。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1081,
+    "gen": 14341
+   },
+   {
+    "text": "嗯，是的。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "chat",
+    "reason": "短句寒暄「嗯」",
+    "first": 1044,
+    "gen": 11584
+   },
+   {
+    "text": "你帮我，你帮我放在那个发布计划里面就行，不用你去做这条视频。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 735
+   },
+   {
+    "text": "是的。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2795
+   },
+   {
+    "text": "嗯，我没。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "短句寒暄「嗯」"
+   },
+   {
+    "text": "我没看到，我没，我没看到进度，在发布计划里面没看到进度。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "问事项(butlerRoute)",
+    "first": 1
+   },
+   {
+    "text": "那个通过了，就这样吧。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 529,
+    "gen": 6708
+   },
+   {
+    "text": "发布计划上还是没有刚刚说的那条视频计划。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 829,
+    "gen": 17167
+   },
+   {
+    "text": "宝贝，去吧。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2833,
+    "gen": 4154
+   }
+  ],
+  [
+   {
+    "text": "我想请你直接根据我跟你的对话，然后派初代修复现在工作台上小组件。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "的一些配置，UI 这一。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 5872,
+    "gen": 13899
+   },
+   {
+    "text": "让 products 去办。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "有声音吗？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 926,
+    "gen": 2628
+   },
+   {
+    "text": "我想帮你，帮我查询一下 to death 的恶度还剩多少。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 8171,
+    "gen": 12223
+   },
+   {
+    "text": "你这个语音有点问题，出问题了。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 964,
+    "gen": 7058
+   },
+   {
+    "text": "啊？你这是你是什么身份？你是事务官还是？",
+    "asked": true,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「你是什么」",
+    "first": 1036,
+    "gen": 4257
+   },
+   {
+    "text": "你能帮我解决什么问题？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 777,
+    "gen": 14942
+   },
+   {
+    "text": "为什么我直接给你配活，给事务官配活。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "你没办法帮我。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "做，你可以直接帮我。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "操控电脑吗？还是只能让 agent 去完成？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1099,
+    "gen": 37438
+   },
+   {
+    "text": "那你可以改小组件吗？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 993
+   },
+   {
+    "text": "我现在看的是横屏，我想改 UI 设计小组件的。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 722
+   },
+   {
+    "text": "把强化数据。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "呃，接入一个 call desk 的可用额度。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3,
+    "gen": 23036
+   },
+   {
+    "text": "泄露的额度。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1032,
+    "gen": 7431
+   },
+   {
+    "text": "泄露。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1143,
+    "gen": 8247
+   },
+   {
+    "text": "泄露那个额度。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 843
+   },
+   {
+    "text": "Cold death.",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 745
+   },
+   {
+    "text": "是显示在消耗数据这个小组件上。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 863,
+    "gen": 14376
+   },
+   {
+    "text": "是的。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 3362,
+    "gen": 20519
+   },
+   {
+    "text": "报备虚假中开工吧！",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2531,
+    "gen": 2615
+   }
+  ],
+  [
+   {
+    "text": "让豆包查询一下今天深圳的天气。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2908,
+    "gen": 5125
+   },
+   {
+    "text": "对，去吧。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 600,
+    "gen": 8266
+   }
+  ],
+  [
+   {
+    "text": "帮我。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "重新打开。",
+    "asked": false,
+    "tools": []
+   },
+   {
+    "text": "网易云音乐。",
+    "asked": false,
+    "tools": []
+   }
+  ],
+  [
+   {
+    "text": "打开网易云音乐并播放音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1050
+   },
+   {
+    "text": "对，去吧。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 858
+   }
+  ],
+  [
+   {
+    "text": "你说说什么？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 907
+   },
+   {
+    "text": "好的，还没有播放音乐。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "chat",
+    "reason": "闲聊的词「好的」",
+    "first": 734
+   }
+  ],
+  [
+   {
+    "text": "帮我播放网易云的音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 793,
+    "gen": 14917
+   },
+   {
+    "text": "是的。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 771,
+    "gen": 7290
+   },
+   {
+    "text": "好的。",
+    "asked": false,
+    "tools": [],
+    "route": "chat",
+    "reason": "闲聊的词「好的」"
+   }
+  ],
+  [
+   {
+    "text": "让豆包打开网易云音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "一个词都没命中,按要办事走(宁可慢别错)",
+    "first": 1114,
+    "gen": 7860
+   },
+   {
+    "text": "是的，打开音乐之后直接播放就可以。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "打开网页音乐，让豆包来伴。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1691,
+    "gen": 6308
+   }
+  ],
+  [
+   {
+    "text": "让豆包打开窗口槽里面的网页音音乐，并播放音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "我已经把他拉进这个工作台的窗口槽了。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 1319,
+    "gen": 17447
+   },
+   {
+    "text": "是的。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2721
+   },
+   {
+    "text": "去吧，快去，就这样。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2815
+   }
+  ],
+  [
+   {
+    "text": "用豆包打开。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "帮我用豆包打开网易云音乐并播放音乐。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "让豆包打开网易云音乐并播放音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 784
+   },
+   {
+    "text": "嗯，做完之后把给我打电话吧。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 854
+   },
+   {
+    "text": "听到吗？",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 902
+   }
+  ],
+  [
+   {
+    "text": "豆包做完工作后给我打电话，现在有没有在跑的？",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "让豆包。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "打开网易云音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "如果豆包不行，那就换 cotas，打开。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "你不用跟我确认。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   },
+   {
+    "text": "好，去。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "让口袋打开网易音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 883
+   }
+  ],
+  [
+   {
+    "text": "你说。",
+    "asked": false,
+    "tools": [],
+    "first": 938
+   },
+   {
+    "text": "那你帮我解决吧。",
+    "asked": false,
+    "tools": [],
+    "first": 955,
+    "gen": 18077
+   }
+  ],
+  [
+   {
+    "text": "让豆包打开网易云音乐。",
+    "asked": true,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "让豆包查询一下今天深圳的天气怎么样？",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)"
+   }
+  ],
+  [
+   {
+    "text": "打开 Codex 界面。",
+    "asked": true,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2714,
+    "gen": 7792
+   },
+   {
+    "text": "开口袋子见面。",
+    "asked": false,
+    "tools": [],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 730
+   },
+   {
+    "text": "对。",
+    "asked": false,
+    "tools": [
+     "wb_<已脱敏>"
+    ],
+    "route": "act",
+    "reason": "接着上一回合那件事(承接)",
+    "first": 2695
+   }
+  ],
+  [
+   {
+    "text": "那怎么办？",
+    "asked": false,
+    "tools": []
+   }
+  ]
+ ]
+}

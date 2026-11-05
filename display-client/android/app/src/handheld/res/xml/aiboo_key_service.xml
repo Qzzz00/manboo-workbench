@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 掌机侧键（F10）全局监听的无障碍服务配置。
+     flagRequestFilterKeyEvents + canRequestFilterKeyEvents 是收全局按键的必要组合；
+     只订阅 typeWindowStateChanged（维护前台包名判断）。
+
+     canTakeScreenshot（API 30+）：军师一键卡关的截屏能力。截的是 display 合成结果，
+     底条角色也在里面 —— 由调用方裁掉底部 cropBottomPx 去掉，见 ScreenCapture.kt。 -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagRequestFilterKeyEvents|flagRetrieveInteractiveWindows"
+    android:canRequestFilterKeyEvents="true"
+    android:canRetrieveWindowContent="true"
+    android:canTakeScreenshot="true"
+    android:description="@string/key_service_desc"
+    android:notificationTimeout="100" />

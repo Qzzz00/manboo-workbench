@@ -1,0 +1,16 @@
+{
+  "note": "语气 → Live2D 表情。**这是一张配置表,不是写死的代码**(Open-LLM-VTuber 的 emotionMap / STELLA #501 的做法:映射放配置,没有对应的就不动)。键是 channel-worker/src/tts/tone.ts 的短列表 id,改那边就要改这里(对照用例 butler-app/tests/live2dTone.test.ts)。",
+  "how": "每个语气给一串**候选名**,按顺序找:先和形象清单里 expression 的 id 逐字比(不计大小写),再看 id 里是不是含着这个名。一个都没命中 → **这个语气不动脸**(宁可不动,也不要随便换一张表情)。形象包里的表情名是美术起的,所以候选名要宽:中文、英文、常见缩写都列上。",
+  "version": 1,
+  "hold_ms": 3200,
+  "neutral": ["neutral", "normal", "default", "idle", "平静", "普通", "默认"],
+  "tones": {
+    "calm": ["neutral", "normal", "default", "平静", "普通"],
+    "happy": ["happy", "smile", "joy", "glad", "fun", "开心", "高兴", "笑", "微笑"],
+    "care": ["gentle", "soft", "warm", "kind", "tender", "温柔", "关心", "体贴"],
+    "sorry": ["sorry", "sad", "apologetic", "down", "歉意", "抱歉", "难过", "低落"],
+    "urgent": ["urgent", "surprised", "surprise", "shock", "alert", "着急", "惊讶", "吃惊"],
+    "soft": ["shy", "quiet", "soft", "whisper", "轻声", "害羞", "安静"],
+    "ask": ["question", "ask", "confused", "think", "puzzled", "疑问", "疑惑", "思考"]
+  }
+}

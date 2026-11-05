@@ -1,0 +1,112 @@
+/*
+ * 「刚办完 · 结果一句话」那一条(2026-10-04,卡 `claude/answer-comes-to-her`)。
+ *
+ * 独占 `ba-fresh-` 前缀、单独一个文件(同 `stageCards.css` / `homeRail.css` 的理由):
+ * `styles.css` 那一大份是好几张卡同时在改的地方,这一条不去碰它。
+ *
+ * 用的全是现成的令牌(`--ba-line` / `--ba-bg-2` / `--ba-fg*` / `--ba-fs-sub`)——
+ * 没有一个写死的颜色,所以浅色 / 深色、系统放大字都跟着走。
+ * **一个像素的高度都没写死**:行高用倍数、不写 height(2026-09-25 夜那条教训 ——
+ * 定高在小米的系统字体上会把每一行的下沿切掉一截)。
+ */
+.ba-fresh {
+  flex: none;
+  margin: 0 0 8px;
+  padding: 8px 12px 6px;
+  border: 1px solid var(--ba-line);
+  border-radius: 12px;
+  background: var(--ba-bg-2);
+  font-size: var(--ba-fs-sub);
+  line-height: 1.5;
+}
+
+.ba-fresh__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  font-size: var(--ba-fs-sub);
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--ba-fg);
+}
+
+.ba-fresh__count {
+  flex: none;
+  min-width: 1.4em;
+  padding: 0 .4em;
+  border-radius: 999px;
+  text-align: center;
+  background: var(--ba-bg);
+  color: var(--ba-fg-2);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+.ba-fresh__list { list-style: none; margin: 0; padding: 0; }
+
+.ba-fresh__row { display: flex; align-items: baseline; gap: 8px; }
+
+/*
+ * 整行那颗键。`text-align: start` + `background: transparent`:它要看起来是一行字,
+ * 不是一颗按钮(同 `ba-cards__linetap`)。按下去才有一层极淡的底,确认「这一下按到了」。
+ */
+.ba-fresh__open {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  padding: .2em 4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ba-fresh__open:active { background: color-mix(in srgb, var(--ba-fg) 9%, transparent); }
+.ba-fresh__open:focus-visible { outline: 2px solid var(--ba-fg-2); outline-offset: -2px; }
+.ba-fresh__open[disabled] { opacity: .5; cursor: default; }
+
+/* 结果那一句:最多两行,再长折起来(折的是显示不是字 —— 读屏与长按复制拿到的是整段)。 */
+.ba-fresh__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--ba-fg);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 右边那一格:是哪一件事。最多占一行的 40%(同 `ba-cards__note` 在宽卡上那一条)。 */
+.ba-fresh__note {
+  flex: none;
+  max-width: 40%;
+  color: var(--ba-fg-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ba-fresh__dismiss {
+  flex: none;
+  padding: .2em .6em;
+  border: 1px solid var(--ba-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ba-fg-3);
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ba-fresh__dismiss:active { background: color-mix(in srgb, var(--ba-fg) 9%, transparent); }
+.ba-fresh__dismiss:focus-visible { outline: 2px solid var(--ba-fg-2); outline-offset: -2px; }
+.ba-fresh__dismiss[disabled] { opacity: .5; cursor: default; }

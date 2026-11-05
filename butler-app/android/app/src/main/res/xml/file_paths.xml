@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path name="my_images" path="." />
+    <cache-path name="my_cache_images" path="." />
+    <!--
+      新手机包下到这儿(2026-10-03,ApkUpdatePlugin)。
+      App 自己的外部目录,别的应用进不来;交给系统安装器时只给这一个文件的读权限。
+    -->
+    <external-files-path name="apk_update" path="update/" />
+</paths>

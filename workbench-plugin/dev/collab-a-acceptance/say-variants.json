@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "about": "1a 真实模型变式(2026-10-24 补轮):同一组期望、换说法,跑真 Kimi 听懂,验模型多法性;红例保留在证据。judge/sentences 原文件不改。",
+  "sentences": [
+    {
+      "id": "v1", "name": "记一件事(变式:提醒我)",
+      "turns": ["提醒我周四下午记得把样片发给客户"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [{"type": "todo", "must": ["周四", "样片", "客户"], "mustNot": ["提醒我"]}],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "建了"], ["样片"]], "none": ["收不回", "撤不回", "现在就办吗", "派给哪"]}
+      }
+    },
+    {
+      "id": "v2", "name": "不用现在发(变式:先记着别发)",
+      "turns": ["先把样片的事记下,这周四下午给客户发,先别发"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [{"type": "todo", "must": ["周四", "样片", "客户"], "mustNot": ["先别发", "先把样片的事记下"]}],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "建了"], ["样片"]], "none": ["收不回", "撤不回", "现在就办吗", "派给哪"]}
+      }
+    },
+    {
+      "id": "v3", "name": "挂着确认(变式:先问过我)",
+      "turns": ["建个待办:周四下午给客户发样片,建之前你问过我", "行,去建吧"],
+      "entrances": ["desk", "phone"],
+      "setupTurns": 1,
+      "expect": {
+        "rounds": 2, "pushBacks": 1, "setupAsks": true,
+        "cards": [{"type": "todo", "must": ["周四", "样片", "客户"], "mustNot": ["建个待办", "问过我", "行,去建吧"]}],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "建了"]], "none": ["收不回", "撤不回", "没听清", "再说一遍"]}
+      }
+    },
+    {
+      "id": "v5", "name": "一句三件同类(变式:三笔)",
+      "turns": ["帮我记三笔:周四发样片、周五交发票、下周一约 B 客户"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片"], "mustNot": ["记三笔", "发票", "B 客户"]},
+          {"type": "todo", "must": ["周五", "发票"], "mustNot": ["记三笔", "样片", "B 客户"]},
+          {"type": "todo", "must": ["下周一", "B"], "mustNot": ["记三笔", "样片", "发票"]}
+        ],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "三条", "三件", "三笔"]], "none": ["收不回", "撤不回"]}
+      }
+    },
+    {
+      "id": "v6", "name": "说一半补一件(变式:对了还有)",
+      "turns": ["记一下周四发样片……对了,再帮我记一笔周五交发票"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [
+          {"type": "todo", "must": ["周四", "样片"], "mustNot": ["记一下", "发票", "对了"]},
+          {"type": "todo", "must": ["周五", "发票"], "mustNot": ["记一下", "样片", "对了"]}
+        ],
+        "reply": {"groups": [["记下", "记好", "记上", "建好", "两条", "两件", "两笔"]], "none": ["收不回", "撤不回"]}
+      }
+    },
+    {
+      "id": "v8", "name": "内容有发给(变式:寄给客户)",
+      "turns": ["记个待办:下周二把合同寄给客户"],
+      "entrances": ["desk", "phone"],
+      "expect": {
+        "rounds": 1, "pushBacks": 0,
+        "cards": [{"type": "todo", "must": ["下周二", "合同", "客户"], "mustNot": ["记个待办"]}],
+        "reply": {"none": ["收不回", "撤不回", "现在就办吗", "替你发"]}
+      }
+    }
+  ]
+}

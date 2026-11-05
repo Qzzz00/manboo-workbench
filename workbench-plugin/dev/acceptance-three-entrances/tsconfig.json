@@ -1,0 +1,11 @@
+{
+  // 这个目录不在插件的 tsconfig 里(dev/ 不进构建);单独核一遍类型:node_modules/.bin/tsc -p dev/acceptance-three-entrances
+  // 假手机用的 LiveKit 库装在 channel-worker 那边(fakePhone.ts 运行时从那边 require),类型也从那边取。
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"],
+    "paths": { "@livekit/rtc-node": ["../../../channel-worker/node_modules/@livekit/rtc-node/dist/index.d.cts"] }
+  },
+  "include": ["./*.ts", "./*.mts"]
+}

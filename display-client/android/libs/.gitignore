@@ -1,0 +1,3 @@
+# 覆盖 android/.gitignore 的 *.aar 规则：Cubism Core aar 必须入仓
+# （:cubism-framework/:nativelive2d compileOnly 编译、:app/:liteapp 运行时打包都靠它）
+!*.aar

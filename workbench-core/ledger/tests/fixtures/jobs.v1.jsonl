@@ -1,0 +1,6 @@
+{"at":"2026-10-19T08:00:00.000Z","job":"8f0c2a7e-0000-4000-8000-000000000002","step":"assigned","family":"codex","via":"protocol","kind":"code"}
+{"at":"2026-10-19T08:00:01.000Z","job":"8f0c2a7e-0000-4000-8000-000000000002","step":"sent","family":"codex","via":"protocol"}
+{"at":"2026-10-19T08:40:00.000Z","job":"8f0c2a7e-0000-4000-8000-000000000003","step":"replied","family":"claude"}
+{"at":"2026-10-19T10:00:00.000Z","job":"relay-light-7","step":"seen","family":"claude","why":"只盯不发"}
+this line is not json
+{"at":"2026-10-19T10:01:00.000Z","job":"8f0c2a7e-0000-4000-8000-000000000003","step":"called"}

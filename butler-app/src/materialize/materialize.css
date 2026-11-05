@@ -1,0 +1,67 @@
+/*
+ * 「我照你说的摆好了」(2026-09-24 晚,卡 feat/onboarding-materialize)。独占 `ba-setup` 前缀、单独一个文件。
+ * 2026-09-25 起放进卡 A 的五卡首页:首页上只是「等你确认」那一格置顶的一行;整张单子在首页的下一级页上
+ * (`.ba-setup-page`,同对话记录那一页:整屏、顶上返回头、系统返回回首页)。
+ * 只做深色;主按钮白底黑字、勾选框白色,不用蓝色。单子长:行区自己滚,「就这样」「改一下」钉在底边一直看得见。
+ */
+.ba-setup-page {
+  position: fixed; inset: 0; z-index: 25;
+  display: grid; grid-template-rows: auto minmax(0, 1fr);
+  background: var(--ba-bg);
+  padding-bottom: var(--ba-safe-bottom); animation: ba-scene-rise .24s ease-out;
+}
+.ba-setup-page__body { min-height: 0; display: flex; flex-direction: column; padding: 4px 14px 12px; }
+.ba-setup {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--ba-line); border-radius: 14px; background: var(--ba-bg-2);
+  accent-color: #ffffff;
+}
+.ba-setup__head { display: flex; flex-direction: column; gap: 2px; }
+.ba-setup__title { margin: 0; font-size: var(--ba-fs-body); font-weight: 600; color: var(--ba-fg); }
+.ba-setup__sub { margin: 0; font-size: var(--ba-fs-min); color: var(--ba-fg-3); }
+.ba-setup__scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 6px; }
+.ba-setup__group { display: flex; flex-direction: column; gap: 2px; }
+.ba-setup__gtitle { margin: 4px 0 0; font-size: var(--ba-fs-min); color: var(--ba-fg-3); }
+.ba-setup__rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.ba-setup__item { display: flex; flex-direction: column; gap: 4px; padding: 6px 0; border-bottom: 1px solid var(--ba-line); }
+.ba-setup__item:last-child { border-bottom: none; }
+.ba-setup__item[data-done="true"], .ba-setup__item[data-off="true"] { opacity: .5; }
+.ba-setup__check { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.ba-setup__check input[type="checkbox"] { flex: none; width: 20px; height: 20px; margin: 1px 0 0; }
+.ba-setup__text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ba-setup__rtitle { color: var(--ba-fg); font-size: var(--ba-fs-sub); line-height: 1.4; }
+.ba-setup__detail { color: var(--ba-fg-2); font-size: var(--ba-fs-min); line-height: 1.35; }
+.ba-setup__note { color: var(--ba-fg-3); font-size: var(--ba-fs-min); }
+.ba-setup__input, .ba-setup__owner {
+  font: inherit; font-size: var(--ba-fs-sub); color: var(--ba-fg);
+  background: var(--ba-bg); border: 1px solid #3a3a3a; border-radius: 8px; padding: 6px 8px;
+}
+.ba-setup__owner { align-self: flex-start; margin-left: 30px; }
+.ba-setup__acts { flex: none; display: flex; gap: 8px; justify-content: flex-end; padding-top: 4px; }
+.ba-setup__go, .ba-setup__ghost { height: 40px; padding: 0 18px; border-radius: 999px; font-size: var(--ba-fs-sub); cursor: pointer; }
+.ba-setup__go { border: 1px solid rgb(0 0 0 / .14); background: #fff; color: #111; font-weight: 600; }
+.ba-setup__go:disabled { opacity: .45; }
+.ba-setup__ghost { border: 1px solid #3a3a3a; background: transparent; color: var(--ba-fg-2); }
+.ba-setup__ghost[aria-pressed="true"] { border-color: var(--ba-fg-2); color: var(--ba-fg); }
+.ba-setup__err { margin: 0; color: #e8968c; font-size: var(--ba-fs-min); }
+.ba-setup--done { flex: 0 0 auto; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.ba-setup__line { margin: 0; flex: 1 1 60%; color: var(--ba-fg); font-size: var(--ba-fs-sub); }
+.ba-setup__failed { margin: 0; padding-left: 18px; flex-basis: 100%; color: #e8a838; font-size: var(--ba-fs-min); }
+
+/* 单子那一页顶上「另外 N 件等你确认」(2026-09-25,卡 fix/confirm-cancel)。只做深色,不用蓝色。 */
+.ba-setup-others { display: flex; flex-direction: column; gap: 4px; margin: 0 0 10px; }
+.ba-setup-others__title { margin: 0; font-size: 13px; font-weight: 600; color: var(--ba-fg-2, var(--ba-fg)); }
+.ba-setup-others__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.ba-setup-others__row {
+  width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 8px;
+  padding: 8px 10px; border: 1px solid var(--ba-line); border-radius: 10px;
+  background: var(--ba-bg-2); color: var(--ba-fg); text-align: left; font: inherit;
+}
+.ba-setup-others__row:active { background: var(--ba-bg-3); }
+/* 提议那一行(卡 M 追加):在电脑上定,点不动 —— 不要按下去的样子。 */
+.ba-setup-others__row[data-static="true"]:active { background: var(--ba-bg-2); }
+.ba-setup-others__text { grid-column: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-setup-others__note { grid-column: 1; font-size: 12px; color: var(--ba-fg-2, var(--ba-fg)); opacity: .75; }
+.ba-setup-others__chev { grid-column: 2; grid-row: 1 / span 2; opacity: .6; }

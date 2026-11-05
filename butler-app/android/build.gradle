@@ -1,0 +1,40 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath 'com.google.gms:google-services:4.4.4'
+        // 原生收铃(2026-10-20,卡 E)写在 Kotlin 里(LiveKit Android SDK 是协程接口)。版本与
+        // @capacitor-community/bluetooth-le 那个子工程自带的一致,两份不打架。
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+apply from: "variables.gradle"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        /*
+         * LiveKit Android SDK 唯一不在 Maven Central 的那一件:com.github.davidliu:audioswitch(钉在一个提交哈希上)。
+         * 只许这一个组从 JitPack 来(C4 供应链:别的包不许顺路从这里拿)。我们用 NoAudioHandler,它在包里但不被调用。
+         */
+        maven {
+            url 'https://jitpack.io'
+            content { includeGroup 'com.github.davidliu' }
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

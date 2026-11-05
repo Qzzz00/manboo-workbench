@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:launchMode="singleTask"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- 深链:用系统相机扫工作台的二维码(workbench://pair?host=&port=&code=)直接拉起 App 配对 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="workbench" android:host="pair" />
+            </intent-filter>
+
+        </activity>
+
+        <!--
+            会议录音的前台服务(2026-09-21)。type=microphone 是 Android 10+ 的要求:
+            少了它,锁屏之后系统会把麦克风从这个进程手里收走,录出来的是一段残片。
+            exported=false:只有这个 App 自己能起它。
+        -->
+        <service
+            android:name=".MeetingRecorderService"
+            android:foregroundServiceType="microphone"
+            android:exported="false" />
+
+        <!--
+            后台待机(2026-10-03,维护者:「锁屏和用别的 App 时也要能响铃」)。收铃的是 WebView 里那条
+            LiveKit 连接,Android 14 起没有前台服务的后台进程几秒就被冻住,锁屏久了 Doze 还断网。
+            specialUse:没有现成的类型对得上「等一通电话」(phoneCall 要当系统拨号器或 MANAGE_OWN_CALLS);
+            这个包是自己装的、不上架,specialUse 不过商店审核。
+        -->
+        <service
+            android:name=".RingStandbyService"
+            android:foregroundServiceType="specialUse"
+            android:exported="false">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keep the connection to the user's own desktop open so incoming calls from it can ring while the app is in background or the screen is locked." />
+        </service>
+
+        <!--
+            LiveKit Android SDK(卡 E 原生收铃)自带的屏幕共享服务。我们只进房听铃,不录屏、不共享屏幕:摘掉(核查 E4)。
+        -->
+        <service
+            android:name="io.livekit.android.room.track.screencapture.ScreenCaptureService"
+            tools:node="remove" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+    </application>
+
+    <!-- Permissions -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- mDNS 发现工作台(capacitor-zeroconf / jmDNS 要开多播锁) -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!--
+      本地网络(2026-10-21,局域网 M4)。Android 17(SDK 37)起连局域网地址(8791、本机房间 7880、mDNS)要这一条运行时权限,
+      没有它一律失败。不写这一条时,targetSdk 36 的包在 17 上是系统按兼容给的;**写上之后兼容那一份就没了**,
+      App 起来读到「还要问」就去要(NetworkWatchPlugin.requestLocalNetwork)—— 10-22 真机:targetSdk 36 下系统当场给了、没弹框。
+      拒了按出门走,设置里写去哪儿打开。targetSdk 升到 37 时这一条必须在,否则在家也连不上电脑。
+    -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
+    <!-- 按住说话 + 会议录音 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--
+        会议模式(2026-09-21):屏幕关了也要接着录,靠的是一条带常驻通知的前台服务。
+        FOREGROUND_SERVICE_MICROPHONE 是 Android 14(API 34)起的硬要求,少了它 startForeground 会抛。
+        POST_NOTIFICATIONS 是 Android 13 起显示那条通知要的;**没给也照样录**,只是通知不显示。
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!--
+      座机(2026-09-21):来电通知 + 全屏通知(锁屏时把来电页拉起来)+ 震动。
+      USE_FULL_SCREEN_INTENT 在 Android 14 起只对「打电话 / 闹钟」这类应用自动授予,
+      别的要用户在系统设置里打开 —— 开没开由 DeskPhonePlugin.status() 如实回给界面,
+      做不到时设置页上写一句「去系统设置里打开」,不装作开了。
+    -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--
+      后台待机(2026-10-03):specialUse 前台服务 + 锁屏时让 CPU 别睡死(WebView 里的心跳要跑)
+      + 申请「忽略电池优化」(只弹系统那个框,给不给由她;给没给如实回到设置页)。
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- LiveKit SDK 为它那个屏幕共享服务带进来的权限:服务摘了,权限一起摘(核查 E4)。 -->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!--
+      给座机配网(2026-09-22,设置 → 座机 → 添加座机)。手机当 BLE 主机去找那只实体话筒。
+
+      Android 12(API 31)起蓝牙权限从"定位"里拆出来,是**运行时**权限:
+        · BLUETOOTH_SCAN   扫描要。带 neverForLocation —— 我们只拿它找一台自己的设备,
+                           **不拿它推断位置**;声明了这一条,系统就不再顺带要定位权限
+                           (少问用户一次,也是真话:代码里没有一处读位置)。
+        · BLUETOOTH_CONNECT 连接与读写特征值要。
+      Android 11(API 30)及以下是另一套,而且那几版上 BLE 扫描被算作定位,
+      所以 ACCESS_FINE_LOCATION 要带 maxSdkVersion="30" ——
+      **不加上限的话 Google Play 会当成"这个应用要定位"并要求填用途说明**,而我们不要定位。
+      要不到权限时界面如实说一句「去系统设置里打开『附近的设备』」,不装作开了。
+    -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+    <!-- 没有蓝牙的机器也装得上:配网那一条用不了,别的一切照旧。 -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+
+    <!--
+      在 App 里装新手机包(2026-10-03,维护者:「每次更新我都得跳转官网去下载」)。
+      REQUEST_INSTALL_PACKAGES 只是**允许这个 App 把一个 apk 交给系统安装器**,不是自己装:
+      装不装由她在系统那几屏上点,而且 Android 8 起第一次还要她在系统里允许「安装未知应用」
+      (没允许时 ApkUpdatePlugin 回 NEED_INSTALL_PERMISSION,设置里多一颗去系统设置的键,不装作开了)。
+      这个包是自己装的、不上架,这一条不过商店审核。
+    -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <!-- 站内扫码(getUserMedia 取后摄) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+</manifest>

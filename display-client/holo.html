@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+    />
+    <title>Aiboo 全息屏</title>
+    <style>
+      /* 白底先行，避免加载瞬间闪深色（正式样式在 index.css + holo.css） */
+      html, body { margin: 0; background: #ffffff; }
+    </style>
+  </head>
+  <body>
+    <!-- 与主入口同用 #root，确保 index.css 里 #root 等选择器一致生效 -->
+    <div id="root"></div>
+    <!-- Live2D Cubism Core 必须在模块脚本前加载（注入 window.Live2DCubismCore） -->
+    <script src="/live2dcubismcore.min.js"></script>
+    <script type="module" src="/src/holo/main.tsx"></script>
+  </body>
+</html>

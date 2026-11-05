@@ -1,0 +1,30 @@
+{
+  "role": "yumi",
+  "schemaVersion": "v1",
+  "driver": "v2",
+  "idleStrategy": "virtual_empty",
+  "motions": [
+    { "file": "tear.motion3", "kind": "motion", "intensity": "light" },
+    { "file": "wave.motion3", "kind": "motion", "intensity": "light" }
+  ],
+  "expressions": [
+    { "file": "俯身按键.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "抬手右.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "抬手左.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "拿话筒.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "星星眼.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "歪嘴.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "泪汪汪.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "漂浮小狗.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "爱心眼.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "猫猫嘴.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "眼泪.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "舌头伸出.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "蚊香眼.exp3", "kind": "expr", "intensity": "light" },
+    { "file": "黑脸.exp3", "kind": "expr", "intensity": "strong" },
+    { "file": "眼罩.exp3", "kind": "costume", "slot": "eyewear" },
+    { "file": "短发1.exp3", "kind": "costume", "slot": "hair" },
+    { "file": "短发2.exp3", "kind": "costume", "slot": "hair" }
+  ],
+  "excluded": []
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ae903989-f403-4613-90ca-2794589cc168",
+  "status": "current",
+  "command": "deliver",
+  "type": "tree",
+  "input": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/tree-repo.json",
+  "output": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/tree-repo.html",
+  "specification": {
+    "sha256": "7768deaa9a43c5d825ac83f55e75c3d021bdceb0063b9e4eabbe55106997e585",
+    "bytes": 20275
+  },
+  "artifact": {
+    "sha256": "46c1aaa3ca2fc268979e91ad3a93a5dc56994d6ff7cfcbe3ada42ecdc7dc1594",
+    "bytes": 896982
+  }
+}

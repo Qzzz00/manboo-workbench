@@ -1,0 +1,24 @@
+DRAFT — NOT AN EFFECTIVE LICENSE NOTICE.
+
+事务官座机
+Copyright 2026 ____________________ [RIGHTS_HOLDER_LEGAL_NAME]
+
+This product includes software developed by
+____________________ [RIGHTS_HOLDER_LEGAL_NAME]
+for 事务官座机 (____________________ [PUBLIC_PROJECT_URL]).
+事务官座机 is distributed under the 事务官座机 License, which incorporates the
+complete text of the Apache License, Version 2.0 together with additional
+conditions covering hosted or embedded commercial use, branding and
+copyright information displayed by a 事务官座机 user interface, and
+attribution for non-interface use. See the LICENSE file for the full text.
+
+This NOTICE file is provided for attribution purposes only and does not
+modify the 事务官座机 License.
+
+License-document provenance:
+The license and notice drafts adapt the Multica License and NOTICE at
+https://github.com/multica-ai/multica/tree/7a81f73ca2cd29a92e3808503dc11fa8a2ffb0fe
+Original texts: Copyright 2025-2026 Index Labs (Hong Kong) Limited.
+Project identifiers, producer/contact fields, and implementation examples
+have been adapted. This attribution concerns the license documents only;
+it does not state that this product contains Multica software.

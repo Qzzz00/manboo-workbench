@@ -1,0 +1,107 @@
+/*
+ * 统一输入框 —— 手机那一份的样式(2026-09-24)。独占 pc- 前缀。
+ * 与电脑那份(workbench-plugin/src/client/composer/composerStyle.ts)同一套长相:
+ * 深色圆角大底座、左下「+」圆钮、细边胶囊、白底黑字圆形发送键;**不用蓝**(维护者全局去蓝)。
+ */
+/* 首页底部只有它一样,撑满那一条(2026-09-24:通话键收进了右下角,左边不再摆别的)。 */
+.pc { position: relative; flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+/*
+ * 首页那一档的宽度只听外面的,不拿自己那一排键的「最窄宽度」去撑外壳(2026-09-24)。
+ * 外壳 .ba-shell 的列是 auto:360 宽的屏开「大字」时,「+ @ 胶囊 麦克风 通话」按内容最窄要 366px,
+ * 会把整页撑出 6px 横向滚动(改前 origin/main 同一屏:正常字 4px、大字 18px)。收住之后胶囊自己省略成「先问我·V4…」。
+ */
+.pc[data-trim="phone-home"] { contain: inline-size; }
+.pc > .ba-fx > .ba-fx__beam { display: block; border-radius: 22px; }
+
+.pc-box {
+  display: flex; flex-direction: column; gap: 6px; padding: 8px 8px 8px 12px;
+  background: var(--ba-bg-2); border: 1px solid #2f2f2f; border-radius: 22px;
+}
+.pc-box[data-trim="call"], .pc-box[data-trim="onboarding"] { padding: 6px 6px 6px 14px; border-radius: 20px; }
+.pc-row { display: flex; align-items: flex-end; gap: 8px; min-width: 0; }
+
+/* 打字框:底座本身就是框,它只是一行字(一直是真 textarea,长按归系统:粘贴 / 选词)。 */
+.pc-input.ba-composer__input { flex: 1 1 auto; min-width: 0; min-height: 40px; max-height: 140px; padding: 8px 4px; border: 0; background: transparent; border-radius: 0; outline: none; box-shadow: none; }
+/* 焦点不画系统那圈蓝:整个底座的边亮一点就够了(去蓝)。 */
+.pc-box:focus-within { border-color: #4a4a4a; }
+
+.pc-bar { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.pc-spacer { flex: 1 1 auto; }
+.pc-round {
+  flex: 0 0 auto; width: 32px; height: 32px; display: grid; place-items: center; padding: 0;
+  border: 1px solid #3a3a3a; border-radius: 50%; background: transparent; color: var(--ba-fg-2); font-size: var(--ba-fs-body);
+}
+.pc-round--at { font-weight: 600; }
+.pc-pill {
+  flex: 0 1 auto; min-width: 0; height: 32px; display: inline-flex; align-items: center; gap: 2px; padding: 0 8px;
+  border: 1px solid #3a3a3a; border-radius: 999px; background: transparent; color: var(--ba-fg-2); font-size: var(--ba-fs-min);
+}
+/* 一行截断带省略号;上下垫 .2em 再收回,字形比行高高的字体(小米系统字体)不被 overflow 切掉(2026-09-25 夜)。 */
+.pc-pill > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-block: .2em; margin-block: -.2em; }
+.pc-send {
+  flex: 0 0 auto; width: 36px; height: 36px; display: grid; place-items: center; padding: 0;
+  border: 1px solid rgb(0 0 0 / .14); border-radius: 50%; background: #fff; color: #111;
+}
+.pc-send:disabled { opacity: .35; }
+/* 键里的 Tabler 图标(电话、麦克风)与向上箭头一样大。 */
+.pc-send .ba-icon { width: 18px; height: 18px; }
+
+/*
+ * 首页右下角那一对键(2026-09-24,卡 feat/phone-composer-call-slot):麦克风(按住说话)+ 通话 / 发送。
+ * 维护者:「样式大小和发送一样……在发送左边,处理好间距,别太宽显得松,太紧容易误触」。
+ *   - 两颗都是 .pc-send 那一种:36px 白底黑字圆键,不另写尺寸;
+ *   - 间距 10px:圆心相距 46px。每颗键的触控区用 ::before 往外扩到 44×44(36px 圆边框内 34px + 两边各 5px),
+ *     不改版面;46 ≥ 44,所以两块触控区不重叠,中间还空 2px —— 手指落在正中间哪颗都不触发,不会按住说话按成了打电话。
+ *     比左边「+ @ 胶囊」之间的 6px 松一点,看得出是一对、又分得开;再宽就散了。
+ */
+.pc-keys { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+.pc-box[data-trim="phone-home"] .pc-key { position: relative; }
+.pc-box[data-trim="phone-home"] .pc-key::before { content: ""; position: absolute; inset: -5px; border-radius: 50%; touch-action: none; }
+/* 麦克风键:按住要录音,不让系统把手势抢去滚动 / 选字 / 长按菜单(安卓的长按粘贴正是 09-24 之前按不出来的原因)。 */
+.pc-mic { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+/* 按着:底色压一档(静态,不跑动画 —— 减少动效时本来就没东西可停)。 */
+.pc-mic[data-recording="true"] { background: var(--ba-accent-press); }
+/* 语音用不了:和发送键不可点一样淡;但它不是 disabled —— 按下去要说一句为什么。 */
+.pc-mic[data-off="true"] { opacity: .35; }
+
+.pc-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pc-chip {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%; height: 30px; padding: 0 4px 0 10px;
+  border-radius: 10px; background: #262626; color: var(--ba-fg); font-size: var(--ba-fs-min);
+}
+.pc-chip img { width: 22px; height: 22px; border-radius: 5px; object-fit: cover; }
+.pc-chip__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+.pc-chip__state { color: var(--ba-fg-3); font-size: var(--ba-fs-min); }
+.pc-chip[data-state="error"] { background: rgb(234 118 118 / .16); }
+.pc-chip button { width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border: 0; background: transparent; color: var(--ba-fg-3); font-size: 1rem; }
+
+.pc-scrim { position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / .45); }
+.pc-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: 70vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2px; padding: 12px 12px calc(16px + var(--ba-safe-bottom));
+  background: var(--ba-bg-2); border-top: 1px solid #2f2f2f; border-radius: 20px 20px 0 0;
+}
+.pc-sheet__head { margin: 10px 8px 4px; color: var(--ba-fg-3); font-size: var(--ba-fs-min); }
+.pc-sheet__note { margin: 6px 8px; color: var(--ba-fg-3); font-size: var(--ba-fs-sub); }
+.pc-item {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 52px; padding: 10px 12px;
+  border: 0; border-radius: 12px; background: transparent; color: var(--ba-fg); text-align: left;
+}
+.pc-item[aria-pressed="true"] { background: #262626; }
+.pc-item:disabled { opacity: .55; }
+.pc-item[data-ready="false"] .pc-item__title { color: var(--ba-fg-3); }
+.pc-item__title { display: flex; align-items: center; gap: 6px; font-size: var(--ba-fs-body); }
+.pc-item__hint { color: var(--ba-fg-3); font-size: var(--ba-fs-min); }
+.pc-tag { padding: 0 6px; border-radius: 6px; background: #262626; color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.pc-done { margin-top: 8px; height: 44px; border: 1px solid rgb(0 0 0 / .14); border-radius: 12px; background: #fff; color: #111; font-weight: 600; }
+
+/* 等他批的那几行:琥珀是「等你」的语义色,不是装饰。 */
+.pc-approvals { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 6px; }
+.pc-approvals__row { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid rgb(232 168 56 / .5); border-radius: 14px; background: rgb(232 168 56 / .08); }
+.pc-approvals__text { display: flex; flex-direction: column; gap: 2px; }
+.pc-approvals__text strong { font-size: var(--ba-fs-sub); color: var(--ba-fg); }
+.pc-approvals__text span { font-size: var(--ba-fs-min); color: var(--ba-fg-2); }
+.pc-approvals__acts { display: flex; gap: 8px; justify-content: flex-end; }
+.pc-approvals__yes, .pc-approvals__no { height: 40px; padding: 0 16px; border-radius: 999px; font-size: var(--ba-fs-sub); }
+.pc-approvals__yes { border: 1px solid rgb(0 0 0 / .14); background: #fff; color: #111; }
+.pc-approvals__no { border: 1px solid #3a3a3a; background: transparent; color: var(--ba-fg-2); }

@@ -1,0 +1,30 @@
+{
+  "name": "@ben/channel-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "手机与电脑之间的通道层:进 LiveKit 房间的「事务官工人」(VAD → 流式 ASR → deepseek-v4-flash → 火山 TTS → 回房),外加双向文件。",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@livekit/agents": "^1.9.0",
+    "@livekit/agents-plugin-openai": "^1.9.0",
+    "@livekit/agents-plugin-silero": "^1.9.0",
+    "@livekit/rtc-node": "^1.0.0",
+    "openai": "6.49.0",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.0",
+    "@types/ws": "^8.18.1",
+    "livekit-client": "^2.22.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

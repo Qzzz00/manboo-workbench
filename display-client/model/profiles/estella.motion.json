@@ -1,0 +1,18 @@
+{
+  "role": "estella",
+  "kind": "motion",
+  "version": "v3",
+  "items": [
+    {
+      "id": "scene1",
+      "file": "Scene1.motion3.json",
+      "group": "scene1",
+      "loop": false,
+      "kind": "pose",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "场景合成小动作",
+      "keywords": ["场景", "换个背景"]
+    }
+  ]
+}

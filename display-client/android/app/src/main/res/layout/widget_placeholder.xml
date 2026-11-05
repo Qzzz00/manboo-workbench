@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_placeholder_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/widget_bg_rounded"
+    android:clipToOutline="true">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点我打开 Aiboo\n生成桌面画面"
+        android:textColor="#C3C8DA"
+        android:textSize="14sp"
+        android:gravity="center" />
+</LinearLayout>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LLM Live2D</string>
+    <string name="title_activity_main">LLM Live2D</string>
+    <string name="package_name">com.llm.live2d</string>
+    <string name="custom_url_scheme">com.llm.live2d</string>
+    <string name="screensaver_name">Aiboo Live2D 屏保</string>
+    <string name="screensaver_settings_title">Aiboo 屏保设置</string>
+    <string name="wallpaper_name">Aiboo Live2D 动态壁纸</string>
+    <string name="wallpaper_description">角色在桌面与锁屏常驻待机，不需要充电。锁屏要看到角色，请在应用时选「主屏幕和锁定屏幕」。</string>
+</resources>

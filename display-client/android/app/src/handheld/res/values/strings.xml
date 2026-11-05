@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 只覆盖这两个 key，对齐 u3 flavor 的做法。
+         package_name / custom_url_scheme 由 Capacitor 从主 res 取，flavor 层不该覆盖
+         （覆盖会让 bridge 的 scheme 与 applicationId 对不上）。 -->
+    <string name="app_name">Aiboo</string>
+    <string name="title_activity_main">Aiboo</string>
+    <string name="key_service_desc">监听掌机右侧实体键（F10），一键呼出/收起底部角色条。不读取屏幕内容。</string>
+</resources>

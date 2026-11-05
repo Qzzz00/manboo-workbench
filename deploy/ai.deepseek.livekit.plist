@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  本机房间(livekit-server)的 launchd 项(2026-10-21,局域网主路卡 M1)。**模板**:`{{HOME}}` 由安装那一步渲染成本机家目录。
+  与 ai.deepseek.dsh.plist / ai.deepseek.butler.plist 同一个模板:
+
+  - ProgramArguments 只有 `~/.dsh/bin/livekit-start`:端口、配置、二进制在哪全在那个脚本里;
+  - KeepAlive.SuccessfulExit=false:崩了 10 秒后拉起;**没准备好(没装、没配置、系统太旧、口全被占)时脚本以 0 退出,不拉**;
+  - 8791 在补上配置、或局域网地址变了时 `launchctl kickstart -k gui/<uid>/ai.deepseek.livekit`。
+
+  手工安装:
+    sed "s|{{HOME}}|$HOME|g" deploy/ai.deepseek.livekit.plist > ~/Library/LaunchAgents/ai.deepseek.livekit.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.deepseek.livekit.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.deepseek.livekit</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>{{HOME}}/.dsh/bin/livekit-start</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>{{HOME}}/.dsh</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>{{HOME}}/.dsh/logs/livekit.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{HOME}}/.dsh/logs/livekit.stderr.log</string>
+</dict>
+</plist>

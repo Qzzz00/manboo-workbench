@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>用户层自愈 · 真实浏览器验收</title>
+    <script>
+      // 驱动脚本从窗口上读这些:上报队列(真 /user-layer/report 的请求体)与最近一次 /state 的清单。
+      window.__reports = []
+      window.__states = []
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./heal-main.tsx"></script>
+  </body>
+</html>

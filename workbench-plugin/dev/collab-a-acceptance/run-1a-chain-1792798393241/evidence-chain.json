@@ -1,0 +1,122 @@
+[
+  {
+    "at": "2026-10-23T23:33:13.261Z",
+    "name": "caps",
+    "body": "{\"agents\":[{\"family\":\"claude\",\"title\":\"Claude\",\"installed\":true,\"cells\":{\"chat\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"},\"edit\":{\"state\":\"no\",\"note\":\"要让 Claude 直接改你电脑上的文件,还差一步:登录一次\",\"fix\":{\"kind\":\"login_cli\",\"family\":\"claude\",\"label\":\"帮我接上\",\"hint\":\"会打开 Claude 自己的登录页,账号密码在那一页上填,工作台不经手;登好了这一格自己变\",\"desk_only\":true}},\"collect\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"}},\"line\":\"Claude:要让 Claude 直接改你电脑上的文件,还差一步:登录一次\"},{\"family\":\"codex\",\"title\":\"Codex\",\"installed\":true,\"cells\":{\"chat\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"},\"edit\":{\"state\":\"no\",\"note\":\"要让 Codex 直接改你电脑上的文件,还差一步:登录一次\",\"fix\":{\"kind\":\"login_cli\",\"family\":\"codex\",\"label\":\"帮我接上\",\"hint\":\"会打开 ChatGPT 自己的登录页,账号密码在那一页上填,工作台不经手;登好了这一格自己变\",\"desk_only\":true}},\"collect\":{\"state\":\"unknown\",\"note\":\"电脑上的工作台 App 没开着,窗口那只手这会儿用不了\"}},\"line\":\"Codex:要让 Codex 直接改你电脑上的文件,还差一步:登录一次\"},{\"family\":\"kimi\",\"titl"
+  },
+  {
+    "at": "2026-10-23T23:33:13.274Z",
+    "name": "project-picked",
+    "project": {
+      "id": "collab-a-qa",
+      "name": "collab-a-qa",
+      "stage": "待整理",
+      "path": "/Users/example/.cache/collab-a-acceptance/serve-1792798105121/instance/iso/home/Documents/GitHub/collab-a-qa",
+      "signals": {
+        "branch": "main",
+        "dirty_count": 0,
+        "worktrees": 1,
+        "cleanup_count": 0,
+        "idle_days": 0,
+        "last_commit_at": "2026-10-24T07:28:39+08:00",
+        "branches": [
+          "kimi/派给Kimi做QA1a链-e23a",
+          "main"
+        ],
+        "recent_commits": 2
+      },
+      "links": [],
+      "session_count": 0,
+      "idle": false,
+      "risk": {
+        "level": "unknown",
+        "reason": "没有截止日",
+        "window_days": 14
+      }
+    },
+    "all": [
+      [
+        "collab-a-qa",
+        "collab-a-qa"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T23:33:13.284Z",
+    "name": "kimi-card-created",
+    "ok": true,
+    "id": "agent:local:10e259a130",
+    "status": 200,
+    "error": null
+  },
+  {
+    "at": "2026-10-23T23:33:13.292Z",
+    "name": "kimi-card",
+    "card": {
+      "id": "agent:local:10e259a130",
+      "name": "QA 1a 链路 Kimi",
+      "owner": "me",
+      "hand": "kimi",
+      "runtime": {
+        "family": "kimi"
+      },
+      "project": {
+        "repo": "/Users/example/.cache/collab-a-acceptance/serve-1792798105121/instance/iso/home/Documents/GitHub/collab-a-qa"
+      },
+      "instructions": "docs/卡/agents/kimi-coder.md",
+      "budget": {
+        "minutes": 5
+      },
+      "shared": {
+        "to": "none"
+      },
+      "created_at": "2026-10-23T23:33:13.000Z",
+      "updated_at": "2026-10-23T23:33:13.000Z"
+    },
+    "cards": [
+      [
+        "agent:local:67e52bf1cc",
+        "QA 1a 链路 Kimi",
+        "kimi"
+      ],
+      [
+        "agent:local:10e259a130",
+        "QA 1a 链路 Kimi",
+        "kimi"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T23:33:19.406Z",
+    "name": "chain-1-three-notes",
+    "passed": true,
+    "note": "记下了 3 条。",
+    "cards": [
+      [
+        "周四发样片",
+        "todo"
+      ],
+      [
+        "周五交发票",
+        "todo"
+      ],
+      [
+        "下周一约 B 客户",
+        "todo"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T23:33:23.457Z",
+    "name": "chain-2-say-dispatch",
+    "passed": false,
+    "items": [
+      [
+        "记",
+        "done",
+        null,
+        ""
+      ]
+    ]
+  }
+]

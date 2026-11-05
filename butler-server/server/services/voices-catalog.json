@@ -1,0 +1,1422 @@
+{
+  "provider_type": "volcengine",
+  "source": "butler-server/server/services/volcVoiceCatalog.json —— 火山「大模型语音合成(SeedTTS)」公版音色的**候选清单**。2026-09-27 起 `supported` 只表示「值得去试一下」;「这个账号真能用哪些」由 services/voiceAvailability.cjs 逐个试合一句极短文本**实取**,结果落在 BUTLER_HOME/voice-availability.json。",
+  "tagged_at": "2026-09-23",
+  "tagging_method": "性别取自音色 id 里的 _female_ / _male_(火山自己的命名,可靠)。年龄感与风格标签是**按音色名字与火山场景分类的关键词映射**推出来的,没有人逐个听过;名字里判断不出来的一律写「未标」,不编。",
+  "caveat": "这份目录里没有火山文档上的方言音色(粤语、四川话…)—— 这个账号的导出清单里一条都没有,凭空写进来会让她念出一个换不成的名字。",
+  "untagged": "未标",
+  "voices": [
+    {
+      "id": "zh_female_vv_uranus_bigtts",
+      "name": "vivi 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "saturn_zh_female_cancan_tob",
+      "name": "知性灿灿",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "知性",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,知性。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "saturn_zh_female_keainvsheng_tob",
+      "name": "可爱女生",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "saturn_zh_female_tiaopigongzhu_tob",
+      "name": "调皮公主",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "活泼",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、活泼。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "saturn_zh_male_shuanglangshaonian_tob",
+      "name": "爽朗少年",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "少年",
+      "styles": [
+        "活泼",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,少年感、活泼。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "saturn_zh_male_tiancaitongzhuo_tob",
+      "name": "天才同桌",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_xiaohe_uranus_bigtts",
+      "name": "小何",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_m191_uranus_bigtts",
+      "name": "云舟",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_taocheng_uranus_bigtts",
+      "name": "小天",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "en_male_tim_uranus_bigtts",
+      "name": "Tim",
+      "scene": "通用场景",
+      "lang": "英文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "英语",
+      "blurb": "英文男声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "en_female_dacey_uranus_bigtts",
+      "name": "Dacey",
+      "scene": "通用场景",
+      "lang": "英文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "英语",
+      "blurb": "英文女声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "en_female_stokie_uranus_bigtts",
+      "name": "Stokie",
+      "scene": "通用场景",
+      "lang": "英文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "英语",
+      "blurb": "英文女声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_liufei_uranus_bigtts",
+      "name": "刘飞 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_qingxinnvsheng_uranus_bigtts",
+      "name": "清新女声 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "清新"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,清新。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_cancan_uranus_bigtts",
+      "name": "知性灿灿 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "知性",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,知性。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_sajiaoxuemei_uranus_bigtts",
+      "name": "撒娇学妹 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "活泼",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、活泼。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_tianmeixiaoyuan_uranus_bigtts",
+      "name": "甜美小源 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "甜美"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,甜美。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_tianmeitaozi_uranus_bigtts",
+      "name": "甜美桃子 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "甜美"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,甜美。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_shuangkuaisisi_uranus_bigtts",
+      "name": "爽快思思 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_peiqi_uranus_bigtts",
+      "name": "佩奇猪 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "女",
+      "age": "儿童",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,儿童感。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_linjianvhai_uranus_bigtts",
+      "name": "邻家女孩 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "亲切"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、亲切。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_shaonianzixin_uranus_bigtts",
+      "name": "少年梓辛/Brayan 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "少年",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,少年感。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_sunwukong_uranus_bigtts",
+      "name": "猴哥 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_yingyujiaoxue_uranus_bigtts",
+      "name": "Tina老师 2.0",
+      "scene": "教育场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "成熟",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,成熟感。火山「教育场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_kefunvsheng_uranus_bigtts",
+      "name": "暖阳女声 2.0",
+      "scene": "客服场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "亲切",
+        "客服腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,亲切。火山「客服场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_xiaoxue_uranus_bigtts",
+      "name": "儿童绘本 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "女",
+      "age": "儿童",
+      "styles": [
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,儿童感。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_dayi_uranus_bigtts",
+      "name": "大壹 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_mizai_uranus_bigtts",
+      "name": "黑猫侦探社咪仔 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_jitangnv_uranus_bigtts",
+      "name": "鸡汤女 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "亲切"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,亲切。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_meilinvyou_uranus_bigtts",
+      "name": "魅力女友 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "亲切"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、亲切。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_liuchangnv_uranus_bigtts",
+      "name": "流畅女声 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_ruyayichen_uranus_bigtts",
+      "name": "儒雅逸辰 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "知性"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,知性。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_wenroumama_uranus_bigtts",
+      "name": "温柔妈妈 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "成熟",
+      "styles": [
+        "温柔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,成熟感、温柔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_jieshuoxiaoming_uranus_bigtts",
+      "name": "解说小明 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "解说腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,解说腔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_tvbnv_uranus_bigtts",
+      "name": "TVB女声 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "未标",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_yizhipiannan_uranus_bigtts",
+      "name": "译制片男 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "解说腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,解说腔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_qiaopinv_uranus_bigtts",
+      "name": "俏皮女声 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_zhishuaiyingzi_uranus_bigtts",
+      "name": "直率英子 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_linjiananhai_uranus_bigtts",
+      "name": "邻家男孩 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "亲切"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、亲切。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_silang_uranus_bigtts",
+      "name": "四郎 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "沉稳"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,沉稳。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_ruyaqingnian_uranus_bigtts",
+      "name": "儒雅青年 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "知性"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、知性。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_qingcang_uranus_bigtts",
+      "name": "擎苍 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "沉稳"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,沉稳。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_xionger_uranus_bigtts",
+      "name": "熊二 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "儿童",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,儿童感。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_yingtaowanzi_uranus_bigtts",
+      "name": "樱桃丸子 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "儿童",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,儿童感。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_wennuanahu_uranus_bigtts",
+      "name": "温暖阿虎/Alvin 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "温柔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,温柔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_naiqimengwa_uranus_bigtts",
+      "name": "奶气萌娃 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "儿童",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,儿童感、活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_popo_uranus_bigtts",
+      "name": "婆婆 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "成熟",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,成熟感。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_gaolengyujie_uranus_bigtts",
+      "name": "高冷御姐 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "成熟",
+      "styles": [
+        "高冷",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,成熟感、高冷。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_aojiaobazong_uranus_bigtts",
+      "name": "傲娇霸总 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "成熟",
+      "styles": [
+        "高冷",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,成熟感、高冷。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_lanyinmianbao_uranus_bigtts",
+      "name": "懒音绵宝 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_fanjuanqingnian_uranus_bigtts",
+      "name": "反卷青年 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "活泼",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、活泼。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_wenroushunv_uranus_bigtts",
+      "name": "温柔淑女 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "温柔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,温柔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_gufengshaoyu_uranus_bigtts",
+      "name": "古风少御 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "古风",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、古风。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_huolixiaoge_uranus_bigtts",
+      "name": "活力小哥 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "活泼",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、活泼。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_baqiqingshu_uranus_bigtts",
+      "name": "霸气青叔 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "成熟",
+      "styles": [
+        "高冷",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,成熟感、高冷。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_xuanyijieshuo_uranus_bigtts",
+      "name": "悬疑解说 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "解说腔",
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,解说腔。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_mengyatou_uranus_bigtts",
+      "name": "萌丫头/Cutey 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "活泼",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、活泼。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_tiexinnvsheng_uranus_bigtts",
+      "name": "贴心女声/Candy 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "温柔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,温柔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_jitangmei_uranus_bigtts",
+      "name": "鸡汤妹妹/Hope 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "亲切"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、亲切。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_cixingjieshuonan_uranus_bigtts",
+      "name": "磁性解说男声/Morgan 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "磁性",
+        "解说腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,磁性、解说腔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_liangsangmengzai_uranus_bigtts",
+      "name": "亮嗓萌仔 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_kailangjiejie_uranus_bigtts",
+      "name": "开朗姐姐 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_gaolengchenwen_uranus_bigtts",
+      "name": "高冷沉稳 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "沉稳",
+        "高冷"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,沉稳、高冷。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_shenyeboke_uranus_bigtts",
+      "name": "深夜播客 2.0",
+      "scene": "多情感",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "磁性"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,磁性。火山「多情感」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_lubanqihao_uranus_bigtts",
+      "name": "鲁班七号 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_jiaochuannv_uranus_bigtts",
+      "name": "娇喘女声 2.0",
+      "scene": "视频配音",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「视频配音」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_linxiao_uranus_bigtts",
+      "name": "林潇 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_lingling_uranus_bigtts",
+      "name": "玲玲姐姐 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_chunribu_uranus_bigtts",
+      "name": "春日部姐姐 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_tangseng_uranus_bigtts",
+      "name": "唐僧 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_zhuangzhou_uranus_bigtts",
+      "name": "庄周 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_kailangdidi_uranus_bigtts",
+      "name": "开朗弟弟 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "活泼",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、活泼。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_zhubajie_uranus_bigtts",
+      "name": "猪八戒 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声;年龄感与风格光看名字定不下来,没标。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_ganmaodianyin_uranus_bigtts",
+      "name": "感冒电音姐姐 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_chanmeinv_uranus_bigtts",
+      "name": "谄媚女声 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声;年龄感与风格光看名字定不下来,没标。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_nvleishen_uranus_bigtts",
+      "name": "女雷神 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "高冷",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,高冷。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_qinqienv_uranus_bigtts",
+      "name": "亲切女声 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "亲切",
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,亲切。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_kuailexiaodong_uranus_bigtts",
+      "name": "快乐小东 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_kailangxuezhang_uranus_bigtts",
+      "name": "开朗学长 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_youyoujunzi_uranus_bigtts",
+      "name": "悠悠君子 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "知性",
+        "沉稳",
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,知性、沉稳。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_wenjingmaomao_uranus_bigtts",
+      "name": "文静毛毛 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "知性"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,知性。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_zhixingnv_uranus_bigtts",
+      "name": "知性女声 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "知性",
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,知性。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_qingshuangnanda_uranus_bigtts",
+      "name": "清爽男大 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "清新"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、清新。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_yuanboxiaoshu_uranus_bigtts",
+      "name": "渊博小叔 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "成熟",
+      "styles": [
+        "知性"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,成熟感、知性。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_yangguangqingnian_uranus_bigtts",
+      "name": "阳光青年 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "活泼"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、活泼。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_qingchezizi_uranus_bigtts",
+      "name": "清澈梓梓 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "清新"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,清新。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_tianmeiyueyue_uranus_bigtts",
+      "name": "甜美悦悦 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "甜美"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,甜美。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_xinlingjitang_uranus_bigtts",
+      "name": "心灵鸡汤 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "亲切",
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,亲切。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_wenrouxiaoge_uranus_bigtts",
+      "name": "温柔小哥 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "温柔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、温柔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_roumeinvyou_uranus_bigtts",
+      "name": "柔美女友 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "青年",
+      "styles": [
+        "温柔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,青年感、温柔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_dongfanghaoran_uranus_bigtts",
+      "name": "东方浩然 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "沉稳"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,沉稳。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_wenrouxiaoya_uranus_bigtts",
+      "name": "温柔小雅 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "温柔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,温柔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_tiancaitongsheng_uranus_bigtts",
+      "name": "天才童声 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "儿童",
+      "styles": [
+        "未标"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,儿童感。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_wuzetian_uranus_bigtts",
+      "name": "武则天 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "成熟",
+      "styles": [
+        "高冷",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,成熟感、高冷。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_gujie_uranus_bigtts",
+      "name": "顾姐 2.0",
+      "scene": "角色扮演",
+      "lang": "中文",
+      "gender": "女",
+      "age": "成熟",
+      "styles": [
+        "高冷",
+        "角色感"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,成熟感、高冷。火山「角色扮演」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_male_guanggaojieshuo_uranus_bigtts",
+      "name": "广告解说 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "未标",
+      "styles": [
+        "解说腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,解说腔。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_shaoergushi_uranus_bigtts",
+      "name": "少儿故事 2.0",
+      "scene": "有声阅读",
+      "lang": "中文",
+      "gender": "女",
+      "age": "儿童",
+      "styles": [
+        "朗读腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,儿童感。火山「有声阅读」那一档。",
+      "verified": true
+    },
+    {
+      "id": "zh_female_sophie_uranus_bigtts",
+      "name": "魅力苏菲 2.0",
+      "scene": "通用场景",
+      "lang": "中文",
+      "gender": "女",
+      "age": "未标",
+      "styles": [
+        "亲切"
+      ],
+      "accent": "普通话",
+      "blurb": "中文女声,亲切。火山「通用场景」那一档。",
+      "verified": true
+    },
+    {
+      "id": "saturn_zh_male_qingxinmumu_cs_tob",
+      "name": "清新沐沐 2.0",
+      "scene": "客服场景",
+      "lang": "中文",
+      "gender": "男",
+      "age": "青年",
+      "styles": [
+        "清新",
+        "客服腔"
+      ],
+      "accent": "普通话",
+      "blurb": "中文男声,青年感、清新。火山「客服场景」那一档。",
+      "verified": true
+    }
+  ]
+}

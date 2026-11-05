@@ -1,0 +1,29 @@
+{
+  "role": "yumi",
+  "kind": "motion",
+  "version": "v3",
+  "items": [
+    {
+      "id": "wave",
+      "file": "wave.motion3.json",
+      "group": "wave",
+      "loop": false,
+      "kind": "greeting",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "挥手打招呼",
+      "keywords": ["你好", "hi", "嗨", "打招呼"]
+    },
+    {
+      "id": "tear",
+      "file": "tear.motion3.json",
+      "group": "tear",
+      "loop": false,
+      "kind": "emotion_motion",
+      "emotion": "sad",
+      "intensity": "medium",
+      "hint": "抹泪",
+      "keywords": ["哭", "抹泪", "难过", "想哭"]
+    }
+  ]
+}

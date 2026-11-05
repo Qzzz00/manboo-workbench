@@ -1,0 +1,1201 @@
+/* 事务官手机端。类名前缀 ba-。纯黑底、中性灰阶,与 Mac 工作台「黑白微光」同源(workbench-plugin/src/client/surface.ts)。 */
+/*
+ * 可读性规矩(2026-09-16,Ben:「手机端文字不是特别明显」;见 docs/交接-0916-手机可读性.md):
+ * - 字号全部用 rem,html 基准 16px;设置里的「大字」开关把 html 变 18.4px(×1.15),所有文字跟着走。
+ *   档位:--ba-fs-body 16 / --ba-fs-sub 14 / --ba-fs-min 13(只给时间戳一类)/ --ba-fs-title 18。新样式请用这几个变量,不写 px 字号。
+ * - 灰阶:fg-2 在三级底上 ≥ 8:1,fg-3 ≥ 4.5:1(tests/contrast.test.ts 钉住);状态点旁的文字用 fg-2 不用 fg-3。
+ * - 业务色(琥珀 / 蓝 / 红 / 黄 / 强调)作为文字在三级底上 ≥ 4.5:1;按钮上的深字用 --ba-btn-fg。
+ * - 底色与灰阶一律中性(R=G=B,不带蓝;2026-09-16 Ben:「底部还是深蓝色的那种,电脑上的版本已经纯黑了」)。
+ *   取值对齐 surface.ts 的 color-mix 结果:bg ≈ surface-bg、bg-2 ≈ surface-card、bg-3 ≈ surface-raised、fg ≈ ink、fg-2 ≈ muted、fg-3 ≈ faint。
+ */
+:root {
+  --ba-bg: #0f0f0f;
+  --ba-bg-2: #151515;
+  --ba-bg-3: #1c1c1c;
+  --ba-fg: #e8e8e8;
+  --ba-fg-2: #b5b5b5;
+  --ba-fg-3: #9c9c9c;
+  --ba-line: #2a2a2a;
+  /* 强调色(2026-09-24 维护者:「这个蓝色也很奇怪,改成白色底黑字吧,中性一点,这是全局的」):
+     主按钮 = 白底(--ba-accent)+ 黑字(--ba-btn-fg);选中、链接、进度、勾选框也都走它。语义色(琥珀 / 红 / 绿)不动。 */
+  --ba-accent: #ffffff;
+  --ba-accent-press: #d6d6d6;
+  --ba-amber: #e8a838;
+  --ba-danger: #ea7676;
+  --ba-white: #ffffff;
+  /* 名字沿用;2026-09-24 起不再是蓝,是一档浅灰(「等我确认」那颗点改成空心环,见 .ba-dot[data-dot="blue"])。 */
+  --ba-blue: #d4d4d4;
+  --ba-yellow: #e8c04a;
+  --ba-gray: #777777;
+  --ba-btn-fg: #0a0a0a;
+  --ba-bubble-me-time: #4a4a4a;
+  --ba-fs-body: 1rem;
+  --ba-fs-sub: .875rem;
+  --ba-fs-min: .8125rem;
+  --ba-fs-title: 1.125rem;
+  /* 舞台字幕(2026-09-17):事务官那句比正文再大一档,手机一米开外也读得到。 */
+  --ba-fs-caption: 1.25rem;
+  --ba-lh: 1.5;
+  /*
+   * 球下那一排小图标与下面两张卡之间的呼吸距离(2026-10-04,维护者:「那排小按钮离下面的两张卡片太近了」)。
+   * 原来只有 2px —— 那一排自己的 `padding-bottom`,图标下沿几乎贴着卡片上沿,看着是一块东西。
+   * 变量放在这儿(不是 homeRail.css 里一个 px)是因为它量的是**两个区之间**的关系;
+   * 横竖同一个数,不写 @media。它从球那一格身上扣(球是 `flex: 1`),所以别往大调 ——
+   * 改前改后两档屏上球与这一排的量数在 docs/交接-1004-手机首页会议图标.md 第四节。
+   */
+  --ba-gap-rail-cards: 12px;
+  --ba-safe-top: env(safe-area-inset-top, 0px);
+  --ba-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+/* 字号基准;「大字」开关只改这一处(settings/largeText.tsx 往 <html> 写 data-ba-text)。 */
+html { font-size: 16px; accent-color: var(--ba-accent); }
+html[data-ba-text="large"] { font-size: 18.4px; }
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--ba-bg);
+  color: var(--ba-fg);
+  font: 1rem/1.5 -apple-system, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+button, input, textarea { font: inherit; color: inherit; line-height: var(--ba-lh); }
+ul { list-style: none; margin: 0; padding: 0; }
+p { margin: 0; }
+
+.ba-boot { display: grid; place-items: center; height: 100%; color: var(--ba-fg-2); letter-spacing: .3em; font-size: var(--ba-fs-title); }
+
+.ba-btn {
+  border: 1px solid var(--ba-accent); background: var(--ba-accent); color: var(--ba-btn-fg);
+  border-radius: 10px; padding: 12px 18px; font-weight: 600; cursor: pointer; font-size: var(--ba-fs-body);
+}
+.ba-btn:not(:disabled):active { background: var(--ba-accent-press); border-color: var(--ba-accent-press); }
+.ba-btn:focus-visible { outline: 2px solid var(--ba-fg); outline-offset: 2px; }
+.ba-btn:disabled { opacity: .45; cursor: default; }
+.ba-btn--ghost:not(:disabled):active { background: var(--ba-bg-3); border-color: var(--ba-line); }
+.ba-btn--danger:not(:disabled):active { background: var(--ba-danger); border-color: var(--ba-danger); filter: brightness(.9); }
+.ba-btn--ghost { background: transparent; color: var(--ba-fg); border-color: var(--ba-line); }
+.ba-btn--danger { background: var(--ba-danger); border-color: var(--ba-danger); color: var(--ba-btn-fg); }
+/*
+  次要到「这会儿轮不到它」那一档(2026-09-27,卡 RM ①):座机已经在线时的「添加座机」。
+  它还得**看得见、点得动**(真要再添一只时就是它),所以只压字色与边线,不动尺寸。
+*/
+.ba-btn--quiet { color: var(--ba-fg-2); border-color: var(--ba-line-2, var(--ba-line)); font-weight: 400; }
+/* 配对首屏的主按钮:一眼就是它(2026-09-16 扫码为主)。 */
+.ba-btn--big { display: block; width: 100%; padding: 20px 16px; font-size: 1.25rem; border-radius: 14px; }
+.ba-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+.ba-field { display: grid; gap: 6px; margin-top: 16px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-input {
+  background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 10px; padding: 12px 14px; color: var(--ba-fg); width: 100%; font-size: var(--ba-fs-body);
+}
+.ba-input::placeholder, .ba-composer__input::placeholder { color: var(--ba-fg-3); }
+.ba-input--code { font-size: 1.75rem; letter-spacing: .5em; text-align: center; font-variant-numeric: tabular-nums; }
+.ba-error { color: var(--ba-danger); margin-top: 10px; font-size: var(--ba-fs-body); }
+.ba-notice { margin-top: 10px; padding: 10px 12px; background: var(--ba-bg-3); border-radius: 10px; color: var(--ba-amber); font-size: var(--ba-fs-body); }
+/*
+ * z-index 31(2026-10-03,卡 claude/phone-saybox-pinned):原来是 30 —— 和「等你确认」那一页
+ * (asks.css 的 `.ba-asks-page`,`background: #000` 的整屏覆盖层)同一档,而它在 DOM 里排在
+ * 这一条**后面**:同档同序,后画的盖前面的 —— 她在那一页上答完一句,那条提示整条画在那一页后面,
+ * 一个字都看不见。这正是维护者「发送成功最好给个小提示」的半个来由。
+ * 31 压得过那一页,又低于录音浮层(40)与输入框的抽屉(41):打字抽屉开着时它不该浮在前面。
+ */
+.ba-toast { position: fixed; left: 16px; right: 16px; bottom: calc(96px + var(--ba-safe-bottom)); background: var(--ba-bg-3); border: 1px solid var(--ba-line); padding: 12px 14px; border-radius: 12px; z-index: 31; font-size: var(--ba-fs-body); }
+
+/* 配对 */
+.ba-pair { min-height: 100%; padding: calc(28px + var(--ba-safe-top)) 20px calc(24px + var(--ba-safe-bottom)); max-width: 520px; margin: 0 auto; }
+.ba-pair__title { font-size: 1.875rem; margin: 0; letter-spacing: .1em; line-height: 1.3; }
+.ba-pair__sub { color: var(--ba-fg-2); margin-top: 6px; font-size: var(--ba-fs-body); }
+.ba-pair__body { margin-top: 28px; }
+.ba-pair__step { color: var(--ba-fg-2); font-size: var(--ba-fs-body); }
+.ba-pair__hint { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); margin-top: 10px; }
+.ba-pair__found { margin-top: 24px; }
+.ba-pair__found .ba-card { padding: 12px 14px; }
+.ba-pair__alt { display: block; width: 100%; margin-top: 24px; font-weight: 400; color: var(--ba-fg-2); border-color: transparent; }
+
+/*
+ * 登录(2026-09-17,Ben:「手机上也需要有登录」)。类名独用前缀 ba-login-(ba-pair- 是配对那一页,别撞)。
+ * 三屏共用这一层:顶上一行「电脑:…」的灯,底下是欢迎 / 指引 / 配对。纯黑底、字号照可读性规矩。
+ */
+.ba-login { min-height: 100%; display: flex; flex-direction: column; background: var(--ba-bg); }
+.ba-login__lamp {
+  flex: 0 0 auto; align-self: center; margin: calc(8px + var(--ba-safe-top)) 0 0;
+  color: var(--ba-fg-2); font-size: var(--ba-fs-sub); line-height: 1.2;
+  padding: 2px 10px; border-radius: 999px; border: 1px solid var(--ba-line); background: var(--ba-bg-2);
+}
+.ba-login__body { flex: 1 1 auto; display: flex; flex-direction: column; padding: 20px 20px calc(24px + var(--ba-safe-bottom)); max-width: 520px; width: 100%; margin: 0 auto; }
+/* 欢迎屏的球:占屏宽一半上下,和舞台页同一颗(只是还拿不到 Mac 的外观参数)。 */
+/* `position: relative` 和别的球格子同一条理由:粒子球起不来时退回来的 `.ba-orb` 是绝对定位的。 */
+.ba-login__orb { position: relative; flex: 0 1 auto; align-self: center; width: min(52vw, 34vh); height: min(52vw, 34vh); margin: 4vh 0 2vh; }
+.ba-login__orb > * { width: 100%; height: 100%; }
+.ba-login__orb .ba-particles { min-height: 0; }
+/* 欢迎屏顶上的粒子黑洞(2026-09-23 品牌视觉,brand/BlackholeHero.tsx):左右铺满,四边渐隐进底色,不压下面的字。 */
+.ba-login__hero { position: relative; flex: 0 1 auto; align-self: stretch; height: min(34vh, 80vw); margin: 2vh -20px 1vh; pointer-events: none; }
+.ba-brand-hero, .ba-brand-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ba-brand-hero canvas { -webkit-mask-image: radial-gradient(ellipse 60% 90% at 50% 48%, #000 60%, transparent 100%); mask-image: radial-gradient(ellipse 60% 90% at 50% 48%, #000 60%, transparent 100%); }
+/* 串联(brand/brandHandoff.ts):飞行期间新屏上那颗球透明,成形时随 --brand-handoff-orb 淡入。 */
+html[data-brand-handoff] .ba-particles .ba-particles__canvas { opacity: var(--brand-handoff-orb, 1); }
+html[data-brand-handoff] .ba-brand-hero canvas { visibility: hidden; }
+.ba-login__title { font-size: 1.875rem; margin: 0; letter-spacing: .1em; line-height: 1.3; text-align: center; }
+.ba-login__title--sm { font-size: var(--ba-fs-title); letter-spacing: .02em; text-align: left; line-height: 1.45; }
+.ba-login__say { color: var(--ba-fg-2); font-size: var(--ba-fs-body); line-height: var(--ba-lh); margin-top: 14px; }
+/* 问句 + 两颗键贴着屏幕下半:大拇指够得着,球和那句自我介绍留在上面。 */
+.ba-login__ask { color: var(--ba-fg); font-size: var(--ba-fs-title); margin-top: auto; padding-top: 28px; text-align: center; }
+.ba-login__acts { margin-top: 16px; }
+.ba-login__alt { display: block; width: 100%; margin-top: 16px; font-weight: 400; color: var(--ba-fg-2); border-color: transparent; }
+.ba-login__step { color: var(--ba-fg-2); font-size: var(--ba-fs-body); }
+.ba-login__dim { color: var(--ba-fg-3); font-size: var(--ba-fs-sub); line-height: var(--ba-lh); }
+.ba-login__get { margin-top: 20px; display: grid; gap: 10px; justify-items: center; text-align: center; background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 12px; padding: 16px 14px; }
+.ba-login__link { color: var(--ba-accent); font-size: var(--ba-fs-sub); word-break: break-all; }
+/* 二维码自己带白底:纯黑上反色的码扫不出来。 */
+.ba-login__qr { border-radius: 6px; }
+.ba-login__watch { margin-top: auto; padding-top: 24px; display: grid; gap: 10px; }
+.ba-login--pair { display: block; position: relative; }
+.ba-login--pair .ba-login__lamp { position: absolute; top: calc(8px + var(--ba-safe-top)); left: 50%; transform: translateX(-50%); margin: 0; z-index: 2; }
+.ba-login--pair .ba-pair { padding-top: calc(52px + var(--ba-safe-top)); }
+
+.ba-list { display: grid; gap: 8px; margin-top: 12px; }
+.ba-list--dim { opacity: .8; }
+/* 今天的待办里办完的那几件(2026-10-12):压暗,不划掉 —— 手机上只看。 */
+.ba-item--dim { opacity: .55; }
+.ba-card { width: 100%; text-align: left; background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 4px; }
+.ba-card--tap { cursor: pointer; }
+.ba-card__title { font-weight: 600; font-size: var(--ba-fs-body); }
+.ba-card__meta { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+
+/* 扫码 */
+.ba-scan { position: fixed; inset: 0; background: #000; display: grid; grid-template-rows: 1fr auto auto; place-items: center; padding-bottom: calc(24px + var(--ba-safe-bottom)); }
+.ba-scan__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ba-scan__frame { position: relative; width: 62vmin; height: 62vmin; border: 2px solid rgba(255,255,255,.85); border-radius: 16px; box-shadow: 0 0 0 200vmax rgba(0,0,0,.45); }
+.ba-scan__hint { position: relative; color: #fff; padding: 12px; text-align: center; font-size: var(--ba-fs-body); }
+
+/* 壳。2026-09-24 起底下没有标签栏了(卡 fix/phone-nav-back):一整块就是当前那一页,下一级页顶上自带返回头(nav/nav.css)。 */
+/*
+ * 列写死 `minmax(0, 1fr)`(2026-09-25 晚,卡 fix/phone-home-card-fit):以前只写了行,列是隐式的 `auto` ——
+ * 里面任何一段不换行的长字(未接来电那一行的标题)的最小内容宽都会把这一列、也就是整页撑宽,
+ * 于是整页横向溢出、球被挤到右边缘只露半个(统筹小米真机)。首页任何东西都不许横向溢出:列宽只认屏宽。
+ */
+.ba-shell { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); }
+.ba-shell__main { min-height: 0; position: relative; }
+.ba-pane { height: 100%; min-height: 0; min-width: 0; }
+/*
+ * 舞台页那一格(2026-09-22,「横屏展示台没了」):
+ *
+ * · `position: relative` —— 横屏下未接卡绝对定位压在舞台上方,落点就是这儿
+ *   (规则在本文件「未接来电」那一段末尾)。没有它,那张卡会去铺 `.ba-shell__main`,
+ *   看着一样,但事项 / 设置页切过去时它还浮在那儿。
+ * · flex 列 + 舞台 `flex: 1 1 auto` —— 竖屏下未接卡在流里,这样它吃掉的那一截
+ *   是从"剩余空间"里扣的,舞台自己缩一点点,而不是被整体顶出屏幕。
+ *
+ * `:not([hidden])` 不能省:`display: flex` 会压过 `hidden` 的 UA 样式,
+ * 别的标签开着时这一格就藏不住了。
+ */
+.ba-pane--stage { position: relative; }
+.ba-pane--stage:not([hidden]) { display: flex; flex-direction: column; }
+.ba-pane--stage > .ba-scene { flex: 1 1 auto; min-height: 0; }
+
+/*
+ * .ba-chat / .ba-composer 这一段原来是对话页(ChatPage)的。2026-09-17 主界面换成舞台页之后
+ * ChatPage 删掉了,但**引导页还在用这套壳**(`.ba-chat.ba-onboarding`:上半舞台、中间气泡流、底部输入行),
+ * 收件箱也在用 `.ba-chat__offline`,所以这几条留着,只是不再有「对话页」那个页面。
+ */
+.ba-chat { height: 100%; display: grid; grid-template-rows: minmax(calc(34 * var(--ba-vh, 1vh)), calc(42 * var(--ba-vh, 1vh))) 1fr auto; min-height: 0; }
+/*
+ * 引导页(打字那一版)上半的舞台:纯底色。2026-09-24 去掉原来那片底部发亮的静止径向渐变 ——
+ * 它不跟任何声音,维护者看到的「贴图」就是它;光只有一套(通话底边的声音光、输入框的流光)。
+ */
+.ba-chat__stage { position: relative; background: var(--ba-bg); overflow: hidden; padding-top: var(--ba-safe-top); }
+.ba-chat__offline { position: absolute; top: calc(8px + var(--ba-safe-top)); left: 12px; right: 12px; text-align: center; font-size: var(--ba-fs-sub); color: var(--ba-amber); background: rgba(15,15,15,.85); border-radius: 8px; padding: 6px 10px; }
+.ba-chat__voicenote { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); text-align: center; padding: 4px 12px; }
+/* 引导里「正在找你的项目…」那一行(2026-09-24):中性灰字,不用红;文字引导页在输入框上方,通话页在字幕位。 */
+/* 2026-09-24:名字一长不许两头被裁 —— 居中的一行折成最多两行(第二行末尾才省略),宽不超过容器。 */
+.ba-onboarding__scan, .ba-call__scan { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); text-align: center; margin: 0; padding: 4px 12px; font-variant-numeric: tabular-nums; box-sizing: border-box; max-width: 100%; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+/* 引导横幅(2026-09-16):最顶上一条细横幅,轻底色,一行字。 */
+.ba-banner { display: flex; align-items: center; gap: 8px; padding: calc(6px + var(--ba-safe-top)) 12px 6px; background: rgba(255,255,255,.06); border-bottom: 1px solid var(--ba-line); }
+/* 2026-09-17 Ben:「顶部还是蓝色的」——横幅底色去掉蓝,和纯黑主题一个调。 */
+.ba-banner__main { flex: 1; text-align: left; background: none; border: 0; color: var(--ba-fg); font-size: var(--ba-fs-sub); padding: 6px 4px; }
+.ba-banner__later { background: none; border: 0; color: var(--ba-fg-2); font-size: var(--ba-fs-min, .8125rem); padding: 6px 8px; }
+/* 手机端更新那一条:交出去 / 没装上时的一句小字另起一行(2026-10-09)。 */
+.ba-banner--wrap { flex-wrap: wrap; }
+.ba-banner__note { flex-basis: 100%; margin: 0; color: var(--ba-fg-2); font-size: var(--ba-fs-min, .8125rem); }
+.ba-chat__thread { overflow-y: auto; padding: 12px 14px; display: grid; gap: 14px; align-content: start; }
+.ba-chat__empty { color: var(--ba-fg-2); text-align: center; margin-top: 24px; font-size: var(--ba-fs-body); }
+.ba-stage { position: absolute; inset: 0; }
+.ba-stage__canvas { position: absolute; inset: 0; }
+.ba-stage__canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+.ba-stage__note { position: absolute; bottom: 8px; left: 12px; right: 12px; font-size: var(--ba-fs-sub); color: var(--ba-fg-2); text-align: center; }
+
+/* 声纹球 */
+/*
+ * 球是**绝对定位、铺满它那个格子**的 —— 所以放它的那个格子**必须自己是定位元素**
+ * (`position: relative`,再给个尺寸),否则它会去铺最近的那个定位祖先,
+ * 十有八九就是整块屏。2026-09-22 Ben 真机上「来电页那三颗键一颗都按不动」就是这么来的
+ * (`.ba-incoming__orb` / `.ba-handset__orb` 当时都没有定位)。
+ *
+ * `pointer-events: none` 是那件事的兜底:球从头到尾是装饰(里面两层都 `aria-hidden`),
+ * 没有一处要点。哪天又有人把它放进一个没定位的格子,最坏也只是画歪,不会再吃掉按钮。
+ */
+.ba-orb { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.ba-orb__core { width: 96px; height: 96px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #cfcfcf 55%, #3a3a3a 100%); box-shadow: 0 0 40px rgba(255,255,255,.22); animation: ba-breathe 4s ease-in-out infinite; grid-area: 1 / 1; }
+.ba-orb__ring { width: 140px; height: 140px; border-radius: 50%; border: 2px solid rgba(255,255,255,.28); grid-area: 1 / 1; transition: transform .08s linear; }
+.ba-orb[data-mode="working"] .ba-orb__core { animation-duration: 1.8s; }
+.ba-orb[data-mode="attention"] .ba-orb__core { background: radial-gradient(circle at 35% 30%, #ffe2a8, var(--ba-amber) 55%, #7a4f12 100%); box-shadow: 0 0 40px rgba(232,168,56,.4); }
+.ba-orb[data-mode="attention"] .ba-orb__ring { border-color: rgba(232,168,56,.4); }
+.ba-orb[data-mode="listening"] .ba-orb__ring { border-color: rgba(255,255,255,.8); }
+.ba-orb[data-mode="preparing"] .ba-orb__ring { border-color: rgba(255,255,255,.6); border-style: dashed; }
+.ba-orb[data-mode="preparing"] .ba-orb__core { animation-duration: 2.6s; opacity: .85; }
+.ba-orb__note { grid-area: 1 / 1; align-self: end; margin-bottom: 12px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+@keyframes ba-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+/* 气泡 */
+.ba-msg { display: grid; gap: 6px; }
+.ba-bubble { max-width: 86%; padding: 12px 14px; border-radius: 14px; white-space: pre-wrap; word-break: break-word; position: relative; font-size: var(--ba-fs-body); line-height: var(--ba-lh); }
+.ba-bubble--me { justify-self: end; background: var(--ba-accent); color: var(--ba-btn-fg); border-bottom-right-radius: 4px; }
+.ba-bubble--butler { justify-self: start; background: var(--ba-bg-3); border-bottom-left-radius: 4px; }
+.ba-bubble--status { background: transparent; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); padding: 2px 4px; }
+.ba-bubble--error { background: transparent; color: var(--ba-danger); font-size: var(--ba-fs-sub); padding: 2px 4px; }
+/* 时间戳是唯一允许用最小档的地方;不再用 opacity 压对比,直接给能过 4.5:1 的色。 */
+.ba-bubble__time { display: block; font-size: var(--ba-fs-min); color: var(--ba-fg-2); margin-top: 4px; text-align: right; }
+.ba-bubble--me .ba-bubble__time { color: var(--ba-bubble-me-time); }
+.ba-bubble__replay { position: absolute; right: -36px; bottom: 6px; background: none; border: 0; font-size: 1.125rem; cursor: pointer; }
+/* 回执三档(2026-10-12):每一次交代下面一行小字;没送到那一档带「重发」。 */
+.ba-receipt { margin: 2px 4px 0; font-size: var(--ba-fs-min); color: var(--ba-fg-2); display: flex; gap: 10px; align-items: center; }
+.ba-receipt[data-receipt="unsent"] { color: var(--ba-danger); }
+.ba-receipt__act { background: none; border: 1px solid var(--ba-line); border-radius: 999px; padding: 4px 12px; color: var(--ba-fg); font-size: var(--ba-fs-sub); cursor: pointer; }
+
+/* 输入行(引导页那一行);打字框本体舞台底部点开之后也用。 */
+.ba-composer { display: flex; gap: 8px; align-items: flex-end; padding: 8px 10px calc(8px + var(--ba-safe-bottom)); border-top: 1px solid var(--ba-line); background: var(--ba-bg-2); }
+.ba-composer__send { padding: 12px 16px; }
+.ba-composer__input { flex: 1; resize: none; max-height: 140px; background: var(--ba-bg); border: 1px solid var(--ba-line); border-radius: 12px; padding: 12px 14px; color: var(--ba-fg); font-size: var(--ba-fs-body); }
+.ba-mic { flex: 0 0 auto; min-width: 96px; padding: 12px 12px; border-radius: 12px; border: 1px solid var(--ba-line); background: var(--ba-bg-3); color: var(--ba-fg); touch-action: none; user-select: none; -webkit-user-select: none; font-size: var(--ba-fs-body); }
+.ba-mic[data-recording="true"] { background: var(--ba-accent); color: var(--ba-btn-fg); }
+.ba-mic:disabled { opacity: .5; }
+
+/* 录音浮层(Aiboo VoiceRecordOverlay 的类名加了 ba- 前缀) */
+.ba-voice-record-overlay { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.35); z-index: 40; pointer-events: none; }
+.ba-voice-record-panel { display: grid; gap: 10px; place-items: center; }
+.ba-voice-record-bubble { min-width: 160px; min-height: 90px; padding: 14px 18px; border-radius: 18px; background: var(--ba-accent); display: grid; place-items: center; color: var(--ba-btn-fg); }
+.ba-voice-record-bubble.is-cancel { background: var(--ba-danger); }
+.ba-voice-record-bubble.is-transcribing { background: var(--ba-bg-3); color: var(--ba-fg); display: flex; gap: 10px; align-items: center; }
+.ba-voice-record-wave { display: flex; gap: 4px; align-items: center; height: 70px; }
+.ba-voice-record-wave i { display: block; width: 5px; border-radius: 3px; background: var(--ba-btn-fg); transition: height .08s; }
+.ba-voice-record-cancel-icon { font-size: 2rem; color: #fff; }
+.ba-voice-record-timer { color: #fff; font-variant-numeric: tabular-nums; font-size: var(--ba-fs-body); }
+.ba-voice-record-hint { color: rgba(255,255,255,.9); font-size: var(--ba-fs-sub); }
+.ba-voice-record-hint.is-cancel { color: #ffb4b4; }
+.ba-voice-record-spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ba-fg-3); border-top-color: var(--ba-fg); animation: ba-spin .8s linear infinite; }
+.ba-voice-record-dots i { animation: ba-blink 1.2s infinite; font-style: normal; }
+.ba-voice-record-dots i:nth-child(2) { animation-delay: .2s; }
+.ba-voice-record-dots i:nth-child(3) { animation-delay: .4s; }
+@keyframes ba-spin { to { transform: rotate(360deg); } }
+@keyframes ba-blink { 0%, 100% { opacity: .2; } 50% { opacity: 1; } }
+
+/* 引导入口 */
+.ba-onboard { background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 14px; padding: 14px; }
+.ba-onboard__title { font-weight: 600; font-size: var(--ba-fs-title); }
+.ba-onboard__text { color: var(--ba-fg-2); margin-top: 6px; font-size: var(--ba-fs-body); }
+.ba-onboard__note { color: var(--ba-amber); margin-top: 8px; font-size: var(--ba-fs-sub); }
+
+/*
+ * 收件箱。2026-09-24 起它(和资讯、设置)上面压着一条返回头(nav/nav.css),状态栏那一截归返回头让;
+ * 底下没有标签栏了,手势条那一截归这一页自己让。
+ */
+.ba-inbox { height: 100%; overflow-y: auto; padding: 12px 14px calc(20px + var(--ba-safe-bottom)); display: grid; gap: 22px; align-content: start; }
+.ba-inbox__h { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); font-weight: 600; letter-spacing: .08em; margin: 0; }
+.ba-inbox__sub { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); font-weight: 500; margin: 14px 0 0; }
+/* 事项页四个标签(2026-10-01):钉在滚动区顶上,滑多远都在;选中那一个白底黑字(全局「主按钮白底黑字」)。 */
+.ba-inbox__tabs { position: sticky; top: -12px; z-index: 2; margin: -12px -14px 0; padding: 12px 14px 10px; background: var(--ba-bg);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; border-bottom: 1px solid var(--ba-line); }
+.ba-inbox__tab { border: 1px solid var(--ba-line); background: var(--ba-bg-2); color: var(--ba-fg-2); border-radius: 999px;
+  padding: 8px 4px; font-size: var(--ba-fs-sub); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.ba-inbox__tab[aria-selected='true'] { background: var(--ba-fg); color: var(--ba-bg); border-color: var(--ba-fg); }
+.ba-inbox__tabn { font-weight: 400; opacity: .75; }
+.ba-report { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--ba-line); border-radius: 12px; background: var(--ba-bg-2); }
+.ba-report .ba-inbox__sub { margin: 0; color: var(--ba-fg); }
+.ba-report__at { color: var(--ba-fg-2); font-weight: 400; }
+.ba-report__body { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); }
+.ba-inbox__empty { color: var(--ba-fg-2); font-size: var(--ba-fs-body); margin-top: 10px; }
+.ba-item { width: 100%; text-align: left; display: flex; gap: 10px; align-items: flex-start; background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 12px; padding: 12px; }
+.ba-item--tap { cursor: pointer; }
+.ba-item[data-selected="true"] { border-color: var(--ba-accent); }
+.ba-item__body { display: grid; gap: 4px; min-width: 0; }
+/* 设置首屏那八行分组右边的「›」(2026-09-27,卡 SZ2):靠右,灰一点,不抢眼。 */
+.ba-item__chev { margin-left: auto; align-self: center; color: var(--ba-fg-2); font-size: var(--ba-fs-title); line-height: 1; }
+.ba-item__title { font-weight: 500; font-size: var(--ba-fs-body); }
+/* 状态点旁的说明文字:用 fg-2,不用 fg-3(点本身还是 --ba-gray)。 */
+.ba-item__meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-item__time { font-size: var(--ba-fs-min); }
+.ba-item__wait { color: var(--ba-yellow); }
+/* 停在哪(2026-10-12):只给要留意的那几种,同「等什么」那一格用黄,不用红(红只给真失败)。 */
+.ba-item__standing { color: var(--ba-yellow); }
+/* 「需求卡 / 选题卡」那一小格:点开的是指挥台,不是那张只读详情卡(2026-09-23)。 */
+.ba-item__deck { color: var(--ba-accent); }
+.ba-dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 8px; border: 1px solid var(--ba-line); background: var(--ba-gray); }
+.ba-dot[data-dot="white"] { background: var(--ba-white); animation: ba-breathe 2s ease-in-out infinite; }
+.ba-dot[data-dot="yellow"] { background: var(--ba-yellow); }
+.ba-dot[data-dot="blue"] { background: transparent; box-shadow: inset 0 0 0 2px var(--ba-fg); }
+.ba-dot[data-dot="gray"] { background: var(--ba-gray); }
+
+.ba-sheet { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: grid; align-items: end; z-index: 20; }
+/*
+ * max-height 收成 min(80vh, 100%)(2026-10-03,卡 claude/phone-saybox-pinned):平时就是原来那 80vh;
+ * 弹键盘时 keyboard.css 把这一层的下边界收到键盘上沿,那时 100% 比 80vh 小 —— 卡跟着矮下来,
+ * 不会有半张卡顶到屏幕外面去(iOS 上视口根本不缩,只靠 vh 是收不住的)。
+ * --ba-ask-dock-bg:这张卡里那个「我自己说」吸底时的底色(asks.css;底色要实的,不然字透过来)。
+ */
+.ba-sheet__card { background: var(--ba-bg-2); border-radius: 18px 18px 0 0; padding: 18px 16px calc(18px + var(--ba-safe-bottom)); display: grid; gap: 12px; max-height: min(80vh, 100%); overflow-y: auto; --ba-ask-dock-bg: var(--ba-bg-2); }
+.ba-sheet__title { font-weight: 600; font-size: var(--ba-fs-title); display: flex; gap: 8px; align-items: center; }
+.ba-sheet__desc { color: var(--ba-fg-2); white-space: pre-wrap; font-size: var(--ba-fs-body); }
+.ba-sheet__facts { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; margin: 0; font-size: var(--ba-fs-body); }
+.ba-sheet__facts dt { color: var(--ba-fg-2); }
+.ba-sheet__facts dd { margin: 0; }
+.ba-sheet__hint { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+/* 某家会话的最近几轮(2026-09-25,卡 P):深色、无卡片框,一轮一条左边细线。 */
+.ba-sheet__rounds { display: grid; gap: 8px; }
+.ba-sheet__rounds .ba-sheet__hint { margin: 0; }
+.ba-rounds { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ba-rounds li { border-left: 2px solid var(--ba-line, rgba(255,255,255,.14)); padding-left: 10px; display: grid; gap: 2px; }
+.ba-rounds p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--ba-fs-body); }
+.ba-rounds p small { color: var(--ba-fg-2); margin-right: 6px; font-size: var(--ba-fs-sub); }
+
+/* 完整对话(2026-10-01,手机读对话 B):自己一个滚动框,最新在下,往上滑接着读更早的。 */
+.ba-tx { max-height: 58vh; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: 8px; align-content: start; -webkit-overflow-scrolling: touch; }
+.ba-tx__top { display: grid; justify-items: center; min-height: 1px; }
+.ba-tx__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ba-tx__item { display: grid; gap: 4px; min-width: 0; }
+.ba-tx__who { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-tx__item--ask { justify-items: end; }
+.ba-tx__ask-text { margin: 0; padding: 8px 12px; border-radius: 14px 14px 4px 14px; background: rgba(255,255,255,.08); white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--ba-fs-body); max-width: 92%; }
+.ba-tx__item--reply { border-left: 2px solid var(--ba-line, rgba(255,255,255,.14)); padding-left: 10px; }
+.ba-tx__steps-line { background: none; border: 0; padding: 2px 0; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); text-align: left; cursor: pointer; }
+.ba-tx__step-list { margin: 2px 0 0; padding-left: 18px; display: grid; gap: 4px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-tx__step-list li { display: grid; gap: 1px; overflow-wrap: anywhere; }
+.ba-tx__step-detail { opacity: .85; }
+.ba-tx__step-files { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .75; }
+.ba-tx__note { margin: 0; font-size: var(--ba-fs-sub); color: var(--ba-fg-2); }
+.ba-tx__item[data-tone="fail"] .ba-tx__note { color: #f0a35e; }
+
+/* 对话里的附件(2026-10-01,手机读对话 C):一排卡(能横滑)+ 全屏看。 */
+.ba-att { list-style: none; margin: 4px 0 0; padding: 0; display: flex; gap: 8px; overflow-x: auto; max-width: 100%; }
+.ba-att li { flex: 0 0 auto; }
+.ba-att__card { display: grid; gap: 3px; width: 116px; padding: 6px; border-radius: 10px; border: 1px solid var(--ba-line); background: rgba(255,255,255,.04); color: inherit; text-align: left; font: inherit; }
+.ba-att__card[data-off="true"] { opacity: .6; }
+.ba-att__thumb { display: grid; place-items: center; width: 100%; height: 76px; border-radius: 6px; overflow: hidden; background: rgba(255,255,255,.06); }
+.ba-att__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.ba-att__badge { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); }
+.ba-att__name { font-size: var(--ba-fs-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ba-att__meta { font-size: calc(var(--ba-fs-sub) * .92); color: var(--ba-fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ba-viewer { position: fixed; inset: 0; z-index: 60; background: #000; display: grid; grid-template-rows: auto 1fr; padding-top: var(--ba-safe-top, 0px); }
+.ba-viewer__bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; }
+.ba-viewer__name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--ba-fs-body); }
+.ba-viewer__count { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-viewer__body { min-height: 0; overflow: auto; display: grid; padding-bottom: var(--ba-safe-bottom, 0px); }
+.ba-viewer__body[data-kind="loading"], .ba-viewer__body[data-kind="error"] { place-items: center; padding: 16px; }
+.ba-viewer__video, .ba-viewer__audio { width: 100%; max-height: 100%; align-self: center; }
+.ba-viewer__doc { padding: 12px 16px 24px; }
+.ba-viewer__code { margin: 0; padding: 12px; font-size: var(--ba-fs-sub); line-height: 1.5; overflow: auto; white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.ba-viewer__table { overflow: auto; padding: 8px; }
+.ba-viewer__table table { border-collapse: collapse; font-size: var(--ba-fs-sub); }
+.ba-viewer__table th, .ba-viewer__table td { border: 1px solid rgba(255,255,255,.15); padding: 4px 8px; white-space: nowrap; text-align: left; }
+.ba-viewer__html { width: 100%; height: 100%; border: 0; background: #fff; }
+.ba-viewer__pages { display: grid; grid-template-rows: 1fr auto; min-height: 0; }
+.ba-viewer__pager { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 8px; color: var(--ba-fg-2); }
+.ba-viewer__card { display: grid; gap: 8px; justify-items: center; align-content: center; padding: 16px; text-align: center; }
+.ba-viewer__card img { max-width: 70%; max-height: 50vh; border-radius: 8px; }
+.ba-zoom { overflow: hidden; touch-action: none; display: grid; place-items: center; min-height: 0; height: 100%; user-select: none; }
+.ba-zoom img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center; will-change: transform; }
+
+/* Markdown(src/ui/Markdown.tsx):段落、代码、表格能横滑,长串不撑破屏。 */
+.ba-md { display: grid; gap: 8px; font-size: var(--ba-fs-body); overflow-wrap: anywhere; min-width: 0; }
+.ba-md > * { margin: 0; }
+.ba-md__p { margin: 0; line-height: 1.55; }
+.ba-md__h { margin: 4px 0 0; font-size: calc(var(--ba-fs-body) * 1.08); }
+.ba-md code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; background: rgba(255,255,255,.08); padding: 0 4px; border-radius: 4px; }
+.ba-md__pre { margin: 0; padding: 10px; border-radius: 8px; background: rgba(0,0,0,.35); overflow-x: auto; max-width: 100%; }
+.ba-md__pre code { background: none; padding: 0; white-space: pre; display: block; }
+.ba-md__list { margin: 0; padding-left: 20px; display: grid; gap: 3px; }
+.ba-md__quote { margin: 0; padding-left: 10px; border-left: 3px solid rgba(255,255,255,.2); color: var(--ba-fg-2); }
+.ba-md__table { overflow-x: auto; max-width: 100%; }
+.ba-md__table table { border-collapse: collapse; font-size: var(--ba-fs-sub); }
+.ba-md__table th, .ba-md__table td { border: 1px solid rgba(255,255,255,.15); padding: 4px 8px; text-align: left; white-space: nowrap; }
+.ba-md a { color: inherit; text-decoration: underline; }
+.ba-md hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); }
+.ba-rounds__did { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+/* 事项详情里「现在到哪」那一段(2026-09-25 卡 N):进度那一句用正文色,依据与几点看的用次要色;对不上用琥珀。 */
+.ba-sheet__progress { display: grid; gap: 4px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--ba-line); }
+.ba-sheet__progress .ba-sheet__desc { color: var(--ba-fg); margin: 0; }
+.ba-sheet__progress .ba-sheet__desc[data-state="none"] { color: var(--ba-fg-2); }
+.ba-sheet__progress .ba-sheet__desc[data-state="mismatch"] { color: var(--ba-amber); }
+.ba-sheet__progress .ba-sheet__hint { margin: 0; }
+/*
+ * 会话卡下面那个输入框(2026-09-27,卡 PS):最近几轮之下、隔一条细线 —— 上面是那条对话,下面是他要说的话。
+ * 框本身是统一输入框的「只有文字与发送」那一档(composer.css 画),这里只管它在卡里的位置。
+ */
+.ba-sheet__say2 { display: grid; gap: 6px; margin-top: 2px; padding-top: 10px; border-top: 1px solid var(--ba-line); }
+.ba-sheet__say2 .ba-sheet__hint { margin: 0; }
+.ba-sheet__say2 .ba-sheet__hint[data-ok="false"] { color: var(--ba-amber); }
+/*
+ * 「回了打电话给我」那个勾选(2026-10-04,卡 claude/relay-call-optin):框上面一行,字小一点 ——
+ * 它是这一句的开关,不是这张卡的主角;勾选框本身照 .ba-switch 那一份(22px,手指点得到)。
+ */
+.ba-say__callback { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); gap: 8px; }
+
+/* 「已送到 · 10:38」(2026-10-03):亮一点、短一行,就在框上面。不用颜色当信号(这一套只做深色、不用蓝)。 */
+.ba-sheet__sent { margin: 0; font-size: var(--ba-fs-sub); font-weight: 600; color: var(--ba-fg); }
+
+/*
+ * ── 会话详情那张卡 = 一个对话页(2026-10-03,卡 claude/phone-saybox-pinned)──
+ *
+ * 维护者 10-03 上午从手机捎来:「给 Agent 发信息的输入框没有默认置顶,用起来得自己下滑,很难受。」
+ * 原来整张卡是一个 80vh 的滚动区,输入框排在最底下:对话有多长,她就得往下滑多远才摸到那个框。
+ *
+ * 现在一列三格(items/InboxPage.tsx 的 SessionDetail):
+ *   .ba-sheet__head  抬头 —— 哪一家、哪条对话、现在怎样。**不让**(flex-shrink: 0),封顶 34vh、自己滚:
+ *                    让它跟着让的话,地方一紧就是它身上最后那一行(「这不是 Agent」)先被吃掉 ——
+ *                    flex 按「基准高 × shrink」摊,抬头基准小、也照样分到一截(真机上量过);
+ *   .ba-sheet__flow  对话 —— **只有这一格滚**,地方不够也由它一个人让。里面那一格
+ *                    (.ba-sheet__rounds / .ba-tx)拿到的是一个定高的格子,所以「滚到底跟着新消息、
+ *                    滚到顶接着读更早的」那一套照旧成立;
+ *   .ba-sheet__dock  输入框 —— flex-shrink: 0,**地方再少也压不掉它**:一眼可见。
+ *
+ * 吸底不置顶:单手打字时拇指就在屏幕下沿,与首页那条、通话页那个打字框同一个位置。
+ * 屏高写成 var(--ba-vh, 1vh)(keyboardCss 那条规矩):弹键盘时它钉在没弹键盘那一档,
+ * 真正把卡收矮的是 min(..., 100%) —— 那时外面那一层的下边界已经收到键盘上沿(viewport/keyboard.css)。
+ */
+.ba-sheet__card--chat { display: flex; flex-direction: column; max-height: min(calc(var(--ba-vh, 1vh) * 86), 100%); overflow: hidden; }
+.ba-sheet__head { flex: 0 0 auto; min-height: 0; max-height: calc(var(--ba-vh, 1vh) * 34); overflow-y: auto; overscroll-behavior: contain; display: grid; gap: 12px; align-content: start; }
+.ba-sheet__bar { display: flex; gap: 10px; align-items: center; }
+.ba-sheet__bar > .ba-sheet__title { flex: 1 1 auto; min-width: 0; }
+/* 「关闭」从卡底挪到抬头那一行(同上):它原来正好压在输入框底下,伸手打字容易点到。 */
+.ba-sheet__close { flex: 0 0 auto; padding: 8px 14px; }
+.ba-sheet__flow { flex: 1 1 auto; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
+.ba-sheet__flow > .ba-sheet__rounds { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.ba-sheet__dock { flex: 0 0 auto; display: grid; gap: 8px; }
+/*
+ * 横屏(折叠屏展开、平板):屏高只有 ~375,34vh 的抬头就把对话挤没了
+ * (统筹在 812×375 上量:对话只剩 14px)。横屏抬头收到 20vh —— 抬头那一行照旧在,
+ * 剩下的归对话;输入框那一格一个像素都不动(它是 flex-shrink: 0)。
+ */
+@media (orientation: landscape) {
+  .ba-sheet__head { max-height: calc(var(--ba-vh, 1vh) * 20); }
+}
+.ba-sheet__say { display: flex; gap: 8px; margin-top: 6px; }
+.ba-sheet__acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.ba-sheet__confirm { display: grid; gap: 8px; margin-top: 6px; padding: 10px; border-radius: 10px; border: 1px solid var(--ba-line); }
+.ba-sheet__confirm .ba-sheet__desc { margin: 0; color: var(--ba-fg); }
+.ba-sheet__say input { flex: 1 1 auto; min-width: 0; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--ba-line); background: transparent; color: var(--ba-fg); font: inherit; font-size: var(--ba-fs-body); }
+
+/* 资讯与播客(2026-09-21)。与收件箱同一套间距与圆角,不另起一套视觉语言。 */
+.ba-news { height: 100%; overflow-y: auto; padding: 12px 14px calc(20px + var(--ba-safe-bottom)); display: grid; gap: 20px; align-content: start; }
+.ba-news__group { display: grid; gap: 8px; }
+.ba-news__h { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); font-weight: 600; letter-spacing: .08em; margin: 0; }
+.ba-news__empty { color: var(--ba-fg-2); font-size: var(--ba-fs-body); }
+.ba-news__err { color: var(--ba-amber); font-size: var(--ba-fs-sub); }
+.ba-news__note { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-news__item { background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 12px; padding: 12px; display: grid; gap: 8px;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease; transform-origin: center top; }
+.ba-news__item[data-followed="true"] { border-color: var(--ba-accent); }
+/* 「正在讲的就是这一条」(2026-10-13):放大一点 + 边框亮。**只用白与灰**,不另派主题色。
+   放大幅度压在 1.03:再大一点在 412 宽的屏上会把左右两边顶出容器。 */
+.ba-news__item[data-speaking="true"] { transform: scale(1.03); border-color: var(--ba-accent); background: var(--ba-bg-3); }
+@media (prefers-reduced-motion: reduce) {
+  .ba-news__item { transition: none; }
+  .ba-news__item[data-speaking="true"] { transform: none; }
+}
+.ba-news__open { width: 100%; text-align: left; display: grid; gap: 4px; background: none; border: 0; padding: 0; color: inherit; }
+.ba-news__title { font-weight: 500; font-size: var(--ba-fs-body); }
+.ba-news__meta { color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+/* 「为什么跟我有关」是这一页真正的主角:比来源显眼,比标题轻。 */
+.ba-news__why { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-news__acts { display: flex; gap: 8px; }
+.ba-news__act { border: 1px solid var(--ba-line); border-radius: 999px; padding: 6px 14px; background: none; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-news__act[data-on="true"] { border-color: var(--ba-accent); color: var(--ba-accent); }
+.ba-news__run { justify-self: start; }
+.ba-news__script { white-space: pre-wrap; font-size: var(--ba-fs-body); line-height: 1.7; }
+
+.ba-podcast { display: flex; gap: 12px; align-items: center; background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 14px; padding: 12px; position: sticky; top: 0; z-index: 2; }
+.ba-podcast--textonly { justify-content: space-between; }
+.ba-podcast__play { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--ba-line); background: none; color: var(--ba-fg); font-size: var(--ba-fs-body); }
+.ba-podcast__body { flex: 1 1 auto; min-width: 0; display: grid; gap: 4px; }
+.ba-podcast__title { font-size: var(--ba-fs-body); font-weight: 500; }
+.ba-podcast__err { color: var(--ba-amber); font-size: var(--ba-fs-min); }
+.ba-podcast__seek { width: 100%; }
+.ba-podcast__time { color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-podcast__script { flex: 0 0 auto; border: 1px solid var(--ba-line); border-radius: 999px; padding: 6px 12px; background: none; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+
+/* ——— 播放器那一块(2026-10-13,卡「播客页重做」:「不像是一个播客的页面」)———
+   从一条横栏改成一块:主题一行、大播放键 + 进度一行、已播/总长 · 讲到第几条 + 文字稿一行。 */
+.ba-podcast--player { display: grid; gap: 10px; align-items: stretch; padding: 14px; border-radius: 16px; }
+.ba-podcast__head { display: grid; gap: 2px; }
+.ba-podcast__sub { color: var(--ba-fg-2); font-size: var(--ba-fs-min); letter-spacing: .06em; }
+.ba-podcast--player .ba-podcast__row { gap: 12px; align-items: center; }
+.ba-podcast--player .ba-podcast__play { width: 52px; height: 52px; font-size: var(--ba-fs-sub); }
+.ba-podcast--player .ba-podcast__seek { flex: 1 1 auto; min-width: 0; }
+.ba-podcast__foot { display: flex; gap: 10px; align-items: center; }
+.ba-podcast__where { color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-podcast__foot .ba-podcast__script { margin-left: auto; }
+
+/* ——— 就这一条深聊那一层(2026-10-13)——— */
+.ba-dig__card { display: grid; gap: 12px; max-height: 88vh; overflow-y: auto; text-align: left; }
+.ba-dig__head { display: grid; gap: 4px; border-bottom: 1px solid var(--ba-line); padding-bottom: 10px; }
+.ba-dig__title { font-size: var(--ba-fs-body); font-weight: 600; }
+.ba-dig__meta, .ba-dig__why { color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-dig__link { justify-self: start; border: 1px solid var(--ba-line); border-radius: 999px; padding: 4px 12px; background: none; color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-dig__turns { display: grid; gap: 8px; max-height: 34vh; overflow-y: auto; }
+.ba-dig__hint { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-dig__turn { font-size: var(--ba-fs-sub); line-height: 1.6; border: 1px solid var(--ba-line); border-radius: 10px; padding: 8px 10px; }
+.ba-dig__turn[data-who="her"] { background: var(--ba-bg-3); justify-self: end; max-width: 86%; }
+.ba-dig__turn[data-who="butler"] { color: var(--ba-fg); max-width: 92%; }
+.ba-dig__spoken { color: var(--ba-fg-3); font-size: var(--ba-fs-min); margin-right: 6px; }
+.ba-dig__ask { display: flex; gap: 8px; }
+.ba-dig__input { flex: 1 1 auto; min-width: 0; background: var(--ba-bg-3); border: 1px solid var(--ba-line); border-radius: 10px; padding: 10px; color: var(--ba-fg); font-size: var(--ba-fs-sub); }
+.ba-dig__send { flex: 0 0 auto; border: 1px solid var(--ba-line); border-radius: 10px; padding: 0 16px; background: none; color: var(--ba-fg); font-size: var(--ba-fs-sub); }
+.ba-dig__voice { display: flex; gap: 8px; align-items: center; }
+.ba-dig__mic { flex: 1 1 auto; }
+.ba-dig__act { border: 1px solid var(--ba-line); border-radius: 999px; padding: 8px 14px; background: none; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-dig__act:disabled { color: var(--ba-fg-3); border-color: var(--ba-line); }
+.ba-dig__off { color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-dig__end { display: grid; gap: 8px; border-top: 1px solid var(--ba-line); padding-top: 10px; }
+.ba-dig__h { color: var(--ba-fg-2); font-size: var(--ba-fs-min); letter-spacing: .08em; }
+.ba-dig__conclusion { width: 100%; background: var(--ba-bg-3); border: 1px solid var(--ba-line); border-radius: 10px; padding: 10px; color: var(--ba-fg); font-size: var(--ba-fs-sub); line-height: 1.6; resize: vertical; }
+.ba-dig__acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.ba-dig__done { color: var(--ba-fg); font-size: var(--ba-fs-sub); }
+.ba-dig__err { color: var(--ba-amber); font-size: var(--ba-fs-sub); }
+.ba-dig__close { justify-self: stretch; }
+
+/* AIDJ 双主播播客的播放条(2026-09-22)。竖排:控制行 + 当前这句 + 话题卡片。
+   单人口播那条仍然是横排一行(.ba-podcast 的默认),两者只在这里分叉。 */
+.ba-podcast--aidj { display: block; }
+.ba-podcast__row { display: flex; gap: 12px; align-items: center; }
+.ba-podcast__skip { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--ba-line); background: none; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-podcast__line { margin-top: 10px; font-size: var(--ba-fs-sub); line-height: 1.5; }
+.ba-podcast__speaker { color: var(--ba-accent, var(--ba-fg)); margin-right: 6px; font-weight: 500; }
+.ba-podcast__text { color: var(--ba-fg); }
+.ba-podcast__topic { display: block; width: 100%; margin-top: 10px; text-align: left; border: 1px solid var(--ba-line); border-radius: 10px; padding: 8px 10px; background: none; color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-podcast__src { display: block; margin-top: 2px; color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+.ba-podcast__note { margin-top: 8px; color: var(--ba-fg-2); font-size: var(--ba-fs-min); }
+
+/* 资讯偏好那一节里的输入框与下拉(设置页) */
+.ba-settings__label { display: block; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); margin-bottom: 4px; }
+.ba-settings__input { width: 100%; box-sizing: border-box; background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 10px; padding: 10px; color: var(--ba-fg); font-size: var(--ba-fs-body); }
+.ba-settings__select { margin-left: 8px; background: var(--ba-bg-2); border: 1px solid var(--ba-line); border-radius: 10px; padding: 6px 10px; color: var(--ba-fg); font-size: var(--ba-fs-body); }
+
+/*
+ * 展示台(横屏,2026-09-22 接回来)。
+ *
+ * `position: fixed; inset: 0` 是 09-21 之前那一版的写法,原样留着 —— 展示台就该整屏、
+ * 不留边。**现在它挂在舞台那一格里**(`.ba-pane--stage`,不再是整个壳早退),
+ * 于是两件事要点明:
+ *
+ * 1. **别的标签开着时它不许还在**。靠的是那一格上的 `hidden`(UA 的 `display: none`)——
+ *    `display: none` 对 `position: fixed` 的孩子照样有效,不用再加一条。
+ * 2. **`z-index: 0`**:未接来电那条薄横条(`.ba-pane--stage > .ba-missed`)横屏下是
+ *    `z-index: 6` 的绝对定位覆盖层,要压在展示台上面。展示台不写 z-index 的话它是
+ *    `auto`,照 DOM 顺序画 —— 而它排在那张卡**后面**,于是会把卡盖掉。
+ *    写死一个 0 把这件事钉住(0 < 6),别人改动时一眼看得见这里有个顺序。
+ */
+.ba-display { position: fixed; inset: 0; z-index: 0; background: var(--ba-bg); }
+.ba-display__frame { width: 100%; height: 100%; border: 0; display: block; }
+
+/* 设置 */
+.ba-settings { height: 100%; overflow-y: auto; padding: 12px 14px calc(20px + var(--ba-safe-bottom)); display: grid; gap: 22px; align-content: start; }
+.ba-settings__sec { display: grid; gap: 8px; }
+.ba-settings__line { font-size: var(--ba-fs-body); }
+.ba-settings__dim { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+/* 诊断包编号(2026-10-21):她要念给统筹、或者截图发过去,字大、等宽、字间留空。 */
+.ba-settings__code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.75rem; letter-spacing: 0.18em; user-select: all; }
+/* 「Aiboo 令牌」那一格:输入框下面横着摆「已设置 / 保存 / 清掉」(2026-09-22)。 */
+.ba-settings__row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.ba-habits__seg { display: grid; gap: 6px; padding-top: 8px; border-top: 1px solid var(--ba-line); }
+.ba-habits__h { margin: 0; font-size: var(--ba-fs-body); font-weight: 600; }
+.ba-habit { display: grid; gap: 4px; padding: 8px 0; border-top: 1px solid var(--ba-line); }
+.ba-habit[data-habit-status=reverted], .ba-habit[data-habit-status=removed] { opacity: .65; }
+.ba-habit__kind { justify-self: start; padding: 0 8px; border: 1px solid var(--ba-line); border-radius: 999px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-habit__text { font-weight: 600; }
+.ba-habit__why { margin: 0; padding-left: 16px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); line-height: 1.55; }
+.ba-habit__log { display: grid; padding: 2px 0; }
+.ba-switch { display: flex; gap: 12px; align-items: center; font-size: var(--ba-fs-body); }
+.ba-switch input { width: 22px; height: 22px; flex: 0 0 auto; }
+
+/* 错误边界(Aiboo ErrorBoundary,类名加 ba- 前缀) */
+.ba-error-boundary-fallback { min-height: 100%; display: grid; place-items: center; padding: 24px; }
+.ba-error-boundary-card { background: var(--ba-bg-2); border-radius: 16px; padding: 24px; text-align: center; display: grid; gap: 10px; max-width: 420px; }
+.ba-error-boundary-card button { border: 0; border-radius: 10px; padding: 12px 18px; background: var(--ba-accent); color: var(--ba-btn-fg); font-weight: 600; }
+.ba-error-boundary-detail { text-align: left; font-size: var(--ba-fs-sub); color: var(--ba-fg-2); white-space: pre-wrap; }
+
+/* 折叠屏展开 / 平板竖屏:事项列表与对话并排。纯 CSS 断点,不做机型特判。 */
+@media (orientation: portrait) and (min-width: 600px) {
+  .ba-shell__main { display: grid; grid-template-columns: minmax(280px, 38%) minmax(0, 1fr); }
+  .ba-pane--inbox { display: block !important; border-right: 1px solid var(--ba-line); }
+  .ba-pane--stage { grid-column: 2; }
+  .ba-pane--settings { grid-column: 2; }
+  /* 资讯(2026-09-21):与设置同一档 —— 右半边一栏,事项那半永远在左边。 */
+  .ba-pane--news { grid-column: 2; }
+  .ba-pane--avatars { grid-column: 2; }
+  .ba-shell__main[data-page="inbox"] .ba-pane--stage { display: block !important; }
+  .ba-shell__main[data-page="inbox"] .ba-pane--settings { display: none !important; }
+  .ba-shell__main[data-page="inbox"] .ba-pane--news { display: none !important; }
+}
+
+/* 粒子事务官(2026-09-16):与 Mac 同一份核心。canvas 铺满舞台,深色底。 */
+/*
+ * **球不吃点击**(2026-10-03,卡「首页侧边小图标」):它从头到尾是装饰 —— canvas 是 `aria-hidden`,
+ * 旁边只有一个读屏用的隐藏 span 和一句说明,里面没有一样东西是能点的。
+ * 退回来的那颗声纹球(`.ba-orb`)从第一天起就写着 `pointer-events: none`
+ * (tests/orbSlotCss.test.ts 第三条钉的就是它),**粒子球这一支漏了** ——
+ * 于是球哪天又漏出去一点,它底下的东西就点不动,而症状只是「按了没反应」。
+ * 左右滑换形象那一下不受影响:手势挂在外面那一层(`.ba-avportrait__orb`),孩子不接,事件照样落到它身上。
+ */
+.ba-particles { position: relative; width: 100%; height: 100%; min-height: 220px; display: grid; place-items: center; pointer-events: none; }
+.ba-particles__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ba-particles__a11y { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.ba-particles .ba-orb__note { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; }
+
+/* 引导页(2026-09-16):专用对话页,上半粒子球 + 八段小点,下半对话流。字号只用 --ba-fs-* 变量(可读性那张卡的规矩),这里带回退值以便先于它合并。 */
+.ba-onboarding__close { position: absolute; top: calc(10px + var(--ba-safe-top)); left: 12px; background: rgba(15,15,15,.55); border: 1px solid var(--ba-line); color: var(--ba-fg-2); border-radius: 999px; padding: 6px 12px; font-size: var(--ba-fs-min, .8125rem); }
+.ba-onboarding__dots { position: absolute; bottom: 26px; left: 0; right: 0; margin: 0; padding: 0; list-style: none; display: flex; justify-content: center; gap: 8px; }
+.ba-onboarding__dots li { width: 8px; height: 8px; border-radius: 50%; background: var(--ba-line); }
+.ba-onboarding__dots li[data-state="done"] { background: var(--ba-fg-2); }
+.ba-onboarding__dots li[data-state="current"] { background: var(--ba-accent); box-shadow: 0 0 0 3px rgba(255,255,255,.2); }
+.ba-onboarding__stage { position: absolute; bottom: 6px; left: 0; right: 0; margin: 0; text-align: center; font-size: var(--ba-fs-min, .8125rem); color: var(--ba-fg-2); }
+.ba-onboard--done { border-color: var(--ba-accent); }
+.ba-onboard__recap { white-space: pre-wrap; font: inherit; font-size: var(--ba-fs-sub, .875rem); color: var(--ba-fg-2); background: var(--ba-bg); border-radius: 8px; padding: 10px 12px; margin: 8px 0; max-height: 40vh; overflow: auto; }
+.ba-msg--assistant .ba-bubble--butler { max-width: 92%; }
+.ba-bubble[data-pending="true"] { opacity: .7; }
+/* 事务官在想(2026-09-16 开场体验):三点动画的气泡,顶替「事务官来了 / 在想」那些系统句。 */
+.ba-bubble--typing { display: inline-flex; gap: 6px; align-items: center; min-height: 20px; padding: 14px 16px; }
+.ba-bubble--typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--ba-fg-2); animation: ba-blink 1.2s infinite; }
+.ba-bubble--typing i:nth-child(2) { animation-delay: .2s; }
+.ba-bubble--typing i:nth-child(3) { animation-delay: .4s; }
+.ba-onboard--slow { border-color: var(--ba-amber); }
+/*
+ * 球的明暗(不加任何新的发光体):
+ *   - 说话准备(preparing):话在嘴边,亮度略收到 .85;
+ *   - 说话时(2026-09-23):中心光团在手机上一律关了(orbState.ts phoneOrbSettings),以前「她在说」的那点亮是
+ *     光团给的,这里只让整颗球在 0.86–1 之间缓缓明暗。
+ * 2026-09-24(卡 fix/onboarding-call-same-as-call):**不因切换重启**。以前说话态才挂动画、一离开就摘 ——
+ * 她一句话里停一下(说 / 不说来回切),动画就从头来,停的那一下亮度从 .86 一跳回 1,像闪一下。
+ * 现在起伏一直挂着(`--ba-orb-wave`,1.4 秒一个来回;不在说时停在原处),说不说话只改它的幅度
+ * `--ba-orb-speak`,收光改 `--ba-orb-prep`,两样都慢慢过渡。注册过的自定义属性才过渡得动
+ * (voice-glow 的淡入也靠 @property,手机 WebView 都认)。
+ */
+@property --ba-orb-speak { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --ba-orb-prep { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --ba-orb-wave { syntax: '<number>'; inherits: false; initial-value: 0; }
+.ba-particles { --ba-orb-speak: 0; --ba-orb-prep: 0; transition: --ba-orb-speak .5s ease, --ba-orb-prep .6s ease; }
+.ba-particles[data-mode="speaking"] { --ba-orb-speak: 1; }
+.ba-particles[data-mode="preparing"] { --ba-orb-prep: 1; }
+.ba-particles .ba-particles__canvas {
+  opacity: calc((1 - .15 * var(--ba-orb-prep)) * (1 - .14 * var(--ba-orb-speak) * var(--ba-orb-wave)));
+  animation: ba-particles-speak 1.4s ease-in-out infinite; animation-play-state: paused;
+}
+.ba-particles[data-mode="speaking"] .ba-particles__canvas { animation-play-state: running; }
+@keyframes ba-particles-speak { 0%, 100% { --ba-orb-wave: 0; } 50% { --ba-orb-wave: 1; } }
+@media (prefers-reduced-motion: reduce) { .ba-particles .ba-particles__canvas { animation: none; } }
+
+/*
+ * 舞台式主界面(2026-09-17,Ben:「底部的对话框那种不太合适……字幕形式,平时不显示对话内容,点一个 icon 之后才会显示」)。
+ * 类名独用前缀 ba-scene-(`.ba-stage` 是 Live2D 那个舞台,别撞)。整屏纯黑,球居中约屏宽 60%,球下字幕,底部工具条。
+ * 字号照可读性规矩:字幕正文不小于对话页正文(--ba-fs-body),事务官那句再大一档(--ba-fs-caption)。
+ */
+.ba-scene { position: relative; height: 100%; display: flex; flex-direction: column; background: var(--ba-bg); overflow: hidden; }
+
+/*
+ * ── 顶上那一格:**固定预留,球那一格的高度不随状态行变**(2026-09-26,卡 QH 第二轮) ──
+ *
+ * 0.3.5 装到小米上实测:首页同时出现「远程」与「免打扰中 · 08:30 后恢复」之后,球那一格只剩 84px
+ * (0.3.4 同一台同一页是 152)。病根不是某一行太高,是**状态行都在跟球抢高度**:
+ *   - 「远程」原来是 `.ba-scene` 的直接子元素,自己又付了一遍 `var(--ba-safe-top)`(顶格已经付过一次),
+ *     小米上这一条连边距吃掉约 70px;
+ *   - 顶格自己的高度又跟着里面摆了几样在变。
+ * 而球那一格是 `flex: 1 1 auto` —— 上面每多一行、每高一点,**全从球身上扣**
+ * (球在 stageCards.css 里有 `max-height: 100%`,格子矮了它就真的跟着变小,不是溢出)。
+ *
+ * 维护者的规矩①「球是主角、够大」与⑦「弹键盘球不缩」说的是同一件事:**任何多出来的行都不许挤球**。所以:
+ *   1. 中间那一格(`.ba-scene__statusbox`)的高度由一份**看不见的垫子**(`.ba-scene__topspace`)定 ——
+ *      垫子里就是两条状态行的真壳子,**按真字体排出来的高**;
+ *   2. 真的状态行(`.ba-scene__status`)**压在同一格里**(grid 叠放,同字幕那一处 capspace/capbody 的做法),
+ *      所以有一行、两行、一行都没有,这一格的高度**一个像素都不变**;
+ *   3. 安全区**只在顶格付一次**(`.ba-scene__conn` 自己那份 margin 去掉了)。
+ * 于是球那一格的高度只跟字幕、卡片、底部那一栏有关,跟状态行彻底无关。
+ *
+ * **为什么不写一个 60px 了事**:这个仓库已经在同一个坑里摔过两次(卡 fix/phone-home-card-fit 的定高卡片、
+ * 字幕那一格)——无头 Chrome 里量得正好,到小米(MIUI 系统字体 + 系统字号放大)上字形比那一格高,
+ * 下沿被切、或者两行挤出去压到球上。垫子是**真字体排的**,系统把字放大它自己跟着长。
+ *
+ * 代价:一条状态行都没有时,这一格也占着两行的高(约 59px,比 0.3.4 的 44 多 15)。
+ * 换来的是「球的大小不再随状态行跳」—— 那才是规矩①与⑦要的。要把这点高度抠回来得先动字幕定高或卡片区,
+ * 是另一件事,别在这里偷。
+ */
+.ba-scene__top {
+  position: relative; flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+  padding: calc(6px + var(--ba-safe-top)) 10px 0;
+}
+.ba-scene__top .ba-scene__icon:last-child { margin-left: auto; }
+/* 中间那一格:两颗 icon 之间剩下的全归它。高度由垫子定,真内容压在同一格里。 */
+.ba-scene__statusbox { flex: 1 1 auto; min-width: 0; display: grid; }
+.ba-scene__topspace, .ba-scene__status {
+  grid-area: 1 / 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+/* 垫子:只出高度,不出样子、不接点击、不读给读屏。 */
+.ba-scene__topspace { visibility: hidden; pointer-events: none; }
+/* 真内容:每一条自己截断,不许把这一格撑宽去挤两颗 icon。 */
+.ba-scene__status > * { max-width: 100%; }
+.ba-scene__icon {
+  flex: 0 0 auto; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--ba-line); background: var(--ba-bg-2); color: var(--ba-fg); font-size: 1.375rem; cursor: pointer;
+}
+.ba-scene__icon--sm { width: 44px; height: 44px; font-size: var(--ba-fs-title); background: transparent; border-color: transparent; color: var(--ba-fg-2); }
+.ba-scene__orb { position: relative; flex: 1 1 auto; min-height: 0; display: grid; place-items: center; }
+/* vh 一律写成 var(--ba-vh, 1vh):平时就是 1vh;弹键盘时 keyboardViewport 把它钉在没弹键盘那一档,球不跟着缩(卡 fix/phone-keyboard-orb-stable)。 */
+.ba-scene__orb > * { width: min(60vw, calc(46 * var(--ba-vh, 1vh))); height: min(60vw, calc(46 * var(--ba-vh, 1vh))); }
+.ba-scene__orb .ba-particles { min-height: 0; }
+
+/*
+ * 字幕:平时空着,有话才出;读完停留几秒淡出(时值在 stage/captionModel.ts)。
+ *
+ * **球是主角,字幕不许挤它**(2026-09-25 夜,卡 fix/phone-home-orb-first;统筹小米真机:一段办完的长回答
+ * 约 32px 大字占了五行、下面还有一颗「停」,球被压成顶上一个约 50px 的小点)。于是:
+ *   - 字幕那一格**定高**:高度是看不见的那一份「他一行 + 她两行」(`.ba-scene__capspace`)按真字体排出来的高,
+ *     不写死像素 —— 系统把字放大、换了字体,这一格跟着长,里面的字不会被裁;
+ *   - 真字幕压在同一格里(grid 叠放),他那句截到一行、她那句截到两行,多了省略号(line-clamp);
+ *   - 她那句字号降一档(--ba-fs-title,原来是 --ba-fs-caption);他那句 --ba-fs-sub。
+ * 球那一格(`.ba-scene__orb`,flex: 1)拿剩下的全部:字幕来了、变长、没了,球一个像素都不动。
+ * 全文在右上角「记录」里;「停」挪到了顶上那一排(`.ba-scene__hush`)。
+ */
+.ba-scene__captions { flex: 0 0 auto; display: grid; padding: 0 20px 10px; text-align: center; transition: opacity .6s ease; }
+.ba-scene__captions[data-phase="leaving"] { opacity: 0; }
+.ba-scene__capspace, .ba-scene__capbody { grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ba-scene__capspace { visibility: hidden; }
+.ba-scene__capline, .ba-scene__caption { display: block; max-width: 34rem; width: 100%; margin: 0; }
+.ba-scene__capline[data-role="me"], .ba-scene__caption[data-role="me"] { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); line-height: 1.5; }
+/* 她那句两行的截断用 `line-height: normal`:行盒按字体自己的上下伸展排,截在第二行底边上不切字(同 stageCards.css 那几处)。 */
+.ba-scene__capline[data-role="butler"], .ba-scene__caption[data-role="butler"] { color: var(--ba-fg); font-size: var(--ba-fs-title); line-height: normal; }
+/* 垫子写「国」字(中文那套字体的高),他那句一行、她那句两行。 */
+.ba-scene__capline[data-role="me"]::before { content: '国'; }
+.ba-scene__capline[data-role="butler"]::before { content: '国\A国'; white-space: pre; }
+/* 他那一句:一行,多了省略号。上下各留 .2em 的内边距再用负外边距收回来:字形比行高还高的字体(统筹说真机系统字体就是)不被 overflow 切掉下沿。 */
+.ba-scene__caption[data-role="me"] { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-block: .2em; margin-block: -.2em; }
+/* 她那一句:两行,多了省略号(line-clamp,不是定高 + 裁切)。 */
+.ba-scene__caption[data-role="butler"] {
+  white-space: normal; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  /*
+   * 字左对齐、整块按内容宽居中(一行时看上去就是居中的一句):居中对齐 + line-clamp 时 Chrome 把行尾的「…」
+   * 算宽了几个像素,第三个点被切掉(实测 412 宽上那句长回答末尾只剩「..」)。左对齐时正好放得下。
+   */
+  width: fit-content; max-width: min(100%, 34rem); text-align: left;
+}
+.ba-scene__caption[data-kind="status"] { color: var(--ba-fg-2); font-size: var(--ba-fs-body); }
+.ba-scene__caption[data-kind="error"] { color: var(--ba-danger); font-size: var(--ba-fs-body); }
+.ba-scene__more { background: none; border: 1px solid var(--ba-line); color: var(--ba-fg-2); border-radius: 999px; padding: 4px 14px; font-size: var(--ba-fs-sub); cursor: pointer; }
+/*
+ * 「停止朗读」(2026-09-25 夜):她在念回答时顶上正中一颗,喇叭图标 + 字。以前字幕下面一颗只写「停」,
+ * 看不懂停什么,还占字幕的地方。
+ *
+ * 2026-09-26(卡 QH 第二轮):它不再是两颗 icon 的 flex 兄弟,而是住在 `.ba-scene__status` 那一叠里
+ * (绝对定位叠在顶格中间)—— 所以这里不再写 `margin: 0 auto`,居中由那一叠负责。
+ * 为什么要搬:状态行只要参与布局就会跟球抢高度,见上面 `.ba-scene__top` 那一大段。
+ */
+/*
+ * 垫子那个壳子(`.ba-scene__hushspace`)**写在同一条选择器上**:它的高度就是这颗键的高度,
+ * 两边永远一致 —— 同球下字幕那一处 `capline` / `caption` 的先例。padding / 字号 / 行高改哪一个,两边一起动。
+ */
+.ba-scene__hush, .ba-scene__hushspace {
+  flex: 0 0 auto; margin: 0; display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 999px; border: 1px solid var(--ba-line); background: var(--ba-bg-2);
+  color: var(--ba-fg-2); font-size: var(--ba-fs-sub); line-height: 1.3; cursor: pointer;
+}
+.ba-scene__hush .ba-icon, .ba-scene__hushspace .ba-icon { width: 18px; height: 18px; }
+/*
+ * 免打扰那一版(2026-09-26,卡 QH):同一颗键、同一套视觉,只是字更长(「免打扰中 · 08:30 后恢复」)。
+ * 窄屏(360)上放得下,但**允许它自己缩**(那一叠的 max-width 已经给两颗 icon 留好了位置)。
+ */
+.ba-scene__hush[data-quiet="true"] { min-width: 0; padding: 6px 12px; }
+.ba-scene__hush[data-quiet="true"] span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-scene__voicenote { flex: 0 0 auto; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); text-align: center; padding: 0 16px 4px; }
+
+/*
+ * 连接方式(2026-09-17 通道层):最顶上一条**细**横幅,就两个字。
+ * 直连时压根不画(常态不用说);远程是琥珀(能用,但慢一点);未连接是红。**不弹窗**。
+ *
+ * 2026-09-26(卡 QH 第二轮):它从 `.ba-scene` 的直接子元素搬进了 `.ba-scene__status`(叠在顶格里)。
+ * **`margin` 连带那份 `var(--ba-safe-top)` 一起去掉了** —— 安全区在顶格已经付过一次,
+ * 这一条再付一遍等于小米上白扣掉约 46px,而那 46px 是从球身上扣的(见 `.ba-scene__top` 那一大段)。
+ * 「电脑不在线」这类长一点的话交给 `text-overflow` 截,不许把那一叠撑宽去挤两颗 icon。
+ */
+/* 垫子那个壳子(`.ba-scene__connspace`)同上:写在同一条选择器上,高度永远跟这一条一致。 */
+.ba-scene__conn, .ba-scene__connspace { flex: 0 0 auto; margin: 0;
+  max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: var(--ba-fs-sub); line-height: 1.2; padding: 2px 10px; border-radius: 999px; background: rgba(15,15,15,.85); border: 1px solid var(--ba-line); }
+.ba-scene__conn[data-mode="remote"] { color: var(--ba-amber); }
+.ba-scene__conn[data-mode="offline"] { color: var(--ba-danger); }
+/* 文件收发那一句:点一下消掉,所以它是个按钮,但长得和别的说明文字一样。 */
+.ba-scene__filenote { flex: 0 0 auto; background: none; border: 0; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); text-align: center; padding: 0 16px 4px; cursor: pointer; }
+/* 真正的 <input type="file"> 不露面,点「发文件」时代它挨这一下。 */
+.ba-scene__fileinput { display: none; }
+
+/*
+ * 底部那一条(通话中那三颗键也用它,见 .ba-call__dock)。
+ * 不通话时里面只有一个撑满的输入框(2026-09-24 维护者:左边那颗通话键「上面空了一大截」,收进输入框右下角;
+ * 按住说话是输入框里那颗麦克风键。样式在 composer/composer.css)。
+ * 09-17 到 09-24 上午那颗「长得像输入框的按钮」(.ba-scene__field)与左边的通话键(.ba-scene__call)随之删掉。
+ */
+.ba-scene__dock { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 10px 16px calc(14px + var(--ba-safe-bottom)); }
+/* 通话打不了时那一句(没配 / 掉线),在输入框上面、跟着球走。 */
+.ba-scene__callnote { flex: 0 0 auto; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); text-align: center; padding: 0 16px 4px; }
+/* 电脑不认这台手机 / 房里没有电脑(2026-09-23):一句说明 + 一颗键,跟着球走,不弹窗。 */
+.ba-scene__relink { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 20px 8px; text-align: center; }
+.ba-scene__relinkdetail { margin: 0; max-width: 30rem; color: var(--ba-fg-2); font-size: var(--ba-fs-body); line-height: var(--ba-lh); }
+
+/*
+ * 对话记录:默认不在 DOM 里;点右上角 icon 才出来,气泡列表是 ChatPage 那份 ThreadList。
+ * 2026-09-24 起它是首页的**下一级页**(卡 fix/phone-nav-back):整屏,顶上返回头「‹ 对话记录」,
+ * 下面一行入口、再下面记录本身。`position: fixed` 是为了连舞台上方那张未接来电卡一起盖住
+ * (那张卡在舞台那一格里、`.ba-scene` 外面);`.ba-scene` 和它的祖先都没有 transform,fixed 认的就是整屏。
+ * 以前是从底下升起来的一块(max-height 74%、圆角、遮罩),点遮罩或下滑收起 —— 那两样随之去掉。
+ */
+.ba-scene__scrim { position: absolute; inset: 0; background: rgba(0,0,0,.55); z-index: 24; }
+.ba-scene__log {
+  position: fixed; inset: 0; z-index: 25;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr);
+  background: var(--ba-bg);
+  padding-bottom: var(--ba-safe-bottom); animation: ba-scene-rise .24s ease-out;
+}
+@keyframes ba-scene-rise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* ——— 设备间传文件(2026-09-21):选设备那一层 + 传输记录 ——— */
+.ba-scene__picker {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 26;
+  display: grid; gap: 6px; max-height: 70%; overflow-y: auto;
+  background: var(--ba-bg-2); border-top: 1px solid var(--ba-line); border-radius: 18px 18px 0 0;
+  padding: 14px 12px calc(14px + var(--ba-safe-bottom)); animation: ba-scene-rise .24s ease-out;
+}
+.ba-scene__pickerhead { margin: 0 4px 8px; color: var(--ba-fg); font-size: var(--ba-fs-body); }
+/* 一行一台,行高按拇指来:这一层是在路上单手点的。 */
+.ba-scene__pickerone {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 52px; padding: 0 14px; cursor: pointer;
+  background: var(--ba-bg-3); border: 1px solid var(--ba-line); border-radius: 12px;
+  color: var(--ba-fg); font-size: var(--ba-fs-body); text-align: left;
+}
+.ba-scene__pickerkind { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+.ba-scene__records { overflow-y: auto; padding: 4px 14px 12px; }
+.ba-scene__recordhead { margin: 4px 0 10px; color: var(--ba-fg); font-size: var(--ba-fs-sub); }
+.ba-scene__record { margin: 0 0 8px; color: var(--ba-fg); font-size: var(--ba-fs-sub); line-height: var(--ba-lh); }
+.ba-scene__recordnote { margin: 0 0 8px; color: var(--ba-fg-2); font-size: var(--ba-fs-sub); }
+/* 返回头下面那一行入口(事项 / 资讯 / 会议 / 发文件 / 传输记录 / 设置):靠左排,窄屏或大字时折行,不许挤出屏。 */
+.ba-scene__logbar { display: flex; flex-wrap: wrap; gap: 2px 6px; justify-content: flex-start; padding: 6px 8px; border-bottom: 1px solid var(--ba-line); }
+.ba-scene__link { background: none; border: 0; color: var(--ba-fg-2); font-size: var(--ba-fs-body); padding: 6px 8px; cursor: pointer; }
+.ba-scene__logthread { min-height: 0; }
+
+/*
+ * 通话中的那一层(2026-09-17,交接-0917-手机底部键整合)。类名前缀 ba-call——历史上 ben-wb__card /
+ * ben-wb__inbox 撞过名,新样式一律带自己的段前缀。
+ *
+ * 通话**不是另起一屏**:球还是舞台正中那一颗,这一层只占球下面的字幕位和最底下那一条
+ * (Ben:「通话中:底部一共三个键——麦克风、挂断、字幕」)。所以这里没有整屏的底色,也不画球。
+ */
+.ba-call__captions { flex: 0 0 auto; min-height: 6.5rem; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 20px 10px; text-align: center; }
+.ba-call__status { color: var(--ba-fg-2); font-size: var(--ba-fs-sub); margin: 0; }
+/*
+ * 声音在别的机器上那一行(2026-09-28,座机通话页统一):话筒接起的那一通里
+ * **要一臂之外看得清「对着哪一台说」**,所以比状态行亮一档、带一点字距,
+ * 和它原来在 `.ba-handset__banner` 上的样子一致。只有座机形态有这一行。
+ */
+.ba-call__banner { color: var(--ba-amber); font-size: var(--ba-fs-body); letter-spacing: .08em; margin: 0; }
+/* 时长用等宽数字,秒数跳动时前面的分钟不该跟着左右晃。 */
+.ba-call__elapsed { color: var(--ba-fg); font-size: var(--ba-fs-title); font-variant-numeric: tabular-nums; margin: 0; }
+.ba-call__note { color: var(--ba-amber); font-size: var(--ba-fs-sub); text-align: center; margin: 0; }
+.ba-call__subtitles { width: 100%; max-height: calc(32 * var(--ba-vh, 1vh)); overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 8px 4px; }
+.ba-call__subtitle { margin: 0; font-size: var(--ba-fs-sub); line-height: var(--ba-lh); color: var(--ba-fg-2); }
+.ba-call__subtitle--me { color: var(--ba-fg-3); }
+.ba-call__subtitle--butler { color: var(--ba-fg); }
+.ba-call__subtitle--empty { color: var(--ba-fg-3); text-align: center; }
+/* 说到一半的那句(工人推的 final:false):淡一点,看得见「她听见了」,但一眼能认出它还没定。 */
+.ba-call__subtitle[data-interim="true"] { opacity: .55; font-style: italic; }
+/*
+  打字备胎(2026-09-18,引导改通话模式):字幕面板底下一行输入。
+  摆在字幕里而不是底部 —— 底部按 Ben 的口径通话时只有三个键,不加第四样;
+  而字幕与记录本来就是同一个概念,会去打字的正是点开字幕的那个人。
+*/
+.ba-call__type { display: flex; gap: 8px; align-items: flex-end; width: 100%; padding: 6px 2px 2px; }
+.ba-call__typeinput { flex: 1; }
+.ba-call__typesend { flex: 0 0 auto; }
+/* 麦克风关着:说清后果——不是听不见她,是她听不见你。 */
+/* 接通了还没听见她开口时那一句(2026-09-27)。与旁支消息同一种琥珀色:是提示,不是错误。 */
+.ba-call__hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ba-amber, #d08b2c);
+  text-align: center;
+}
+
+.ba-call__micoff { color: var(--ba-amber); font-size: var(--ba-fs-sub); margin: 0; }
+/*
+ * 没有录音权限 / 引导归电脑管(2026-09-18)。两块同一个样子:一句话 + 一颗能走的按钮,
+ * 竖着排在球下面。**不做成弹层**——通话还在继续,盖一层上去会挡住字幕。
+ */
+.ba-call__micblock,
+.ba-call__lead { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 0; }
+.ba-call__micfix,
+.ba-call__leadfix { padding: 8px 18px; border-radius: 999px; font-size: var(--ba-fs-sub); }
+/* 底部三个键:麦克风、挂断、字幕。挂断在正中且最显眼,别让人挂错。 */
+.ba-call__dock { justify-content: center; gap: 20px; }
+.ba-call__key { flex: 0 0 auto; }
+.ba-call__key[aria-pressed="true"] { border-color: var(--ba-fg-2); }
+/* 关掉的麦克风要一眼看出来是关的:红边 + 斜杠 icon,不只是暗一点。 */
+.ba-call__key[data-off="true"] { border-color: var(--ba-danger); color: var(--ba-danger); }
+.ba-call__hangup { padding: 14px 28px; border-radius: 999px; }
+
+/* 图标(Tabler,src/stage/icons.tsx):跟着按钮的 currentColor;尺寸按键的大小定。 */
+.ba-icon { width: 24px; height: 24px; display: block; }
+.ba-scene__icon--sm .ba-icon { width: 21px; height: 21px; }
+.ba-call__hangup .ba-icon { width: 26px; height: 26px; }
+
+/* ————————————————————— 座机来电(2026-09-21) ————————————————————— */
+/*
+  整屏、大字、球在正中。取舍写在 call/IncomingCallPage.tsx 的文件头:
+  这一屏是给**一臂之外**的人看的(手机装在 3D 打印外壳里当座机),
+  所以字要大、键要远、不要一个跳动的数字倒计时。
+*/
+.ba-incoming {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4vh;
+  padding: calc(var(--ba-safe-top) + 6vh) 16px calc(var(--ba-safe-bottom) + 5vh);
+  background: var(--ba-bg); color: var(--ba-fg);
+  text-align: center;
+}
+/* 还剩多久:一条细线从满到空。**不写数字** —— 跳动的秒数会让人慌。 */
+.ba-incoming__bar { position: absolute; top: var(--ba-safe-top); left: 0; right: 0; height: 3px; background: var(--ba-line); }
+.ba-incoming__bar i { display: block; height: 100%; background: var(--ba-amber); transition: width .5s linear; }
+
+.ba-incoming__head { display: flex; flex-direction: column; gap: 10px; }
+/* 「为什么」排在「哪件事」上面:走过去的那几步里他只需要知道要不要现在处理。 */
+.ba-incoming__reason { margin: 0; font-size: 1.5rem; letter-spacing: .12em; color: var(--ba-amber); }
+.ba-incoming__title { margin: 0; font-size: 2rem; line-height: 1.3; font-weight: 600; }
+.ba-incoming__note { margin: 0; font-size: var(--ba-fs-body); color: var(--ba-fg-3); }
+/*
+ * 球那一格。**`position: relative` 不是可选的**:`.ba-orb` 是绝对定位铺满的,
+ * 没有它的话球会铺满整块 `.ba-incoming`(唯一的定位祖先),把下面三颗键整个盖住 ——
+ * 2026-09-22 Ben 真机上「接听、静音、稍后一颗都按不动」正是这一条。
+ * 粒子球(`.ba-particles`)本身不绝对定位,但它起不来时退回的就是 `.ba-orb`,
+ * 所以这一格无论画哪一种都得是定位的。
+ */
+.ba-incoming__orb { position: relative; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; min-height: 0; width: 100%; }
+/*
+ * 粒子球在这一格里占多大。**只给 `.ba-particles` 定尺寸**,不写 `> *`:
+ * 退回来的 `.ba-orb` 是绝对定位的,给它定宽高会把 `inset: 0` 顶掉、球贴到左上角去。
+ * 它自己铺满这一格、把核心居中,本来就是对的。
+ */
+.ba-incoming__orb .ba-particles { width: min(56vw, 34vh); height: min(56vw, 34vh); min-height: 0; }
+.ba-incoming__hint { margin: 0; font-size: var(--ba-fs-body); color: var(--ba-fg-2); }
+.ba-incoming__foot { margin: 0; font-size: var(--ba-fs-min); color: var(--ba-fg-3); }
+
+/* 三颗键左右分得很开:不用看清也按得准。接起在正中且最大。 */
+.ba-incoming__keys { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; max-width: 420px; }
+.ba-incoming__key {
+  flex: 0 0 auto; border-radius: 999px; border: 1px solid var(--ba-line);
+  background: var(--ba-bg-2); color: var(--ba-fg);
+  padding: 16px 20px; font-size: var(--ba-fs-title);
+}
+.ba-incoming__key--answer {
+  flex: 1 1 auto; max-width: 200px;
+  padding: 22px 24px; font-size: 1.5rem; font-weight: 600;
+  background: #2e7d4f; border-color: #2e7d4f; color: var(--ba-white);
+}
+.ba-incoming__key--mute[data-on="true"] { border-color: var(--ba-fg-2); color: var(--ba-fg-3); }
+
+/* ————————————————————— 未接来电 ————————————————————— */
+/*
+ * **顶上那一条要给状态栏让位**(2026-09-22,Ben 真机 0.2.56:「未接来电」标题和手机的
+ * 时钟 / 信号叠在一起)。这一张卡是舞台页里**最靠上**的那一块,而舞台自己的顶栏
+ * (`.ba-scene__top`)本来就有 `var(--ba-safe-top)` —— 它插在前面,那一格就轮到它来留。
+ * 做法与这份文件里别的顶栏逐字相同:`calc(8px + var(--ba-safe-top))`(Capacitor 里
+ * `--ba-safe-top` 就是 `env(safe-area-inset-top)`,见文件开头 `:root`)。
+ */
+/*
+ * **这张卡不许抢舞台的高度**(2026-09-22,Ben 真机 0.2.56/0.2.57:「横屏展示台没了」)。
+ *
+ * 舞台页那一格是 `.ba-pane--stage`(`.ba-pane { height: 100% }`),里面先这张卡、
+ * 后 `.ba-scene`(自己也是 `height: 100%`)。两个 100% 叠在一格里:这张卡吃掉多少,
+ * 舞台就被顶出屏幕多少 —— 横屏总共只有约 393px 高,一张卡就够把底下那条(通话键 +
+ * 输入框)整条顶没。竖屏 873px 高时同样在发生,只是没那么显眼。
+ *
+ * 两向各给一条上限,舞台**永远保有自己的高度**:
+ *   · 竖屏:卡照旧在流里,但**封顶 40vh 且自己滚**;那一格改成 flex 列,舞台拿剩下的全部。
+ *   · 横屏:卡**整个不进文档流**(下面那段媒体查询),舞台拿满 100%。
+ */
+.ba-missed { margin: calc(8px + var(--ba-safe-top)) 12px 0; padding: 12px 14px; border: 1px solid var(--ba-line); border-radius: 12px; background: var(--ba-bg-2); flex: 0 0 auto; max-height: calc(40 * var(--ba-vh, 1vh)); overflow-y: auto; overscroll-behavior: contain; }
+.ba-missed__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+/* `flex: 1 1 auto` 是给横屏那条薄横条用的:标题吃掉中间的空,两颗键并排靠右。竖屏下的观感没变(本来就 space-between)。 */
+.ba-missed__title { margin: 0; font-size: var(--ba-fs-title); color: var(--ba-amber); flex: 1 1 auto; min-width: 0; }
+/* 「展开 / 收起」**只在横屏下画**(组件里它永远在 DOM 里;同 .ba-scene__capstoggle 的做法)。 */
+.ba-missed__bar { display: none; }
+.ba-missed__dismiss { background: none; border: none; color: var(--ba-fg-3); font-size: var(--ba-fs-sub); padding: 4px; }
+.ba-missed__list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ba-missed__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+/*
+ * 标题再长也不许把这一行撑出屏幕(2026-09-25 晚,统筹小米真机:「[派活测试] 让 Kimi 用一句话…」一整句不换行,
+ * 整页变宽,球被挤到右边缘只露半个)。那一句自己截断带省略号:它和它的外层都要能缩到 0(`min-width: 0`)。
+ */
+.ba-missed__what { flex: 1 1 auto; display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.ba-missed__reason { flex: 0 0 auto; font-size: var(--ba-fs-min); color: var(--ba-fg-3); }
+.ba-missed__reason[data-reason="failed"] { color: var(--ba-danger); }
+.ba-missed__name { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-missed__at { flex: 0 0 auto; font-size: var(--ba-fs-min); color: var(--ba-fg-3); }
+.ba-missed__back { flex: 0 0 auto; padding: 6px 14px; border-radius: 999px; font-size: var(--ba-fs-sub); }
+.ba-missed__error { flex-basis: 100%; margin: 4px 0 0; font-size: var(--ba-fs-min); color: var(--ba-danger); }
+/*
+ * 「回话来了」那一行下面留的那句回话(2026-09-27,卡 CB)。占满一行、最多三行,
+ * 再长他自己点进那家的窗口看 —— 未接面板不该被一段长回答撑成一屏。
+ */
+.ba-missed__say {
+  flex-basis: 100%; margin: 4px 0 0; font-size: var(--ba-fs-min); color: var(--ba-fg-2);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+}
+/* 「完成」那几行没有「回拨」时摆在原地的一行小字。占的是那颗键的位置,所以不换行。 */
+.ba-missed__only { flex: 0 0 auto; font-size: var(--ba-fs-min); color: var(--ba-fg-3); }
+/* 折叠那一行上的「明细」,以及展开之后每一通的时刻(2026-09-22)。 */
+.ba-missed__more { flex: 0 0 auto; background: none; border: none; padding: 2px 4px; font-size: var(--ba-fs-min); color: var(--ba-fg-2); text-decoration: underline; }
+.ba-missed__detail { flex-basis: 100%; list-style: none; margin: 4px 0 0; padding: 0 0 0 10px; display: flex; flex-direction: column; gap: 2px; border-left: 1px solid var(--ba-line); }
+.ba-missed__detail li { display: flex; gap: 8px; font-size: var(--ba-fs-min); color: var(--ba-fg-3); }
+.ba-missed__detailsaid { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/*
+ * ── 首页球下面那一行(`data-compact`,2026-09-25 晚,卡 fix/phone-home-card-fit)──
+ *
+ * 统筹小米真机:这张卡在球上面、一件一行地铺开,太占地方。现在它在球下面、卡片上面,
+ * **收成一行**「未接来电 N · 最近:运行失败 [派活测试]…」,点一下才铺开那几行(回拨 / 清空 / 明细照旧,自己滚)。
+ * 已经取消 / 办完的事引起的未接不挂出来(MissedCalls 的 `hideItems`)。
+ */
+.ba-missed[data-compact="true"] { margin: 0 14px 8px; padding: 10px 12px; max-height: calc(34 * var(--ba-vh, 1vh)); }
+.ba-missed[data-compact="true"][data-open="false"] { padding: 0; overflow: hidden; }
+.ba-missed__line {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; margin: 0; padding: 9px 12px;
+  border: 0; border-radius: inherit; background: none; color: var(--ba-fg); font: inherit; font-size: var(--ba-fs-sub); text-align: left; cursor: pointer;
+}
+.ba-missed__line .ba-missed__title { flex: none; font-size: var(--ba-fs-sub); font-weight: 600; }
+.ba-missed__latest { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ba-fg-2); }
+.ba-missed__chev { flex: none; color: var(--ba-fg-3); }
+.ba-missed__fold { flex: none; background: none; border: none; color: var(--ba-fg-3); font-size: var(--ba-fs-sub); padding: 4px; }
+.ba-missed[data-compact="true"] .ba-missed__title { font-size: var(--ba-fs-sub); }
+
+/*
+ * ── 横屏:这张卡压在舞台上方,不进文档流(2026-09-22)──
+ *
+ * 横屏下屏高只有约 393px,展示台(球 + 字幕 + 四块卡片 + 底下那条)一格都让不出来。
+ * 所以这里让未接卡**离开文档流**:绝对定位一条薄横条压在舞台上方,
+ * 默认只有一行「未接来电 N · 清空 · 展开」,按「展开」才铺下来、最多半屏、自己滚。
+ *
+ * 三处是特意这么写的:
+ *
+ * 1. **居中定宽,不是 `left: 0; right: 0`。** 舞台顶上那一排 icon(`.ba-scene__top`)
+ *    左右两端各一颗(⚙ / 💬,`:last-child { margin-left: auto }`),铺满整宽的覆盖层
+ *    会把它们盖住 —— 而覆盖层是画在普通流内容之上的,连点击也一起吃掉。
+ *    这正是 2026-09-22 来电页那三颗键按不动的同一种事故(见 tests/orbSlotCss.test.ts)。
+ * 2. **`z-index: 6`。** 这张卡在 DOM 里排在 `.ba-scene` 前面,而 `.ba-scene` 是定位元素
+ *    (`position: relative`),不给 z-index 的话它会照 DOM 顺序画在这张卡**上面**,
+ *    薄横条就看不见了。数取 6:压得过舞台里的东西,又低于记录面板那一层
+ *    (`.ba-scene__scrim` 24 / `.ba-scene__log` 25 / `.ba-scene__picker` 26)——
+ *    记录面板拉开时,未接条不该浮在它前面。
+ * 3. **展开也只到 50vh**,并且自己滚。铺满整屏的话,他要回舞台就只能先找到「收起」。
+ */
+@media (orientation: landscape) {
+  .ba-pane--stage > .ba-missed {
+    position: absolute; z-index: 6;
+    top: calc(4px + var(--ba-safe-top)); left: 50%; transform: translateX(-50%);
+    width: min(62%, 460px); margin: 0;
+    max-height: 50vh; overflow-y: auto; overscroll-behavior: contain;
+    padding: 6px 12px; border-radius: 999px;
+  }
+  /* 铺下来的时候就不是一颗药丸了,圆角收回普通卡片那一档。 */
+  .ba-pane--stage > .ba-missed[data-open="true"] { border-radius: 12px; padding: 8px 12px 10px; }
+  /* 折叠 = 只留头上那一行。那几行不画,但**一直在 DOM 里**(横竖同一份 DOM)。 */
+  .ba-missed[data-open="false"] .ba-missed__list { display: none; }
+  .ba-missed__title { font-size: var(--ba-fs-sub); }
+  .ba-missed__bar {
+    display: inline-block; flex: 0 0 auto;
+    background: none; border: none; padding: 4px; color: var(--ba-fg-2);
+    font-size: var(--ba-fs-sub); text-decoration: underline; cursor: pointer;
+  }
+}
+
+/* 设置页里那两个时刻框(夜间静默时段)。 */
+.ba-settings__clock { margin: 0 6px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--ba-line); background: var(--ba-bg-3); color: var(--ba-fg); }
+
+/*
+ * 会议页(2026-09-21)。整屏一页,和引导那一屏一样盖住舞台。
+ * 大计时器用等宽数字 —— 秒数跳动时前面的分钟不该跟着左右晃(同 .ba-call__elapsed)。
+ */
+/*
+ * 顶上给状态栏让位、底下给手势条让位(2026-09-23,维护者真机:会议页顶部和状态栏叠在一起)。
+ * 2026-09-24(卡 fix/phone-nav-back):顶上是和事项 / 设置同一条返回头(它自己让状态栏),下面 `__main` 自己滚。
+ */
+.ba-meeting { position: fixed; inset: 0; background: var(--ba-bg); color: var(--ba-fg); display: flex; flex-direction: column; }
+.ba-meeting__main { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 12px 16px calc(16px + var(--ba-safe-bottom)); }
+.ba-meeting__top { display: flex; gap: 10px; align-items: center; }
+.ba-meeting__title { flex: 1; min-width: 0; }
+/* 屏幕能不能关,这一行是全页最要紧的一句:接上前台服务是常色,没接上是琥珀(它是个警告)。 */
+.ba-meeting__bg { margin: 0; text-align: center; font-size: var(--ba-fs-sub); color: var(--ba-fg-3); }
+.ba-meeting__bg[data-via="webview"] { color: var(--ba-amber); }
+.ba-meeting__center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
+.ba-meeting__clock { margin: 0; font-size: 3.2rem; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.ba-meeting__level { width: min(280px, 78vw); height: 10px; border-radius: 999px; background: var(--ba-line); overflow: hidden; }
+.ba-meeting__level i { display: block; height: 100%; background: var(--ba-accent); transition: width .1s linear; }
+.ba-meeting__level[data-paused="true"] i { background: var(--ba-fg-3); }
+.ba-meeting__keys { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.ba-meeting__status { margin: 0; font-size: var(--ba-fs-title); }
+.ba-meeting__hint { margin: 0; font-size: var(--ba-fs-sub); color: var(--ba-fg-2); line-height: var(--ba-lh); max-width: 30rem; }
+.ba-meeting__hint--dim { color: var(--ba-fg-3); }
+.ba-meeting__segs { margin: 0; font-size: var(--ba-fs-sub); color: var(--ba-fg-3); }
+.ba-meeting__warn { margin: 0; font-size: var(--ba-fs-sub); color: var(--ba-amber); line-height: var(--ba-lh); }
+.ba-meeting__note { margin: 0; font-size: var(--ba-fs-sub); color: var(--ba-fg-2); text-align: center; }
+/* 结果那一屏是可滚的长内容,不居中。 */
+.ba-meeting__result { display: flex; flex-direction: column; gap: 12px; }
+.ba-meeting__h { margin: 8px 0 0; font-size: var(--ba-fs-title); }
+/* 纪要原样显示(它是 markdown):等宽 + 换行,不做渲染——渲染一份就得维护一份渲染器。 */
+.ba-meeting__notes { margin: 0; padding: 12px; border: 1px solid var(--ba-line); border-radius: 12px; font-size: var(--ba-fs-sub); line-height: var(--ba-lh); white-space: pre-wrap; word-break: break-word; color: var(--ba-fg-2); }
+.ba-meeting__todos, .ba-meeting__unsure { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.ba-meeting__todos label { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.ba-meeting__what { flex: 1 1 60%; }
+.ba-meeting__who, .ba-meeting__due, .ba-meeting__made { font-size: var(--ba-fs-sub); color: var(--ba-fg-3); }
+.ba-meeting__made { color: var(--ba-accent); }
+.ba-meeting__unsure li { font-size: var(--ba-fs-sub); color: var(--ba-fg-2); line-height: var(--ba-lh); }
+.ba-meeting__plans ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.ba-meeting__plan { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 12px; border: 1px solid var(--ba-line); border-radius: 12px; background: transparent; color: var(--ba-fg); text-align: left; }
+.ba-meeting__plan small { font-size: var(--ba-fs-sub); color: var(--ba-fg-3); }
+.ba-meeting__prep, .ba-meeting__ask { display: flex; flex-direction: column; gap: 10px; }
+.ba-meeting__portrait { margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: var(--ba-fs-sub); }
+.ba-meeting__portrait div { display: flex; gap: 10px; }
+.ba-meeting__portrait dt { flex: 0 0 5.5em; color: var(--ba-fg-3); }
+.ba-meeting__portrait dd { margin: 0; flex: 1; min-width: 0; color: var(--ba-fg); }
+.ba-meeting__portrait small { display: block; color: var(--ba-fg-3); }
+.ba-meeting__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ba-meeting__quote { margin: 0; padding: 8px 12px; border-left: 2px solid var(--ba-line); color: var(--ba-fg); line-height: var(--ba-lh); }
+.ba-meeting__card { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 12px; }
+.ba-meeting__card p { margin: 0; font-size: var(--ba-fs-sub); line-height: var(--ba-lh); color: var(--ba-fg-2); }
+.ba-meeting__card .ba-meeting__q { font-size: var(--ba-fs-body); color: var(--ba-fg); }
+
+/* 一场会的三个页签与会中那条时间线(2026-10-13,卡「会议页不再空着」)。黑底白字灰线,选中的那一个加一道下划线。 */
+.ba-meeting__tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--ba-line); }
+.ba-meeting__tab { flex: 1; padding: 10px 4px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--ba-fg-3); font-size: var(--ba-fs-body); }
+.ba-meeting__tab[aria-selected="true"] { color: var(--ba-fg); border-bottom-color: var(--ba-accent); }
+.ba-meeting__line { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.ba-meeting__line li { display: flex; gap: 10px; font-size: var(--ba-fs-sub); line-height: var(--ba-lh); color: var(--ba-fg-2); }
+.ba-meeting__at { flex: 0 0 4.5em; color: var(--ba-fg-3); font-variant-numeric: tabular-nums; }
+/* 还在连(一打开 / 切回前台 / 失败还没满 10 秒):中性色,不是红的(2026-09-30,维护者「每次都以为坏了」)。 */
+.ba-scene__conn[data-mode="connecting"] { color: var(--ba-fg-2); }
+
+/* 今天的待办两种显示与换版本那层遮罩(2026-10-12 周三演示;黑底白字灰线,遮罩半透明黑、loading 灰白)。 */
+.ba-today { position: relative; min-height: 48px; }
+.ba-today__group + .ba-today__group { margin-top: 8px; }
+.ba-today__head { margin: 8px 0 2px; padding-bottom: 4px; font-size: var(--ba-fs-sub); font-weight: 500; color: var(--ba-fg-2); border-bottom: 1px solid #ffffff2e; }
+.ba-today__veil { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; background: #000000b8; color: #e6e6e6; font-size: var(--ba-fs-sub); opacity: 1; transition: opacity 320ms ease; }
+.ba-today__veil[data-fading="true"] { opacity: 0; }
+.ba-today__spin { width: 20px; height: 20px; border: 2px solid #ffffff33; border-top-color: #e6e6e6; border-radius: 50%; animation: ba-today-spin 0.8s linear infinite; }
+@keyframes ba-today-spin { to { transform: rotate(360deg); } }

@@ -1,0 +1,639 @@
+/* App 内「DJ 电台」全屏模式。复用屏保的播放器/舞台类名(ss-*)，但全部作用域限定在 .dj-mode-root 内，
+   不 import screensaver.css 的全局选择器(* / html,body)，避免污染主 App。 */
+
+/* 纯 chrome 覆盖层：角色由主 App 共享的 Live2DStage 渲染（在本层下方，同一个 WebGL 上下文），
+   背景由共享 Stage 的 backgroundUrl 承载。本层只叠暗角/标题/控件，故必须透明 + 默认不拦截指针，
+   让角色从下层透出；仅控件恢复可点。就绪前整体透明（露出主页角色覆盖切换空档），就绪淡入。 */
+.dj-mode-root {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.dj-mode-root--ready {
+  opacity: 1;
+}
+
+.dj-mode-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.18) 30%,
+    rgba(0, 0, 0, 0.32) 62%,
+    rgba(0, 0, 0, 0.82) 100%
+  );
+}
+
+.dj-mode-title {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  z-index: 3;
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: 4px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.dj-mode-close {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: 16px;
+  z-index: 4;
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(16, 16, 22, 0.7);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 模式选择条（通勤/专注/休息）——固定在顶部居中（取代原标题），不压角色脸。 */
+.dj-mode-modes {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  z-index: 3;
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 64px; /* 右侧留出关闭按钮空间 */
+}
+.dj-mode-chip {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  line-height: 1;
+  padding: 8px 14px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.dj-mode-chip--on {
+  background: rgba(255, 255, 255, 0.92);
+  color: #16161c;
+  border-color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+}
+
+/* —— 通勤播客：话题卡片（唱片机式滚动，当前条居中放大） —— */
+.dj-mode-root--commute .dj-mode-scrim {
+  /* 通勤无角色，背景压暗一点让卡片更清晰。 */
+  background: linear-gradient(180deg, rgba(10, 10, 14, 0.82), rgba(10, 10, 14, 0.92));
+}
+.dj-commute-podcast {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  padding: 56px 0 4px; /* 顶部留出模式条 */
+}
+.dj-commute-podcast--empty {
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  gap: 6px;
+}
+.dj-commute-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+.dj-commute-cards {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scroll-snap-type: y proximity;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40vh 18px; /* 上下大留白，让任意卡片都能滚到正中 */
+  -webkit-overflow-scrolling: touch;
+}
+.dj-commute-card {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(28, 28, 36, 0.7);
+  color: rgba(255, 255, 255, 0.55);
+  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  opacity: 0.5;
+  transform: scale(0.94);
+}
+.dj-commute-card--active {
+  opacity: 1;
+  transform: scale(1);
+  background: rgba(40, 40, 52, 0.92);
+  border-color: rgba(124, 156, 255, 0.6);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+.dj-commute-card-source {
+  font-size: 11px;
+  color: rgba(124, 156, 255, 0.85);
+}
+.dj-commute-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+}
+.dj-commute-card-summary {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.62);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 话题详情浮层（portal 到 body，需盖过 .dj-mode-root 的 z-index:60） */
+.dj-commute-detail {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: max(56px, env(safe-area-inset-top)) 22px 24px;
+  background: rgba(12, 12, 16, 0.97);
+  overflow-y: auto;
+}
+.dj-commute-detail-close {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.dj-commute-detail-source {
+  font-size: 12px;
+  color: rgba(124, 156, 255, 0.9);
+}
+.dj-commute-detail-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+}
+.dj-commute-detail-summary {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: pre-wrap;
+}
+.dj-commute-detail-link {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #7c9cff;
+  color: #0b0b12;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* 通勤最小化播放控制（仅 上一段/播放暂停/下一段） */
+.dj-commute-miniplayer {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: rgba(16, 16, 22, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+.dj-commute-mp-btn {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 20px;
+  line-height: 1;
+  padding: 6px;
+}
+.dj-commute-mp-btn--play {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #16161c;
+  font-size: 22px;
+}
+.dj-mode-feature--commute {
+  padding-bottom: 8px;
+}
+
+/* —— 通勤深挖输入条 —— */
+.dj-dig-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(92vw, 460px);
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: rgba(16, 16, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+.dj-dig-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+.dj-dig-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+.dj-dig-mic,
+.dj-dig-send {
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  padding: 6px 12px;
+}
+.dj-dig-mic--on {
+  background: #d8584f;
+  border-color: #d8584f;
+  color: #fff;
+}
+.dj-dig-send {
+  background: rgba(255, 255, 255, 0.92);
+  color: #16161c;
+  border-color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+}
+.dj-dig-send:disabled {
+  opacity: 0.5;
+}
+
+/* 模式专属面板（专注番茄钟 / 休息哄睡开关），叠在角色与播放器之间。 */
+.dj-mode-feature {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding: 0 16px 14px;
+}
+
+/* —— 专注番茄钟 —— */
+.dj-focus-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: min(86vw, 320px);
+  padding: 18px 22px;
+  border-radius: 20px;
+  background: rgba(16, 16, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+.dj-focus-time {
+  font-size: 56px;
+  font-weight: 200;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+.dj-focus-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.dj-focus-set {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dj-focus-step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(0, 0, 0, 0.32);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+}
+.dj-focus-min {
+  min-width: 64px;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+}
+.dj-focus-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
+.dj-focus-btn--primary {
+  background: rgba(255, 255, 255, 0.92);
+  color: #16161c;
+  border-color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+}
+/* 专注小气泡：收起后只露时间，点击展开。 */
+.dj-focus-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(16, 16, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.dj-focus-bubble-time {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+.dj-focus-bubble-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+}
+.dj-focus-bubble-dot--run {
+  background: #5fd08a;
+  animation: dj-focus-pulse 1.4s ease-in-out infinite;
+}
+@keyframes dj-focus-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.dj-focus-timer--break {
+  text-align: center;
+}
+.dj-focus-break-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+.dj-focus-break-tip {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* —— 休息哄睡开关 —— */
+.dj-rest-lullaby {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(16, 16, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+.dj-rest-lullaby-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+.dj-rest-lullaby-hint {
+  flex: 1;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.dj-switch {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+.dj-switch--on {
+  background: #7c9cff;
+}
+.dj-switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+.dj-switch--on .dj-switch-knob {
+  transform: translateX(20px);
+}
+
+.dj-mode-bottom {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px max(20px, env(safe-area-inset-bottom));
+}
+
+/* ---- 复用屏保播放器样式（从 screensaver.css 拷贝，限定在 dj-mode-root 内）---- */
+.dj-mode-root .ss-player {
+  width: min(92vw, 440px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(16, 16, 22, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 12px 16px;
+}
+.dj-mode-root .ss-player-art {
+  width: 60px;
+  height: 60px;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center top;
+  background-color: rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.dj-mode-root .ss-player-eq {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 16px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.35);
+}
+.dj-mode-root .ss-player-eq span {
+  width: 3px;
+  height: 5px;
+  background: #fff;
+  border-radius: 1px;
+  animation: dj-eq 0.9s ease-in-out infinite;
+}
+.dj-mode-root .ss-player-eq span:nth-child(2) { animation-delay: 0.3s; }
+.dj-mode-root .ss-player-eq span:nth-child(3) { animation-delay: 0.6s; }
+@keyframes dj-eq {
+  0%, 100% { height: 4px; }
+  50% { height: 14px; }
+}
+.dj-mode-root .ss-player-body { flex: 1; min-width: 0; }
+.dj-mode-root .ss-player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dj-mode-root .ss-player-tag { font-size: 13px; letter-spacing: 1.5px; opacity: 0.55; }
+.dj-mode-root .ss-player-title {
+  font-size: 19px;
+  font-weight: 500;
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dj-mode-root .ss-player-artist {
+  font-size: 15px;
+  opacity: 0.65;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dj-mode-root .ss-player-bar {
+  margin-top: 9px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+.dj-mode-root .ss-player-bar-fill {
+  height: 100%;
+  background: #5ad27e;
+  border-radius: 2px;
+  transition: width 1s linear;
+}
+.dj-mode-root .ss-dj-status { flex: 0 0 auto; font-size: 13px; opacity: 0.7; }
+.dj-mode-root .ss-dj-status-connected { color: #5ad27e; opacity: 0.9; }
+.dj-mode-root .ss-dj-status-error,
+.dj-mode-root .ss-dj-status-idle { opacity: 0.45; }
+
+/* ---- 音乐播放器形态（仅 DJ 模式页，传入 controls 时）---- */
+/* 紧凑横排：顶部「封面在左 + 信息在右」，底部全宽控制行，整体矮，不挡模型。 */
+.dj-mode-root .ss-player--controls {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 12px 16px;
+}
+.dj-mode-root .ss-player-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.dj-mode-root .ss-player--controls .ss-player-art {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+}
+.dj-mode-root .ss-player-meta {
+  flex: 1;
+  min-width: 0;
+}
+.dj-mode-root .ss-player--controls .ss-player-bar { margin-top: 0; }
+.dj-mode-root .ss-player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dj-mode-root .ss-pc-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dj-mode-root .ss-pc-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, transform 0.1s;
+}
+.dj-mode-root .ss-pc-btn:active { transform: scale(0.9); }
+.dj-mode-root .ss-pc-play {
+  width: 52px;
+  height: 52px;
+  background: #5ad27e;
+  color: #10131a;
+}
+.dj-mode-root .ss-pc-play:active { background: #4cc06f; }
+.dj-mode-root .ss-pc-like.is-active { color: #ff6b8b; }
+.dj-mode-root .ss-pc-dislike.is-active { color: #ff5a5a; }

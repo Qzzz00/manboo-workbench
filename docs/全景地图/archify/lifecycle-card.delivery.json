@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ee478537-3cc6-4012-bbc4-e20bd084ac9d",
+  "status": "current",
+  "command": "deliver",
+  "type": "lifecycle",
+  "input": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/lifecycle-card.json",
+  "output": "/Users/example/Documents/GitHub/desktop-workbench/.claude/worktrees/codex-panorama-1023/docs/梳理-全景地图-2026-10-21/archify/lifecycle-card.html",
+  "specification": {
+    "sha256": "ff206592a74cead8fecb0e37e3260a2739137cf437443c8797125aaa164d9a97",
+    "bytes": 9953
+  },
+  "artifact": {
+    "sha256": "a6897519bb81d8d9266e7590842381c0bfd394af2205e16c414f7887b195c6b2",
+    "bytes": 831279
+  }
+}

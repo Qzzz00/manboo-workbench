@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  动态壁纸元数据。角色/帧率复用屏保那套设置（ScreensaverPrefs），因此 settingsActivity
+  直接指向屏保设置页，用户在壁纸选择器里点「设置」即可换角色。
+-->
+<wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/wallpaper_description"
+    android:settingsActivity="com.llm.live2d/.ScreensaverSetupActivity"
+    android:thumbnail="@mipmap/ic_launcher" />

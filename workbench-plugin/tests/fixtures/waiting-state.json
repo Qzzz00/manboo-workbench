@@ -1,0 +1,105 @@
+{
+  "_说明": "「等你」那一堆的同一份状态(2026-09-25,卡 M 追加)。电脑这边的用例(tests/waiting-pile.test.tsx)与手机那边的用例(butler-app/tests/waitingPile.test.tsx)喂的都是这一份:各处的数必须都是 waiting.count。waiting 是照 src/waiting.ts 手写的期望值,电脑那边的用例核对 waitingOnHim(这一份) 与它一字不差。额度还差一步(quota_connect)在这一份里,故意:它不进数。2026-10-26(卡「事务官页接管队列」):两张 confirm 卡补了 owner_ask(事务官核过、标了四类拍板请求)——没标的 confirm 不再进「等你」。",
+  "now": "2026-09-25T08:00:00.000Z",
+  "stale": false,
+  "agents": [],
+  "sessions": [],
+  "quota": {},
+  "onboarding": { "stage": "done", "done": true },
+  "tasks": {
+    "tasks": [
+      { "id": "t-q", "title": "这个有点问题,你看三张卡片的左上角的小东西", "status": "doing", "direction": "mine", "source": { "kind": "manual" }, "created_at": "2026-09-25T07:00:00.000Z", "updated_at": "2026-09-25T07:00:00.000Z" },
+      { "id": "t-c1", "title": "黄历接上了", "status": "confirm", "direction": "mine", "source": { "kind": "manual" }, "created_at": "2026-09-25T06:00:00.000Z", "updated_at": "2026-09-25T06:30:00.000Z", "deliverables": [{ "kind": "reply", "ref": "接好了" }], "owner_ask": { "kind": "publish", "proposal": "黄历小组件已接好,装到桌面", "basis": "回执:接好了", "by": "butler", "at": "2026-09-25T06:30:00.000Z" } },
+      { "id": "t-c2", "title": "Kimi 的回答", "status": "confirm", "direction": "mine", "source": { "kind": "manual" }, "created_at": "2026-09-25T06:10:00.000Z", "updated_at": "2026-09-25T06:40:00.000Z", "owner_ask": { "kind": "scope", "proposal": "按她的习惯只记候选", "basis": "真实回答一条", "by": "butler", "at": "2026-09-25T06:40:00.000Z" } }
+    ],
+    "sprints": [],
+    "modules": [],
+    "project_meta": []
+  },
+  "butler_inbox": {
+    "items": [
+      { "id": "confirm:t-c1", "kind": "confirm", "title": "黄历接上了", "note": "1 件交付物", "status": "confirm", "at": "2026-09-25T06:30:00.000Z", "task_id": "t-c1" },
+      { "id": "confirm:t-c2", "kind": "confirm", "title": "Kimi 的回答", "status": "confirm", "at": "2026-09-25T06:40:00.000Z", "task_id": "t-c2" }
+    ]
+  },
+  "questions": [
+    {
+      "id": "q-1",
+      "session_id": "session-q",
+      "task_id": "t-q",
+      "task_title": "这个有点问题,你看三张卡片的左上角的小东西",
+      "at": "2026-09-25T07:50:00.000Z",
+      "questions": [
+        {
+          "id": "confirm_avatar_clip",
+          "header": "派活前对一遍",
+          "question": "行,这事我先不自己动手——派活之前先跟你对一遍。\n\n哪条不对说一下,都对就开工。",
+          "multi": false,
+          "options": [
+            { "label": "都对,开工", "text": "都对,开工", "note": "我按上面的默认理解派 Codex 去修。" },
+            { "label": "有不对的,我来说", "text": "有不对的,我来说" }
+          ]
+        }
+      ]
+    }
+  ],
+  "approvals": [
+    {
+      "id": "a-1", "session_id": "session-q", "task_id": "t-q", "task_title": "这个有点问题,你看三张卡片的左上角的小东西",
+      "tool": "bash", "reason": "escalate sandbox to danger-full-access: 要在仓库里开分支", "at": "2026-09-25T07:51:00.000Z",
+      "say": "要在「desktop-workbench」这个仓库里跑一条命令", "why": "改这个界面要在它的仓库里开分支",
+      "scope": "这一条要能改这台电脑上的任何文件;平时只能改「事务官」文件夹和临时文件。",
+      "kind": { "key": "repo:/Users/example/Documents/GitHub/desktop-workbench", "title": "改「desktop-workbench」这个仓库" }
+    },
+    {
+      "id": "a-2", "session_id": "session-q", "task_id": "t-q", "task_title": "这个有点问题,你看三张卡片的左上角的小东西",
+      "tool": "bash", "reason": "escalate sandbox to danger-full-access: headless Chrome 要写自己的用户目录", "at": "2026-09-25T07:52:00.000Z",
+      "say": "要开一个看不见的浏览器,把页面截下来看", "why": "看不见的浏览器要写自己的用户目录",
+      "scope": "这一条要能改这台电脑上的任何文件;平时只能改「事务官」文件夹和临时文件。",
+      "kind": { "key": "browser", "title": "开看不见的浏览器截图" }
+    }
+  ],
+  "materialize": {
+    "id": "plan-1", "status": "pending", "line": "都摆好了,两个项目、十件事,行吗?", "source": "rules",
+    "counts": { "projects": 2, "tasks": 10, "cancel": 0 }, "groups": [], "rows": [], "created_at": "2026-09-25T07:00:00.000Z"
+  },
+  "dev_tool": {
+    "pending": [
+      { "id": "d-1", "request": "开发一个小工具,它要做的是:每天早上把昨天的消耗汇总成一行", "restate": "每天早上把昨天的消耗汇总成一行", "module_id": "m-usage-line", "created_at": "2026-09-25T07:10:00.000Z" }
+    ]
+  },
+  "layout_ask": {
+    "pending": [
+      { "id": "l-1", "request": "把窗口槽放大一点", "restate": "窗口槽放大", "orientation": "landscape", "actions": [], "created_at": "2026-09-25T07:20:00.000Z" }
+    ]
+  },
+  "evolve": {
+    "pending": [
+      {
+        "id": "evolve:先问我", "ask": "这 3 次你都在说「**派活前先问我**」—— 要不要把它固化下来?", "sample": "派活前先问我", "times": 3,
+        "says": ["派活前先问我", "先问我再派", "派之前问一下我"], "suggested_way": "skill",
+        "plans": { "skill": "写成一份技能文档", "tool": "做成一个小组件", "template": "做成一个布局模板" },
+        "created_at": "2026-09-25T07:30:00.000Z"
+      }
+    ]
+  },
+  "quota_connect": {
+    "providers": [{ "agent": "kimi", "label": "Kimi", "state": "login" }],
+    "one_click": false,
+    "line": "Kimi 要你自己登一次"
+  },
+  "waiting": {
+    "count": 9,
+    "items": [
+      { "key": "question:q-1", "kind": "question", "verb": "答", "text": "「这个有点问题,你看三张卡片的左上…」问你:派活前对一遍", "task_id": "t-q" },
+      { "key": "approval:a-1", "kind": "approval", "verb": "批", "text": "「这个有点问题,你看三张卡片的左上…」要你批:要在「desktop-workbench」这个仓库里跑一…", "task_id": "t-q" },
+      { "key": "approval:a-2", "kind": "approval", "verb": "批", "text": "「这个有点问题,你看三张卡片的左上…」要你批:要开一个看不见的浏览器,把页面截下来看", "task_id": "t-q" },
+      { "key": "laid:plan-1", "kind": "plan", "verb": "批", "text": "「我照你说的摆好了」等你点头" },
+      { "key": "dev:d-1", "kind": "proposal", "verb": "批", "text": "要做个小工具:每天早上把昨天的消耗汇总成一行" },
+      { "key": "layout:l-1", "kind": "proposal", "verb": "批", "text": "要改布局:窗口槽放大" },
+      { "key": "evolve:evolve:先问我", "kind": "proposal", "verb": "批", "text": "这 3 次你都在说「派活前先问我」—— 要不要把它固化下来?" },
+      { "key": "confirm:t-c1", "kind": "confirm", "verb": "验收", "text": "「黄历接上了」办完了,等你确认", "task_id": "t-c1" },
+      { "key": "confirm:t-c2", "kind": "confirm", "verb": "验收", "text": "「Kimi 的回答」办完了,等你确认", "task_id": "t-c2" }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "huashu-report",
+  "repo": "https://github.com/alchaincyf/huashu-report",
+  "commit": "eda161cf693f2f2016b09abc1385b8e3df5fb9ad",
+  "license": "MIT",
+  "kept": [
+    "LICENSE",
+    "SKILL.md",
+    "assets/base.css",
+    "assets/chart.py",
+    "assets/render.py",
+    "references/about-author.md",
+    "references/图表模式库.md",
+    "references/实证基线.md",
+    "references/生产流水线.md",
+    "references/研究深度.md",
+    "references/科普.md",
+    "references/结构骨架.md",
+    "references/行文.md",
+    "references/视觉方向库.md",
+    "references/视觉系统.md",
+    "references/论文.md"
+  ],
+  "dropped": [
+    {
+      "path": "README.md",
+      "why": "仓库介绍,执行 Agent 不读"
+    },
+    {
+      "path": ".gitignore",
+      "why": "上游仓库配置"
+    },
+    {
+      "path": "corpus/",
+      "why": "41 份样本报告的清单与解剖数据,是规范的出处,干活时不读;含第三方报告摘录,不随产品分发"
+    }
+  ],
+  "patches": [],
+  "reviewed": [
+    {
+      "file": "assets/chart.py",
+      "network": "none",
+      "writes": "none（纯函数返回 SVG 字符串，不落盘）",
+      "subprocess": "none",
+      "env": "none",
+      "note": "只做 SVG 字符串拼接；_esc 仅转义 &<>，属性值里的引号未转义，传入不可信标签理论上可注入 SVG 属性（本地渲染，风险低）。"
+    },
+    {
+      "file": "assets/render.py",
+      "network": "无直接出网；Playwright Chromium 以 file:// 打开本地 HTML，页面自己引的外部字体/CDN 会出网。",
+      "writes": "写输出 PDF，并把回填后的页码**直接改写调用方传入的生成器 .py 源文件**，另在 tempfile 临时目录生成灰度 PGM。",
+      "subprocess": "sys.executable <builder.py>（执行传入的任意 Python 脚本，最多 4 轮）、pdfinfo、pdftotext、pdftoppm、playwright chromium。",
+      "env": "none",
+      "note": "会执行并原地改写传入的 builder 脚本——先前审计只记了 playwright+pdfinfo，漏了 pdftotext/pdftoppm 与源码改写。"
+    }
+  ],
+  "reviewed_at": "2026-10-21"
+}

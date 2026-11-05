@@ -1,0 +1,46 @@
+{
+  "name": "darwin-skill",
+  "repo": "https://github.com/alchaincyf/darwin-skill",
+  "commit": "8a8b66258e3c45d6ae4aea39719468c6428fcb0a",
+  "license": "MIT",
+  "kept": [
+    "LICENSE",
+    "SKILL.md",
+    "references/runtime-neutrality.md",
+    "references/skilllens-evidence.md",
+    "test-prompts.json"
+  ],
+  "dropped": [
+    {
+      "path": "scripts/",
+      "why": "结果卡截图脚本;只借评分方法,不跑它的流程"
+    },
+    {
+      "path": "templates/",
+      "why": "结果卡模板"
+    },
+    {
+      "path": "assets/",
+      "why": "宣传图与图表"
+    },
+    {
+      "path": "docs/",
+      "why": "上游项目主页"
+    },
+    {
+      "path": "showcase.html",
+      "why": "展示页"
+    },
+    {
+      "path": "README",
+      "why": "仓库介绍,执行 Agent 不读"
+    },
+    {
+      "path": ".gitignore",
+      "why": "上游仓库配置"
+    }
+  ],
+  "patches": [],
+  "reviewed": [],
+  "reviewed_at": "2026-10-21"
+}

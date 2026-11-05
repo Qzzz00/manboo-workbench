@@ -1,0 +1,54 @@
+/* 形象舞台(AvatarStage.tsx,2026-10-01)。界面稿 docs/design/形象切换/①–④;视觉 v2 由 Codex 在 Pen 里改,改完照着换这里。
+   色板同手机 / 展示台的中性深色(09-24「一律深色、去蓝」)。 */
+.av-stage { position: absolute; inset: 0; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.av-particle { position: absolute; inset: 0; }
+.av-scene { position: absolute; inset: 0; background-size: cover; background-position: center; pointer-events: none; }
+.av-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.av-canvas[hidden] { display: none; }
+/* 横屏左栏:底下压着黄历,垫一层渐暗让字读得清。 */
+.av-scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 46%; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(15, 15, 15, 0), rgba(15, 15, 15, 0.55) 45%, rgba(15, 15, 15, 0.85)); }
+
+/* 加载中:旧画面压暗,中间转圈 + 一句话。 */
+.av-veil { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(15, 15, 15, 0.72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #e8e8e8;
+  animation: av-fade-in .18s ease-out; }
+.av-veil > * + * { margin-top: 10px; }
+.av-spinner { width: 40px; height: 40px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.14); border-top-color: #fff;
+  animation: av-spin .9s linear infinite; }
+.av-veil__title { font-size: 15px; font-weight: 600; }
+.av-veil__sub { font-size: 12px; color: #9c9c9c; }
+
+.av-toast { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px;
+  background: rgba(15, 15, 15, 0.72); color: #e8e8e8; font-size: 12px; white-space: nowrap; max-width: 92%; overflow: hidden; text-overflow: ellipsis;
+  animation: av-fade-in .18s ease-out; pointer-events: none; }
+
+.av-dots { position: absolute; left: 50%; transform: translateX(-50%); bottom: 10px; display: flex; align-items: center;
+  padding: 8px 10px; border: 0; background: transparent; cursor: pointer; }
+.av-dots > * + * { margin-left: 6px; }
+.av-dots i { display: block; width: 6px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.4); transition: width .2s, background .2s; }
+.av-dots i[data-on='true'] { width: 14px; background: #fff; }
+/* 横屏左栏:圆点放在黄历上面一点,不压字。 */
+.av-stage[data-variant='column'] .av-dots { bottom: 46%; }
+
+.av-picker { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 10px 12px; background: rgba(15, 15, 15, 0.92);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid #2a2a2a; animation: av-rise .2s ease-out; }
+.av-picker__title, .av-picker__more { margin: 0; font-size: 11px; color: #9c9c9c; }
+.av-picker__more { margin-top: 8px; }
+.av-picker__row { display: flex; overflow-x: auto; margin-top: 8px; }
+.av-picker__row > * + * { margin-left: 8px; }
+.av-pick { flex: none; display: flex; flex-direction: column; align-items: center; border: 0; background: transparent; padding: 0; cursor: pointer; }
+.av-pick__thumb { width: 56px; height: 56px; border-radius: 10px; border: 1px solid #2a2a2a; background: #1c1c1c center / cover no-repeat; }
+.av-pick__thumb[data-orb='true'] { background: radial-gradient(circle at 50% 45%, rgba(255,255,255,.9), rgba(255,255,255,.2) 45%, rgba(255,255,255,0) 70%) #1c1c1c; }
+.av-pick[data-on='true'] .av-pick__thumb { border: 2px solid #fff; }
+.av-pick__name { margin-top: 4px; font-size: 11px; color: #9c9c9c; }
+.av-pick[data-on='true'] .av-pick__name { color: #e8e8e8; }
+
+@keyframes av-spin { to { transform: rotate(360deg); } }
+@keyframes av-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes av-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .av-spinner { animation-duration: 2s; } .av-veil, .av-toast, .av-picker { animation: none; } }
+/* 第二套横屏「环绕」:形象在中间,两侧是会话卡;圆点贴底,快速选择条只占中间这一格。 */
+.av-stage[data-variant='center'] .av-dots { bottom: -6px; }
+.av-stage[data-variant='center'] .av-picker { padding: 8px 8px 10px; }
+.av-stage[data-variant='center'] { overflow: visible; }

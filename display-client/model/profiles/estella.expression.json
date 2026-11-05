@@ -1,0 +1,386 @@
+{
+  "role": "estella",
+  "kind": "expression",
+  "version": "v3",
+  "items": [
+    {
+      "id": "Black Mask",
+      "file": "Black Mask.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "mouth_cover",
+      "hint": "黑口罩",
+      "keywords": ["黑口罩", "黑色口罩", "口罩"]
+    },
+    {
+      "id": "White Mask",
+      "file": "White Mask.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "mouth_cover",
+      "hint": "白口罩",
+      "keywords": ["白口罩", "白色口罩", "口罩"]
+    },
+    {
+      "id": "Blue pupil",
+      "file": "Blue pupil.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "pupil",
+      "hint": "蓝色瞳孔",
+      "keywords": ["蓝色瞳孔", "蓝瞳"]
+    },
+    {
+      "id": "Cat ears",
+      "file": "Cat ears.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "ears",
+      "hint": "猫耳",
+      "keywords": ["猫耳", "猫耳朵"]
+    },
+    {
+      "id": "Cat tail",
+      "file": "Cat tail.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "tail",
+      "hint": "猫尾",
+      "keywords": ["猫尾", "猫尾巴"]
+    },
+    {
+      "id": "Dog ears",
+      "file": "Dog ears.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "ears",
+      "hint": "狗耳",
+      "keywords": ["狗耳", "狗耳朵"]
+    },
+    {
+      "id": "Glasses",
+      "file": "Glasses.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "eyewear",
+      "hint": "眼镜",
+      "keywords": ["眼镜"]
+    },
+    {
+      "id": "Hairstyle2",
+      "file": "Hairstyle2.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 2",
+      "keywords": ["发型2", "发型 2"]
+    },
+    {
+      "id": "Hairstyle2_bundled hair",
+      "file": "Hairstyle2_bundled hair.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 2 束发",
+      "keywords": ["束发", "发型2束发"]
+    },
+    {
+      "id": "Hairstyle3",
+      "file": "Hairstyle3.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 3",
+      "keywords": ["发型3", "发型 3"]
+    },
+    {
+      "id": "Hairstyle4",
+      "file": "Hairstyle4.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 4",
+      "keywords": ["发型4", "发型 4"]
+    },
+    {
+      "id": "Hairstyle5",
+      "file": "Hairstyle5.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 5",
+      "keywords": ["发型5", "发型 5"]
+    },
+    {
+      "id": "Hairstyle6",
+      "file": "Hairstyle6.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 6",
+      "keywords": ["发型6", "发型 6"]
+    },
+    {
+      "id": "Hairstyle7",
+      "file": "Hairstyle7.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 7",
+      "keywords": ["发型7", "发型 7"]
+    },
+    {
+      "id": "Hairstyle8",
+      "file": "Hairstyle8.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "发型 8",
+      "keywords": ["发型8", "发型 8"]
+    },
+    {
+      "id": "Hat1",
+      "file": "Hat1.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headwear",
+      "hint": "帽子 1",
+      "keywords": ["帽子1", "帽子 1"]
+    },
+    {
+      "id": "Hat2",
+      "file": "Hat2.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headwear",
+      "hint": "帽子 2",
+      "keywords": ["帽子2", "帽子 2"]
+    },
+    {
+      "id": "Headphone_support",
+      "file": "Headphone_support.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headphone_support",
+      "hint": "耳机支架",
+      "keywords": ["耳机支架"]
+    },
+    {
+      "id": "Headset",
+      "file": "Headset.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headphone",
+      "hint": "耳机",
+      "keywords": ["耳机", "头戴耳机", "头戴式耳机"]
+    },
+    {
+      "id": "Silly_hair",
+      "file": "Silly_hair.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "hair",
+      "hint": "呆毛",
+      "keywords": ["呆毛"]
+    },
+    {
+      "id": "headband",
+      "file": "headband.exp3.json",
+      "category": "costume",
+      "kind": "costume",
+      "slot": "headwear",
+      "hint": "发带",
+      "keywords": ["发带"]
+    },
+    {
+      "id": "Game console",
+      "file": "Game console.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "游戏机",
+      "keywords": ["游戏机", "打游戏", "玩游戏", "game"]
+    },
+    {
+      "id": "Get coffee",
+      "file": "Get coffee.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "拿咖啡",
+      "keywords": ["咖啡", "拿咖啡", "来杯咖啡"]
+    },
+    {
+      "id": "Get smaller",
+      "file": "Get smaller.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "一键变小",
+      "keywords": ["变小", "缩小", "一键变小", "变小点"]
+    },
+    {
+      "id": "Pet cat",
+      "file": "Pet cat.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "抱猫",
+      "keywords": ["抱猫", "撸猫", "猫咪", "猫猫"]
+    },
+    {
+      "id": "Wave",
+      "file": "Wave.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "招手（无对应 motion，仅表情）",
+      "keywords": ["招手", "挥手", "打招呼", "hi", "hello"]
+    },
+    {
+      "id": "Wink",
+      "file": "Wink.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "眨眼",
+      "keywords": ["眨眼", "wink", "眨眨眼"]
+    },
+    {
+      "id": "Taers",
+      "file": "Taers.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "sad",
+      "intensity": "strong",
+      "hint": "眼泪",
+      "keywords": ["眼泪", "流泪", "哭哭", "落泪"]
+    },
+    {
+      "id": "angry",
+      "file": "angry.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "angry",
+      "intensity": "strong",
+      "hint": "生气",
+      "keywords": ["生气", "愤怒", "恼火", "气死了"]
+    },
+    {
+      "id": "cry",
+      "file": "cry.exp3.json",
+      "category": "emotion",
+      "kind": "emotion_expr",
+      "emotion": "sad",
+      "intensity": "strong",
+      "hint": "哭",
+      "keywords": ["哭", "大哭", "哭泣", "呜呜"]
+    },
+    {
+      "id": "discoloration",
+      "file": "discoloration.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "angry",
+      "intensity": "medium",
+      "hint": "瞳孔变黑",
+      "keywords": ["瞳孔变黑", "黑瞳", "变黑"]
+    },
+    {
+      "id": "dizzy",
+      "file": "dizzy.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "晕",
+      "keywords": ["晕", "头晕", "晕乎乎", "转圈"]
+    },
+    {
+      "id": "eat lollipops",
+      "file": "eat lollipops.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "吃棒棒糖",
+      "keywords": ["吃棒棒糖", "棒棒糖", "吃糖"]
+    },
+    {
+      "id": "gluttonous",
+      "file": "gluttonous.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "light",
+      "hint": "馋",
+      "keywords": ["馋", "贪吃", "流口水", "好馋"]
+    },
+    {
+      "id": "love lollipop",
+      "file": "love lollipop.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "medium",
+      "hint": "爱心棒棒糖",
+      "keywords": ["爱心棒棒糖", "爱心糖", "爱心棒"]
+    },
+    {
+      "id": "loving eyes",
+      "file": "loving eyes.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "happy",
+      "intensity": "strong",
+      "hint": "爱心眼",
+      "keywords": ["爱心眼", "爱你", "爱心", "喜欢"]
+    },
+    {
+      "id": "money",
+      "file": "money.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "excited",
+      "intensity": "medium",
+      "hint": "钱眼",
+      "keywords": ["钱", "钱眼", "金钱", "发财", "钱！"]
+    },
+    {
+      "id": "stars",
+      "file": "stars.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "surprised",
+      "intensity": "strong",
+      "hint": "星星眼",
+      "keywords": ["星星眼", "星星", "惊喜", "震惊"]
+    },
+    {
+      "id": "tongue",
+      "file": "tongue.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "吐舌",
+      "keywords": ["吐舌", "舌头", "调皮", "吐舌头"]
+    },
+    {
+      "id": "ZZZ",
+      "file": "ZZZ.exp3.json",
+      "category": "prop",
+      "kind": "prop",
+      "emotion": "neutral",
+      "intensity": "light",
+      "hint": "犯困 Z 字",
+      "keywords": ["困", "睡觉", "zzz", "犯困", "晚安"]
+    }
+  ]
+}

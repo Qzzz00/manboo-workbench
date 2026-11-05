@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 1312319077">
+<foreignObject x="-11.5467" y="-11.5467" width="143.093" height="143.093"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5.77px);clip-path:url(#bgblur_0_2077_952_clip_path);height:100%;width:100%"></div></foreignObject><g id="Rectangle 14119" data-figma-bg-blur-radius="11.5467">
+<rect width="120" height="120" rx="60" fill="#FA4B62" fill-opacity="0.8"/>
+<rect width="120" height="120" rx="60" fill="url(#paint0_radial_2077_952)" fill-opacity="0.4"/>
+</g>
+<path id="Union" d="M60.0008 46.666C66.6672 46.666 75.2379 47.2132 83.0151 52.3642C86.3484 54.5862 89.7831 57.8684 91.3127 62.7272C93.0294 68.1812 91.0658 73.3326 86.9686 73.3326H77.3739C74.1417 73.3326 71.8661 70.7527 71.7977 68.6337C71.7294 66.515 71.9329 64.1505 72.4113 62.2666C72.8897 60.3827 71.7891 60.1687 70.1392 59.6477C68.6759 59.1857 65.0866 58.2448 60.0008 58.2448C54.9156 58.2448 51.3263 59.1856 49.8625 59.6477C48.2123 60.1689 47.1119 60.3824 47.5903 62.2666C48.0687 64.1504 48.2722 66.5151 48.2039 68.6337C48.1356 70.7525 45.8596 73.3323 42.6278 73.3326H33.0314C28.9342 73.3326 26.9707 68.1812 28.6873 62.7272C30.2169 57.8685 33.6517 54.5862 36.9849 52.3642C44.7624 47.213 53.3344 46.666 60.0008 46.666Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="bgblur_0_2077_952_clip_path" transform="translate(11.5467 11.5467)"><rect width="120" height="120" rx="60"/>
+</clipPath><radialGradient id="paint0_radial_2077_952" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(59.1667 7.5) rotate(-90) scale(69.1667 84.4026)">
+<stop stop-color="#FFDCF0"/>
+<stop offset="1" stop-color="#FFDCF0" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>

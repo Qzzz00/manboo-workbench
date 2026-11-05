@@ -1,0 +1,17 @@
+include ':app'
+include ':capacitor-cordova-android-plugins'
+// 低端机原生 Live2D 渲染：Cubism SDK for Java 的 Framework 源码 module
+include ':cubism-framework'
+// 原生渲染核心（宿主无关，:app 与 :liteapp 共享）
+include ':nativelive2d'
+// 低端机纯原生 APK（零 WebView，见 docs/superpowers/specs/2026-07-17-liteapp-native-apk-design.md）
+include ':liteapp'
+project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
+
+// ---- 5-r.1 并列链（32 位 armv7l 机型专用）----
+// 官方从 5-r.2 起砍掉 armeabi-v7a 的 Core .so；ThinkSmart View(APQ8053) 是 32 位内核，
+// 只能用 5-r.1。Java 与 native 必须同版本，只换 .so 会崩 NoSuchFieldError(renderOrders)。
+include ':cubism-framework-51'
+include ':nativelive2d-51'
+
+apply from: 'capacitor.settings.gradle'

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+    />
+    <title>Aiboo Pet</title>
+    <style>
+      /* 桌宠浮窗：整页透明，让底层桌面/GL 透出 */
+      html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+      #pet-root { height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="pet-root"></div>
+    <!-- Live2D Cubism Core 必须在模块脚本前加载（注入 window.Live2DCubismCore） -->
+    <script src="/live2dcubismcore.min.js"></script>
+    <script type="module" src="/src/pet/main.tsx"></script>
+  </body>
+</html>

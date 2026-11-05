@@ -1,0 +1,89 @@
+{
+  "name": "@ben/dsh-workbench",
+  "version": "0.4.192",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "bin": {
+    "workbench": "lib/workbench.js"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "lib/client.js.map",
+    "lib/starter-layer",
+    "lib/workbench.js",
+    "bin/agent-hook.sh",
+    "bin/claude-statusline.sh",
+    "lib/third_party/archify",
+    "lib/archify-pinned"
+  ],
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ],
+      "platform": "web"
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "node scripts/gen-bundled-skills.mjs && tsdown && node scripts/copy-starter-layer.mjs && node scripts/copy-archify-assets.mjs",
+    "rehearse": "node scripts/rehearse.ts"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "4.0.4",
+    "@deepseek-ai/dsh-api-session-controller": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-api-workspace-controller": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-client-store": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-client-ui-layout": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-client-ui-renderer": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-client-ui-session": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-client-ui-workspace": "0.1.7-rc.2",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "link:../../deepseek-harness/vendor/cordis",
+    "@deepseek-ai/dsh-api-session-controller": "link:../../deepseek-harness/packages/api/session-controller",
+    "@deepseek-ai/dsh-api-workspace-controller": "link:../../deepseek-harness/packages/api/workspace-controller",
+    "@deepseek-ai/dsh-client-store": "link:../../deepseek-harness/packages/client/store",
+    "@deepseek-ai/dsh-client-ui-layout": "link:../../deepseek-harness/packages/client/ui-layout",
+    "@deepseek-ai/dsh-client-ui-renderer": "link:../../deepseek-harness/packages/client/ui-renderer",
+    "@deepseek-ai/dsh-client-ui-session": "link:../../deepseek-harness/packages/client/ui-session",
+    "@deepseek-ai/dsh-client-ui-sidebar": "link:../../deepseek-harness/packages/client/ui-sidebar",
+    "@deepseek-ai/dsh-client-ui-slots": "link:../../deepseek-harness/packages/client/ui-slots",
+    "@deepseek-ai/dsh-client-ui-workspace": "link:../../deepseek-harness/packages/client/ui-workspace",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/d3-hierarchy": "3.1.7",
+    "@types/node": "^22.20.0",
+    "@types/react": "~18.3.1",
+    "@types/react-dom": "~18.3.1",
+    "@types/ws": "^8.18.1",
+    "@xyflow/react": "12.11.6",
+    "bonjour-service": "1.4.4",
+    "border-beam": "1.4.1",
+    "bot-avatars": "0.1.1",
+    "d3-hierarchy": "3.1.2",
+    "jsdom": "^29.1.1",
+    "opencc-js": "1.4.2",
+    "qrcode-generator": "2.0.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "thinking-orbs": "0.3.2",
+    "tsdown": "^0.22.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8",
+    "ws": "^8.21.3"
+  }
+}

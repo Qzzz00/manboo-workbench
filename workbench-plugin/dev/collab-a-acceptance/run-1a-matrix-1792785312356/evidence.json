@@ -1,0 +1,440 @@
+[
+  {
+    "at": "2026-10-23T19:55:12.519Z",
+    "name": "fake-upstream-ready",
+    "port": 19893,
+    "sayReal": true
+  },
+  {
+    "at": "2026-10-23T19:55:50.907Z",
+    "name": "model-pointed-own",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T19:55:50.964Z",
+    "name": "relay-test-account",
+    "ok": true,
+    "registered": true
+  },
+  {
+    "at": "2026-10-23T19:55:50.974Z",
+    "name": "phone-paired",
+    "ok": true
+  },
+  {
+    "at": "2026-10-23T19:55:51.979Z",
+    "name": "butler-voice",
+    "up": true
+  },
+  {
+    "at": "2026-10-23T19:56:03.306Z",
+    "name": "cell-s1-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:56:22.899Z",
+    "name": "cell-s1-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午把样片发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:56:22.930Z",
+    "name": "upstream-real-understand",
+    "said": "不用现在发,帮我建一个待办事项:周四下午给客户发样片"
+  },
+  {
+    "at": "2026-10-23T19:56:27.252Z",
+    "name": "upstream-real-reply",
+    "said": "不用现在发,帮我建一个待办事项:周四下午给客户发样片",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"risk\":\"none\",\"confidence\":0.98,\"why\":\"明说「不用现在发」「建一个待办」,只记不派,脱壳后保留时间和事\"}]}\n\n"
+  },
+  {
+    "at": "2026-10-23T19:56:38.476Z",
+    "name": "cell-s2-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样片",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:56:38.502Z",
+    "name": "upstream-real-understand",
+    "said": "不用现在发,帮我建一个待办事项:周四下午给客户发样片"
+  },
+  {
+    "at": "2026-10-23T19:56:44.987Z",
+    "name": "upstream-real-reply",
+    "said": "不用现在发,帮我建一个待办事项:周四下午给客户发样片",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"who\":null,\"risk\":\"none\",\"confidence\":0.98,\"why\":\"原话明说「不用现在发」并要求建待办,只记不派\"}]}\n\n"
+  },
+  {
+    "at": "2026-10-23T19:56:45.423Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:56:45.424Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:56:45.950Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:56:46.965Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:56:48.854Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:56:52.862Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:57:00.746Z",
+    "name": "upstream-understand",
+    "said": null,
+    "model": "collab-a-brain",
+    "pinned": false,
+    "reply": "{\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"没钉这句\",\"risk\":\"none\",\"confidence\":0.3,\"why\":\"qa-fallback\"}]}"
+  },
+  {
+    "at": "2026-10-23T19:57:17.145Z",
+    "name": "cell-s2-phone",
+    "status": "fail",
+    "reasons": [
+      "「不用现在发,帮我建一个待办事项:周四下午给客户发样片」被派出去办了(blocked、开了会话)",
+      "回话没说到「记下」「样片」:「已交给事务官」"
+    ],
+    "cards": [
+      [
+        "不用现在发,帮我建一个待办事项:周四下午给客户发样片",
+        "blocked",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:57:17.188Z",
+    "name": "upstream-real-understand",
+    "said": "帮我建一个待办:周四下午给客户发样片,建之前先跟我确认一下"
+  },
+  {
+    "at": "2026-10-23T19:57:23.775Z",
+    "name": "upstream-real-reply",
+    "said": "帮我建一个待办:周四下午给客户发样片,建之前先跟我确认一下",
+    "reply": "• ```json\n  {\n    \"addressed\": true,\n    \"items\": [\n      {\n        \"kind\": \"记\",\n        \"title\": \"周四下午给客户发样片\",\n        \"when\": \"周四下午\",\n        \"risk\": \"none\",\n        \"confidence\": 0.97,\n        \"why\": \"明说是建待办,且建之前要先跟她确认,只记不派\",\n        \"confirm\": true\n      }\n    ]\n  }\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-23T19:57:37.946Z",
+    "name": "cell-s3-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样片",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:57:37.968Z",
+    "name": "upstream-real-understand",
+    "said": "帮我建一个待办:周四下午给客户发样片,建之前先跟我确认一下"
+  },
+  {
+    "at": "2026-10-23T19:57:42.286Z",
+    "name": "upstream-real-reply",
+    "said": "帮我建一个待办:周四下午给客户发样片,建之前先跟我确认一下",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"who\":\"客户\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"原话明说「建一个待办」,是记不是派;「客户」是待办内容,不在能派名单\",\"confirm\":true}],\"chit\":null}\n\n"
+  },
+  {
+    "at": "2026-10-23T19:58:13.136Z",
+    "name": "cell-s3-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样片",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:58:13.173Z",
+    "name": "upstream-real-understand",
+    "said": "帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换个女声"
+  },
+  {
+    "at": "2026-10-23T19:58:23.163Z",
+    "name": "upstream-real-reply",
+    "said": "帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换个女声",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[\n  {\"kind\":\"记\",\"title\":\"周四下午给客户发样片\",\"when\":\"周四下午\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"原话明说「建一个待办」,只记不派\"},\n  {\"kind\":\"办\",\"title\":\"把样片派给 Claude 剪一版\",\"who\":\"Claude\",\"risk\":\"none\",\"confidence\":0.9,\"why\":\"明说派给 Claude,派活动作\"},\n  {\"kind\":\"改\",\"title\":\"换个女声\",\"risk\":\"none\",\"confidence\":0.75,\"why\":\"换女声是修改样片的配音,具体改在哪版上未明说\"}\n  ]}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-23T19:58:34.450Z",
+    "name": "cell-s4-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样片",
+        "todo",
+        null
+      ],
+      [
+        "把样片派给 Claude 剪一版",
+        "blocked",
+        "claude"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:58:34.484Z",
+    "name": "upstream-real-understand",
+    "said": "帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换个女声"
+  },
+  {
+    "at": "2026-10-23T19:58:38.653Z",
+    "name": "upstream-real-reply",
+    "said": "帮我建一个待办:周四下午给客户发样片,再把样片派给 Claude 剪一版,然后换个女声",
+    "reply": "• ```json\n  {\n    \"addressed\": true,\n    \"items\": [\n      {\"kind\": \"记\", \"title\": \"周四下午给客户发样片\", \"risk\": \"none\", \"confidence\": 0.95, \"why\": \"明说「建一个待办」，只记不派\"},\n      {\"kind\": \"办\", \"title\": \"把样片派给 Claude 剪一版\", \"who\": \"Claude\", \"risk\": \"none\", \"confidence\": 0.9, \"why\": \"「派给 Claude 剪一版」，家名在能派名单里\"},\n      {\"kind\": \"改\", \"title\": \"换个女声\", \"risk\": \"none\", \"confidence\": 0.85, \"why\": \"「然后换个女声」是单独一件修改要求\"}\n    ]\n  }\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-23T19:58:58.231Z",
+    "name": "cell-s4-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四下午给客户发样片",
+        "todo",
+        null
+      ],
+      [
+        "把样片派给 Claude 剪一版",
+        "blocked",
+        "claude"
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:58:58.267Z",
+    "name": "upstream-real-understand",
+    "said": "记三条:周四发样片、周五交发票、下周一约 B 客户"
+  },
+  {
+    "at": "2026-10-23T19:59:02.542Z",
+    "name": "upstream-real-reply",
+    "said": "记三条:周四发样片、周五交发票、下周一约 B 客户",
+    "reply": "• ```json\n  {\n    \"addressed\": true,\n    \"items\": [\n      {\n        \"kind\": \"记\",\n        \"title\": \"周四发样片\",\n        \"when\": \"周四\",\n        \"risk\": \"none\",\n        \"confidence\": 0.97,\n        \"why\": \"原话明说「记三条」,只记不派\"\n      },\n      {\n        \"kind\": \"记\",\n        \"title\": \"周五交发票\",\n        \"when\": \"周五\",\n        \"risk\": \"none\",\n        \"confidence\": 0.97,\n        \"why\": \"「记三条」的第二件,只记不派\"\n      },\n      {\n        \"kind\": \"记\",\n        \"title\": \"下周一约 B 客户\",\n        \"when\": \"下周一\",\n        \"risk\": \"none\",\n        \"confidence\": 0.95,\n        \"why\": \"「记三条」的第三件,只记不派\"\n      }\n    ]\n  }\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-23T19:59:13.822Z",
+    "name": "cell-s5-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ],
+      [
+        "下周一约 B 客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:59:13.868Z",
+    "name": "upstream-real-understand",
+    "said": "记三条:周四发样片、周五交发票、下周一约 B 客户"
+  },
+  {
+    "at": "2026-10-23T19:59:20.364Z",
+    "name": "upstream-real-reply",
+    "said": "记三条:周四发样片、周五交发票、下周一约 B 客户",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"when\":\"周四\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"原话明确「记三条」且点名周四发样片\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"when\":\"周五\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"「记三条」中的一条，周五交发票\"},{\"kind\":\"记\",\"title\":\"下周一约 B 客户\",\"when\":\"下周一\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"「记三条」中的一条，下周一约 B 客户\"}]}\n\n"
+  },
+  {
+    "at": "2026-10-23T19:59:39.973Z",
+    "name": "cell-s5-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ],
+      [
+        "下周一约 B 客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:59:40.020Z",
+    "name": "upstream-real-understand",
+    "said": "记一下周四发样片……哦对,顺便再记一下周五交发票"
+  },
+  {
+    "at": "2026-10-23T19:59:44.349Z",
+    "name": "upstream-real-reply",
+    "said": "记一下周四发样片……哦对,顺便再记一下周五交发票",
+    "reply": "• ```json\n  {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"risk\":\"none\",\"confidence\":0.98,\"why\":\"明说「记一下」\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"risk\":\"none\",\"confidence\":0.98,\"why\":\"明说「顺便再记一下」\"}]}\n  ```\n\n"
+  },
+  {
+    "at": "2026-10-23T19:59:55.595Z",
+    "name": "cell-s6-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T19:59:55.633Z",
+    "name": "upstream-real-understand",
+    "said": "记一下周四发样片……哦对,顺便再记一下周五交发票"
+  },
+  {
+    "at": "2026-10-23T20:00:01.121Z",
+    "name": "upstream-real-reply",
+    "said": "记一下周四发样片……哦对,顺便再记一下周五交发票",
+    "reply": "• {\"addressed\":true,\"items\":[{\"kind\":\"记\",\"title\":\"周四发样片\",\"when\":\"周四\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"明说「记一下」\"},{\"kind\":\"记\",\"title\":\"周五交发票\",\"when\":\"周五\",\"risk\":\"none\",\"confidence\":0.95,\"why\":\"明说「再记一下」\"}]}\n\n"
+  },
+  {
+    "at": "2026-10-23T20:00:20.668Z",
+    "name": "cell-s6-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "周四发样片",
+        "todo",
+        null
+      ],
+      [
+        "周五交发票",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T20:00:20.689Z",
+    "name": "cell-s7-na",
+    "note": "旁人插话是电话那一列(1b)的事"
+  },
+  {
+    "at": "2026-10-23T20:00:31.908Z",
+    "name": "cell-s8-desk",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "下周二把合同发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T20:00:51.480Z",
+    "name": "cell-s8-phone",
+    "status": "pass",
+    "reasons": [],
+    "cards": [
+      [
+        "下周二把合同发给客户",
+        "todo",
+        null
+      ]
+    ]
+  },
+  {
+    "at": "2026-10-23T20:00:51.494Z",
+    "name": "matrix-end",
+    "checksFailed": [
+      "s2-phone"
+    ],
+    "limitation": "电话两列是 1b 未跑;真手机未验;真云模型=真 Kimi 桥"
+  },
+  {
+    "at": "2026-10-23T20:00:53.262Z",
+    "name": "cleanup-result",
+    "passed": true,
+    "remainingPorts": []
+  }
+]

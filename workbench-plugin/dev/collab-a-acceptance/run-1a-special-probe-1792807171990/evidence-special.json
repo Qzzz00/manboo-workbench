@@ -1,0 +1,61 @@
+[
+  {
+    "at": "2026-10-24T01:59:32.153Z",
+    "name": "special-feedback",
+    "passed": true,
+    "status": 200,
+    "keys": [
+      "say_id",
+      "items",
+      "feedback",
+      "say"
+    ]
+  },
+  {
+    "at": "2026-10-24T01:59:32.234Z",
+    "name": "special-meeting",
+    "passed": true,
+    "status": 200,
+    "keys": [
+      "say_id",
+      "items",
+      "meeting_plan",
+      "say"
+    ]
+  },
+  {
+    "at": "2026-10-24T01:59:32.284Z",
+    "name": "special-publish",
+    "passed": true,
+    "status": 200,
+    "keys": [
+      "say_id",
+      "items",
+      "publish_plan",
+      "say"
+    ]
+  },
+  {
+    "at": "2026-10-24T01:59:32.291Z",
+    "name": "special-today-view",
+    "passed": false,
+    "status": 409,
+    "keys": [
+      "error"
+    ]
+  },
+  {
+    "at": "2026-10-24T01:59:32.302Z",
+    "name": "special-publish-vague",
+    "passed": true,
+    "status": 400
+  },
+  {
+    "at": "2026-10-24T01:59:32.330Z",
+    "name": "special-end",
+    "checksFailed": [
+      "special-today-view"
+    ],
+    "cardsCreated": 1
+  }
+]

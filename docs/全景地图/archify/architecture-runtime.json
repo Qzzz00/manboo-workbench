@@ -1,0 +1,1307 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "事务官座机 · 运行时总览",
+    "subtitle": "一台Mac的插件、手脚、本机房间与云备路;Graphify本机生成,云服务按配置调用;10-23最终重钉:全部source按main@c55ff4c1取证(0.4.148热修已发布,本机已更新;稳定0.4.142)",
+    "output": "docs/梳理-全景地图-2026-10-21/archify/architecture-runtime.html",
+    "quality_profile": "showcase",
+    "locale": "zh-CN",
+    "repository": {
+      "url": "https://github.com/BeeeeeeeeeeeeeeenY/workbench.git",
+      "revision": "c55ff4c1ab07bf3b8c7760a64653f21ce6fe2aa6",
+      "provider": "github",
+      "link_mode": "web"
+    },
+    "views": [
+      {
+        "id": "mainpath",
+        "label": "主路:网页到 AI 窗口",
+        "focus": [
+          "web",
+          "plugin",
+          "shell",
+          "aiwin",
+          "data"
+        ],
+        "note": "一句话进 8791,听懂、派活、盯窗、自查,卡片状态回到网页"
+      },
+      {
+        "id": "phoneline",
+        "label": "电话一条线",
+        "focus": [
+          "phone",
+          "handset",
+          "livekit",
+          "worker",
+          "voice",
+          "speech",
+          "localroom"
+        ],
+        "note": "手机与听筒都在 LiveKit 房间里,工人在电脑上听与说"
+      },
+      {
+        "id": "homeaway",
+        "label": "手机在家与出门",
+        "focus": [
+          "phone",
+          "plugin",
+          "relay",
+          "livekit"
+        ],
+        "note": "手机按连接规格在家本机房间/出门回云;M4有历史实测,最终版本真手机/嘈杂仍待验"
+      },
+      {
+        "id": "cloud",
+        "label": "公网上有什么",
+        "focus": [
+          "relay",
+          "livekit",
+          "speech"
+        ],
+        "note": "在家本机房间已有;出门云房间/中转与模型、语音等按配置启用,零服务器缺省不带中转"
+      },
+      {
+        "id": "cli",
+        "label": "命令行与协议",
+        "focus": [
+          "plugin",
+          "aicli"
+        ],
+        "note": "产品CLI接Claude/Codex/Kimi;本轮研发另用AGY+Gemini,由Codex统筹独占main,不把人工研发链当产品自主闭环"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "relay",
+      "type": "cloud",
+      "label": "中转",
+      "sublabel": "可配中转 · 零服务器缺省为空",
+      "tag": "代理模型与搜索",
+      "pos": [
+        40,
+        0
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "relay/server/app.cjs",
+          "line": 448,
+          "end_line": 487,
+          "label": "签房间票"
+        },
+        {
+          "path": "relay/server/app.cjs",
+          "line": 1081,
+          "end_line": 1096,
+          "label": "模型代理,上游 DeepSeek"
+        },
+        {
+          "path": "deploy/aliyun-relay-setup.sh",
+          "line": 36,
+          "end_line": 46,
+          "label": "域名必须给、不带缺省(M7)与端口"
+        }
+      ]
+    },
+    {
+      "id": "phone",
+      "type": "frontend",
+      "label": "手机 App",
+      "sublabel": "Android · 直连或房间",
+      "tag": "每 3 秒轮询",
+      "pos": [
+        405,
+        0
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "butler-app/src/channel/routedClient.ts",
+          "line": 1,
+          "end_line": 16,
+          "label": "局域网优先直连 8791"
+        },
+        {
+          "path": "butler-app/capacitor.config.ts",
+          "line": 12,
+          "end_line": 20,
+          "label": "明文 http 访问局域网"
+        },
+        {
+          "path": "butler-app/src/api/stateFeed.ts",
+          "line": 74,
+          "end_line": 103,
+          "label": "3 秒 / 30 秒轮询"
+        }
+      ]
+    },
+    {
+      "id": "holo",
+      "type": "frontend",
+      "label": "展示台",
+      "sublabel": "display-client · /live 快照",
+      "pos": [
+        40,
+        165
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "display-client/src/display/liveStore.ts",
+          "line": 48,
+          "end_line": 51,
+          "label": "3 秒重连 / 60 秒判断"
+        },
+        {
+          "path": "display-client/src/display/liveStore.ts",
+          "line": 210,
+          "end_line": 211,
+          "label": "缺省 ws://127.0.0.1:8791/live"
+        },
+        {
+          "path": "display-client/holo.html",
+          "line": 19,
+          "end_line": 20,
+          "label": "Cubism Core 与入口"
+        }
+      ]
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "工作台页面",
+      "sublabel": "壳里的网页 :3080",
+      "pos": [
+        40,
+        245
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/client/useWorkbenchState.ts",
+          "line": 56,
+          "end_line": 71,
+          "label": "每秒轮询"
+        },
+        {
+          "path": "workbench-app/Sources/Config.swift",
+          "line": 14,
+          "end_line": 19,
+          "label": "壳加载的网页地址"
+        },
+        {
+          "path": "workbench-plugin/src/server/http.ts",
+          "line": 7493,
+          "end_line": 7501,
+          "label": "GET /state"
+        }
+      ]
+    },
+    {
+      "id": "plugin",
+      "type": "backend",
+      "label": "工作台插件 :8791",
+      "sublabel": "DSH进程内 · 账 / 派活 / 三端接口 / Graphify service",
+      "tag": "默认只绑 127.0.0.1",
+      "pos": [
+        290,
+        165
+      ],
+      "size": [
+        300,
+        190
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/http.ts",
+          "line": 539,
+          "end_line": 540,
+          "label": "DEFAULT_PORT = 8791"
+        },
+        {
+          "path": "workbench-plugin/src/server/http.ts",
+          "line": 6944,
+          "end_line": 6985,
+          "label": "局域网开关:0.0.0.0 第二监听 + mDNS"
+        },
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 538,
+          "end_line": 568,
+          "label": "DSH 插件入口 apply(ctx)"
+        }
+      ]
+    },
+    {
+      "id": "aicli",
+      "type": "external",
+      "label": "AI 命令行 / 协议",
+      "sublabel": "Claude · Codex · Kimi CLI / 协议",
+      "pos": [
+        700,
+        195
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/engine/registry.ts",
+          "line": 59,
+          "end_line": 70,
+          "label": "通道次序常量"
+        },
+        {
+          "path": "workbench-plugin/src/server/engine/wire.ts",
+          "line": 140,
+          "end_line": 152,
+          "label": "登记 claude / codex 协议"
+        },
+        {
+          "path": "workbench-plugin/src/server/http.ts",
+          "line": 2735,
+          "end_line": 2759,
+          "label": "登记 cli / api 适配器"
+        }
+      ]
+    },
+    {
+      "id": "worker",
+      "type": "backend",
+      "label": "通话工人",
+      "sublabel": "LiveKit 房间里的工人",
+      "tag": "2 秒领活",
+      "pos": [
+        700,
+        305
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "channel-worker/src/main.ts",
+          "line": 285,
+          "end_line": 343,
+          "label": "进房重连循环一整圈;装配 startChannelAgent 传 modelNow 闭包"
+        },
+        {
+          "path": "channel-worker/src/agent.ts",
+          "line": 1654,
+          "end_line": 1701,
+          "label": "llmOptions/buildLlm 完整声明与装配"
+        },
+        {
+          "path": "channel-worker/src/agent.ts",
+          "line": 3823,
+          "end_line": 3846,
+          "label": "按自己那间房领(M6:两间房,先接先得)"
+        }
+      ]
+    },
+    {
+      "id": "voice",
+      "type": "backend",
+      "label": "语音后端 :8792",
+      "sublabel": "只听 127.0.0.1",
+      "pos": [
+        700,
+        445
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "butler-server/server/index.cjs",
+          "line": 54,
+          "end_line": 62,
+          "label": "app.listen(port, HOST)"
+        },
+        {
+          "path": "butler-server/server/routes/api/tts.cjs",
+          "line": 83,
+          "end_line": 112,
+          "label": "火山 / MiniMax 合成"
+        },
+        {
+          "path": "butler-server/server/routes/api/asr.cjs",
+          "line": 81,
+          "end_line": 88,
+          "label": "/api/asr → 火山识别"
+        }
+      ]
+    },
+    {
+      "id": "shell",
+      "type": "backend",
+      "label": "桌面壳 工作台.app",
+      "sublabel": "Swift · 40 个 op",
+      "tag": "只认回环",
+      "pos": [
+        290,
+        415
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-app/Sources/HelperSocket.swift",
+          "line": 36,
+          "end_line": 68,
+          "label": "AX 一条串行队列 + 读窗按包分道(ReadLanes)"
+        },
+        {
+          "path": "workbench-app/Sources/HelperSocket.swift",
+          "line": 129,
+          "end_line": 132,
+          "label": "主动连 ws://127.0.0.1:8791/helper"
+        },
+        {
+          "path": "workbench-plugin/src/server/helperChannel.ts",
+          "line": 561,
+          "end_line": 585,
+          "label": "插件发 op 等回执"
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "type": "database",
+      "label": "本机数据",
+      "sublabel": "~/.dsh/workbench",
+      "pos": [
+        440,
+        415
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/tasks.ts",
+          "line": 890,
+          "end_line": 897,
+          "label": "tasks.json 整文件写回"
+        },
+        {
+          "path": "workbench-plugin/src/server/projects.ts",
+          "line": 44,
+          "end_line": 78,
+          "label": "projects.json 读与原子写"
+        },
+        {
+          "path": "workbench-plugin/src/server/jobLog.ts",
+          "line": 427,
+          "end_line": 433,
+          "label": "jobs.jsonl 追加一行"
+        }
+      ]
+    },
+    {
+      "id": "aiwin",
+      "type": "external",
+      "label": "AI 应用窗口",
+      "sublabel": "豆包 · 可灵 · Codex",
+      "pos": [
+        290,
+        555
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/klingStep.ts",
+          "line": 564,
+          "end_line": 570,
+          "label": "runKlingStep"
+        },
+        {
+          "path": "workbench-plugin/src/server/doubaoImage.ts",
+          "line": 197,
+          "end_line": 200,
+          "label": "从豆包缓存取原图"
+        },
+        {
+          "path": "workbench-plugin/src/server/dispatchTargets.ts",
+          "line": 94,
+          "end_line": 112,
+          "label": "窗口是一只手"
+        }
+      ]
+    },
+    {
+      "id": "livekit",
+      "type": "cloud",
+      "label": "LiveKit",
+      "sublabel": "出门云房间 · 按配置",
+      "tag": "无 TURN",
+      "pos": [
+        1180,
+        305
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "deploy/aliyun-livekit-setup.sh",
+          "line": 5,
+          "end_line": 10,
+          "label": "域名必须给、不带缺省(M7)与安全组端口"
+        },
+        {
+          "path": "deploy/aliyun-livekit-setup.sh",
+          "line": 23,
+          "end_line": 35,
+          "label": "livekit.yaml,没有 turn"
+        },
+        {
+          "path": "workbench-plugin/src/server/channel.ts",
+          "line": 1636,
+          "end_line": 1689,
+          "label": "票:按来路签,在家本机签、外网经中转"
+        }
+      ]
+    },
+    {
+      "id": "speech",
+      "type": "cloud",
+      "label": "语音云",
+      "sublabel": "火山 · MiniMax · 百炼",
+      "pos": [
+        1180,
+        445
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "butler-server/server/routes/api/tts.cjs",
+          "line": 139,
+          "end_line": 149,
+          "label": "百炼分段合成"
+        },
+        {
+          "path": "channel-worker/src/asr/index.ts",
+          "line": 136,
+          "end_line": 163,
+          "label": "有凭据时工人直连火山识别"
+        }
+      ]
+    },
+    {
+      "id": "handset",
+      "type": "external",
+      "label": "实体听筒",
+      "sublabel": "树莓派 · 常驻房间",
+      "tag": "提机才推麦",
+      "pos": [
+        1180,
+        605
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "phone-bridge/popphone.py",
+          "line": 360,
+          "end_line": 397,
+          "label": "开机就进房间"
+        },
+        {
+          "path": "phone-bridge/phone_state.py",
+          "line": 124,
+          "end_line": 158,
+          "label": "接听 / 拨出才推麦"
+        },
+        {
+          "path": "phone-bridge/pairing.py",
+          "line": 476,
+          "end_line": 501,
+          "label": "票先问 8791,不通经中转"
+        }
+      ]
+    },
+    {
+      "id": "localroom",
+      "type": "backend",
+      "label": "本机房间 :7880",
+      "sublabel": "livekit-server · launchd 看管",
+      "tag": "绑 0.0.0.0",
+      "pos": [
+        560,
+        555
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/localRoom.ts",
+          "line": 1,
+          "end_line": 17,
+          "label": "钥匙本机生成,8791 每 30 秒看管"
+        },
+        {
+          "path": "workbench-plugin/src/server/localRoom.ts",
+          "line": 76,
+          "end_line": 95,
+          "label": "livekit.yaml:绑 0.0.0.0,7880–7882,被占换组"
+        },
+        {
+          "path": "workbench-plugin/src/server/channel.ts",
+          "line": 424,
+          "end_line": 465,
+          "label": "channelPlanOf:按来路选本机或中转"
+        }
+      ]
+    },
+    {
+      "id": "graphify",
+      "type": "backend",
+      "label": "Graphify 本机图谱",
+      "sublabel": "uv/Python → 本地HTML/vendor",
+      "tag": "10-23 新增 · 本机生成",
+      "pos": [
+        700,
+        100
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/graphify.ts",
+          "line": 59,
+          "end_line": 210,
+          "label": "本机 AST/聚类/布局/JSON+HTML 流水线,大图 raw 模板"
+        },
+        {
+          "path": "workbench-plugin/src/server/graphify.ts",
+          "line": 373,
+          "end_line": 416,
+          "label": "ensureUv/runInstall:bootstrap 可关、装包"
+        },
+        {
+          "path": "workbench-plugin/src/server/graphify.ts",
+          "line": 427,
+          "end_line": 545,
+          "label": "vendor 钉 hash 下载与产物暂存替换"
+        }
+      ]
+    },
+    {
+      "id": "graphifysvc",
+      "type": "backend",
+      "label": "Graphify service",
+      "sublabel": "启动 + 五个 HTTP 分支",
+      "tag": "10-23 新增",
+      "pos": [
+        880,
+        100
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 1954,
+          "end_line": 1961,
+          "label": "createGraphifyService 启动"
+        },
+        {
+          "path": "workbench-plugin/src/server/http.ts",
+          "line": 9230,
+          "end_line": 9298,
+          "label": "status/build/install/job/view 五个完整分支"
+        }
+      ]
+    },
+    {
+      "id": "endpoints",
+      "type": "backend",
+      "label": "外联配置",
+      "sublabel": "endpoints.ts · 可配/可关",
+      "tag": "10-23 新增",
+      "pos": [
+        880,
+        190
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/endpoints.ts",
+          "line": 31,
+          "end_line": 65,
+          "label": "常量/默认/ENV 表"
+        },
+        {
+          "path": "workbench-plugin/src/server/endpoints.ts",
+          "line": 74,
+          "end_line": 98,
+          "label": "pick/loadEndpoints 完整函数"
+        }
+      ]
+    },
+    {
+      "id": "userlayerio",
+      "type": "backend",
+      "label": "用户层加载口",
+      "sublabel": "userLayer.ts · 播种/版本",
+      "tag": "10-23 新增",
+      "pos": [
+        880,
+        280
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/userLayer.ts",
+          "line": 453,
+          "end_line": 461,
+          "label": "旧 files 原件指纹(manifest 原文+index rev)"
+        },
+        {
+          "path": "workbench-plugin/src/server/userLayer.ts",
+          "line": 692,
+          "end_line": 759,
+          "label": "ensure:.styled 缺席才补缺样式并记 marker"
+        },
+        {
+          "path": "workbench-plugin/src/server/userLayer.ts",
+          "line": 776,
+          "end_line": 804,
+          "label": "readVersion:独立 style_rev,有/无 style 均入 view"
+        }
+      ]
+    },
+    {
+      "id": "userlayerclient",
+      "type": "frontend",
+      "label": "用户层客户端同步",
+      "sublabel": "userLayer.tsx · rev 比较/防迟到",
+      "tag": "10-23 新增",
+      "pos": [
+        880,
+        370
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/client/userLayer.tsx",
+          "line": 140,
+          "end_line": 191,
+          "label": "registry.sync 与 Cell key 含 style_rev"
+        },
+        {
+          "path": "workbench-plugin/src/client/userLayer.tsx",
+          "line": 221,
+          "end_line": 252,
+          "label": "useUserLayerSync:带 style_rev 请求样式并与代码同载"
+        }
+      ]
+    },
+    {
+      "id": "userlayerfeed",
+      "type": "backend",
+      "label": "模板唯一来源·技能源",
+      "sublabel": "index.ts · 注入同一用户层来源",
+      "tag": "10-23 新增",
+      "pos": [
+        880,
+        460
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 1191,
+          "end_line": 1238,
+          "label": "用户层打底后注册模板唯一来源"
+        },
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 1255,
+          "end_line": 1263,
+          "label": "syncButlerSkillsInto:scan 用户层技能→同步工作目录"
+        }
+      ]
+    },
+    {
+      "id": "templatestore",
+      "type": "database",
+      "label": "desired/effective",
+      "sublabel": "templateStore.ts · 回退与恢复",
+      "tag": "10-23 新增",
+      "pos": [
+        880,
+        550
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/templateStore.ts",
+          "line": 543,
+          "end_line": 594,
+          "label": "目标ID保留;读不到 ops 实际 product 并提示,重读修好自动恢复"
+        }
+      ]
+    },
+    {
+      "id": "clifam",
+      "type": "external",
+      "label": "产品 CLI 适配器",
+      "sublabel": "cli.ts · Claude/Codex/Kimi",
+      "tag": "10-23 新增",
+      "pos": [
+        1030,
+        100
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/engine/adapters/cli.ts",
+          "line": 48,
+          "end_line": 50,
+          "label": "CLI_FAMILIES:源于 FAMILY_SOURCES,AGY 研发 CLI 不在此契约"
+        },
+        {
+          "path": "workbench-plugin/src/server/engine/adapters/cli.ts",
+          "line": 67,
+          "end_line": 104,
+          "label": "createCliAdapter:run 含 resume 与回执"
+        }
+      ]
+    },
+    {
+      "id": "workermodel",
+      "type": "backend",
+      "label": "工人每通模型刷新",
+      "sublabel": "agent.ts · 成功才提交",
+      "tag": "10-23 新增",
+      "pos": [
+        1030,
+        190
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "channel-worker/src/agent.ts",
+          "line": 2345,
+          "end_line": 2382,
+          "label": "refreshCallModel:成功才提交"
+        },
+        {
+          "path": "channel-worker/src/modelChoice.ts",
+          "line": 270,
+          "end_line": 279,
+          "label": "编排纯函数:fresh 没变不换;apply 失败不返回新状态"
+        },
+        {
+          "path": "channel-worker/src/agent.ts",
+          "line": 3568,
+          "end_line": 3686,
+          "label": "greet:首句投 LLM 前 await refreshCallModel"
+        }
+      ]
+    },
+    {
+      "id": "boardtools",
+      "type": "backend",
+      "label": "五件板工具",
+      "sublabel": "channel.ts · wb_* 工具",
+      "tag": "10-23 新增",
+      "pos": [
+        1030,
+        280
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/channel.ts",
+          "line": 195,
+          "end_line": 203,
+          "label": "五件板工具常量;不等于 Goal 逐条件机制"
+        }
+      ]
+    },
+    {
+      "id": "relaywake",
+      "type": "backend",
+      "label": "留言等自然醒",
+      "sublabel": "仅 Claude 目标会话 relay/answer",
+      "tag": "10-23 新增",
+      "pos": [
+        1030,
+        370
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/sessionClosed.ts",
+          "line": 22,
+          "end_line": 25,
+          "label": "sessionClosed 话术常量"
+        },
+        {
+          "path": "workbench-plugin/src/index.ts",
+          "line": 3129,
+          "end_line": 3139,
+          "label": "自然醒接线:只现查 Claude 目标会话 socket,relay/answer 两类"
+        },
+        {
+          "path": "workbench-plugin/src/server/sessionAwakeWatch.ts",
+          "line": 1,
+          "end_line": 73,
+          "label": "内部 5 秒限频、上一轮未结束跳过;不主动开 App"
+        }
+      ]
+    },
+    {
+      "id": "itemdriver",
+      "type": "backend",
+      "label": "待排门·负责人驱动",
+      "sublabel": "itemDriver.ts · 非 todo 拒绝等",
+      "tag": "10-23 新增",
+      "pos": [
+        1030,
+        460
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/itemDriver.ts",
+          "line": 172,
+          "end_line": 194,
+          "label": "drivable:非todo拒绝;已接过/会话在跑/演示卡不二派;负责人名片按实际 family"
+        }
+      ]
+    },
+    {
+      "id": "goaliface",
+      "type": "database",
+      "label": "Goal 接口",
+      "sublabel": "protocol.ts · 尚无逐条件字段",
+      "tag": "10-23 新增",
+      "pos": [
+        1030,
+        550
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/protocol.ts",
+          "line": 7947,
+          "end_line": 7966,
+          "label": "CollabGoal:无条件状态/证据字段"
+        }
+      ]
+    },
+    {
+      "id": "edgesnever",
+      "type": "backend",
+      "label": "协作画布关系边",
+      "sublabel": "collabCanvas.ts · 未画进自动门",
+      "tag": "10-23 新增",
+      "pos": [
+        1030,
+        640
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "sources": [
+        {
+          "path": "workbench-plugin/src/server/collabCanvas.ts",
+          "line": 34,
+          "end_line": 37,
+          "label": "CanvasFile.edges: never[],依赖关系未成为自动驱动门"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "电脑(本机 Mac)",
+      "wraps": [
+        "holo",
+        "web",
+        "plugin",
+        "shell",
+        "aiwin",
+        "data",
+        "aicli",
+        "worker",
+        "voice",
+        "localroom",
+        "graphify",
+        "graphifysvc",
+        "endpoints",
+        "userlayerio",
+        "userlayerclient",
+        "userlayerfeed",
+        "templatestore",
+        "clifam",
+        "workermodel",
+        "boardtools",
+        "relaywake",
+        "itemdriver",
+        "goaliface",
+        "edgesnever"
+      ],
+      "pad": 0
+    },
+    {
+      "kind": "region",
+      "label": "DSH 进程",
+      "wraps": [
+        "plugin"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "web-state",
+      "from": "web",
+      "to": "plugin",
+      "label": "每秒读 /state",
+      "variant": "emphasis"
+    },
+    {
+      "id": "holo-live",
+      "from": "holo",
+      "to": "plugin",
+      "label": "/live 推快照"
+    },
+    {
+      "id": "phone-lan",
+      "from": "phone",
+      "to": "plugin",
+      "label": "局域网直连 · 设备令牌",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "plugin-relay",
+      "from": "plugin",
+      "to": "relay",
+      "label": "配对 · 房间票 · 模型 · 更新",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "phone-relay",
+      "from": "phone",
+      "to": "relay",
+      "label": "出门:凭证与票",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "phone-livekit",
+      "from": "phone",
+      "to": "livekit",
+      "label": "出门:通话音频 · ring 事件",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "plugin-shell",
+      "from": "plugin",
+      "to": "shell",
+      "label": "WS /helper 下发 op",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "shell-aiwin",
+      "from": "shell",
+      "to": "aiwin",
+      "label": "辅助功能读写窗口",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "plugin-aicli",
+      "from": "plugin",
+      "to": "aicli",
+      "label": "命令行 / 协议",
+      "labelAt": [
+        600,
+        150
+      ]
+    },
+    {
+      "id": "plugin-data",
+      "from": "plugin",
+      "to": "data",
+      "label": "读写 JSON / JSONL",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "worker-claim",
+      "from": "worker",
+      "to": "plugin",
+      "label": "领票 · 领活",
+      "variant": "dashed",
+      "labelAt": [
+        556,
+        370
+      ]
+    },
+    {
+      "id": "worker-livekit",
+      "from": "worker",
+      "to": "livekit",
+      "label": "音频 · ring",
+      "variant": "emphasis"
+    },
+    {
+      "id": "handset-livekit",
+      "from": "handset",
+      "to": "livekit",
+      "label": "8791 不通时经中转"
+    },
+    {
+      "id": "worker-voice",
+      "from": "worker",
+      "to": "voice",
+      "label": "合成全走 8792",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "voice-speech",
+      "from": "voice",
+      "to": "speech",
+      "label": "ASR / TTS"
+    },
+    {
+      "id": "worker-localroom",
+      "from": "worker",
+      "to": "localroom",
+      "label": "M6 起两条工人,这条进本机房间",
+      "fromSide": "left",
+      "toSide": "top"
+    },
+    {
+      "id": "handset-localroom",
+      "from": "handset",
+      "to": "localroom",
+      "label": "在家:8791 签这间",
+      "fromSide": "bottom",
+      "toSide": "right"
+    },
+    {
+      "id": "phone-localroom",
+      "from": "phone",
+      "to": "localroom",
+      "label": "在家:直连这间",
+      "toSide": "right"
+    },
+    {
+      "id": "plugin-graphify",
+      "from": "plugin",
+      "to": "graphify",
+      "label": "按项目 install/build job",
+      "variant": "default",
+      "labelAt": [
+        622,
+        150
+      ]
+    },
+    {
+      "id": "graphify-data",
+      "from": "graphify",
+      "to": "data",
+      "label": "本机AST → HTML/assets",
+      "variant": "default"
+    },
+    {
+      "id": "plugin-graphifysvc",
+      "from": "plugin",
+      "to": "graphifysvc",
+      "label": "service/HTTP",
+      "labelAt": [
+        650,
+        118
+      ]
+    },
+    {
+      "id": "plugin-userlayerio",
+      "from": "plugin",
+      "to": "userlayerio"
+    },
+    {
+      "id": "plugin-templatestore",
+      "from": "plugin",
+      "to": "templatestore",
+      "label": "desired/effective"
+    },
+    {
+      "id": "worker-workermodel",
+      "from": "worker",
+      "to": "workermodel",
+      "label": "每通读 model.json 刷新",
+      "labelAt": [
+        930,
+        360
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "边界(现状)",
+      "items": [
+        "8791 默认只绑 127.0.0.1;打开「允许手机在局域网访问」才多一个 0.0.0.0 监听,并广播 mDNS _workbench._tcp",
+        "8792 只听 127.0.0.1;壳的 /helper 通道只认回环;小组件沙箱 8794 也只绑 127.0.0.1",
+        "本机房间 livekit-server 绑 0.0.0.0(7880 / 7881 TCP、7882 UDP,被占整组换 7890–7892);钥匙只在 channel.json 与 livekit.yaml(0600)",
+        "手机局域网直连带设备令牌,不通切到房间数据通道由工人在回环上代发;手机按连接规格进房:在家本机房间、出门回落云(M4),听筒先问 8791",
+        "公网三样:中转(账号 / 设备 / 票 / 模型与搜索代理 / 更新)、LiveKit(无 TURN,UDP 50000-50200 与 TCP 7881)、语音云三家"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "主路(一句话怎么走)",
+      "items": [
+        "POST /butler/item 建卡 → understand() 按固定顺序 ①…⑩ 匹配,前三条是演示档不确认",
+        "认不出:一问一答就直接问模型(默认经中转),否则开一条 DSH 会话;点了名的直接派",
+        "派活通道次序:协议 > 窗口 > 命令行 > 接口 > 文件;送达分 confirmed / unconfirmed / not_sent 三档记进 jobs.jsonl",
+        "跟进 4 秒一拍,各家各巡一圈、同一家逐张;自查四条机械检查;卡挪到「等我确认」或「阻塞」;callOut 决定响铃还是只通知"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "最脆处(代码里能看到的)",
+      "items": [
+        "窗口通道一家一条、每下有硬上限(读 20 秒 / 送 150 秒),超了记 jammed;同一家仍逐张,要「重置这一家」才清",
+        "工人是两条(M6):本机房间与云房间各一条,各领各房的电话、同一通先接先得,另一边 answered_elsewhere 收铃;云房间那条仍靠公网与中转凭据",
+        "3 分钟没在对话区看到那句话、或 45 分钟没读完回答 → 卡挪到阻塞(error),不重发",
+        "ACP 适配器只在测试里引用,没接进生产;clear_composer 这个 op 壳会做、插件没人发"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "用户层与学习落在哪",
+      "items": [
+        "布局实例仍在projects.json;本体内置product,ops模板/皮肤来自用户层布局ops.json/ops.css,启动注入同一模板来源。",
+        "用户层的页内六格、网页小组件、技能已接;notes/files专属CSS外移到style.css,JS rev与style_rev共同驱动同步和组件key。",
+        "CSS只在旧目录首轮.styled缺席、starter有同名组件、用户组件目录仍在且缺style.css时补一份;已有index/manifest/style不覆盖,不核原件指纹。记过marker后主动删除的样式不补回,整个组件目录缺失也不恢复。",
+        "精确manifest原文+index原件指纹仅用于旧files在内存限定为ops,不写用户文件;布局的.seeded标记保护主动删除后不补回。",
+        "desired/effective分开;坏/未知布局提示并回退product,修好自动恢复。采集器与规矩/偏好事实仍分处,不能说五类全迁完。"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "图里没画的依赖",
+      "items": [
+        "展示台与插件仍按配置调用Aiboo/AIHOT等外部数据,endpoints.json可改可关;模型/语音/搜索发送相关内容,不承诺全数据不离机。",
+        "Key最终应用/回滚/并发与继承配置契约尚在终审,支持范围等固定收卡QA后补;不能画成DeepSeek固定域名或任意服务已验。",
+        "更新由插件按热修/稳定通道查询,地址由构建注入/配置,开源缺省为空;不是源码固定latest.json唯一通道。",
+        "额度读数已有,低/耗尽工作台消息待排;不自动停任务、改派、买额度或发电话。"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Graphify本机功能(本地已合,随148发布并本机更新)",
+      "items": [
+        "product的files格为GraphView:装上 → 后台建图job → 读本地HTML/assets;ops素材管理留用户层,旧Wiki/Finder贴窗和素材收队入口已删。",
+        "service起uv/Python解析本机项目AST,产物用钉版vis-network@9.1.9本地vendor;查看不拉CDN,项目AST不发往模型。",
+        "安装会下载uv/Python/PyPI及vendor:viz_cdn_url/uv_bootstrap_url可配或off,Python镜像UV_PYTHON_INSTALL_MIRROR/python-install-mirror,离线按缓存与uv开关。",
+        "固定tracked源码镜像独立大图19205节点/26376边/2302社区及Chrome真鼠标通过;项目切换/同job终态倒序也有独立证据。该证据不等于最终main整包或手机验通。"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "统筹与产品能力分开",
+      "items": [
+        "本轮实施:小K(Kimi CLI)、Antigravity(agy+Gemini)、小D(火山模型经Kimi CLI);Codex统筹验收/独占main,必要修复另交独立实施者。",
+        "产品板工具/待排门已有;自然醒自动重送当前仅Claude目标会话的relay/answer,不主动叫醒App,别家留言/锁屏派活不归这条触发。新A已开工,目标B/活动邀请C/关系退回等包待排,依赖手动把关。",
+        "149只是最小协作闭环暂定目标,未验通顺延;不能把原型、研发分工或已合卡数当产品自主闭环。"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "本轮证据边界(10-23 最终重钉)",
+      "items": [
+        "全部 source 已按 main@c55ff4c1 取证重钉:旧 144 引用(123 未变/18 行漂/3 段内变,含 worker 两段人工完整范围)+ 新增 29 候选(13 个新方块+graphify 补齐+tree-repo 四个占位节点)。",
+        "0.4.148 热修已发布并本机更新(exec10863 exit0,七项安装 sha 匹配,current=latest=148);隔离 QA 45 项与整包九阶段全部 exit0;稳定仍 0.4.142。",
+        "留言等自然醒只覆盖 Claude 目标会话 relay/answer(见 relaywake 方块);CSS 补迁不核原件指纹(见 userlayerio)。"
+      ]
+    }
+  ]
+}

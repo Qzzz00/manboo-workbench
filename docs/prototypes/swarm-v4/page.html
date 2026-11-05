@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN" data-scene-version="4" data-theme="dark" data-mode="idle" data-notice="neutral">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>事务官 · A quiet presence</title><style>/* STYLES */</style></head>
+<body>
+<main class="app">
+  <header class="topbar"><a class="brand" href="#" aria-label="事务官首页"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" aria-hidden="true"><path d="m12 2 10 10-10 10L2 12Z" stroke="currentColor"/><path d="m12 7 5 5-5 5-5-5Z" stroke="currentColor"/></svg><strong>事务官</strong><span>BUTLER</span></a><div class="header-end"><span class="presence">陪你把事情做好</span><button id="themeToggle" aria-label="切换到浅色背景">◐</button><button id="tuningToggle" aria-expanded="false" aria-controls="tuningPanel"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 4h12M2 12h12M5 2v4M11 10v4" stroke="currentColor"/></svg>调参</button><span class="edition">视觉实验 / 04</span></div></header>
+  <section class="workspace" aria-label="事务官与事项">
+    <div class="scene-heading"><span>留一点心意，给正在发生的事。</span><span>A QUIET PRESENCE</span></div>
+    <svg class="connections" aria-hidden="true"><path id="activeLink"/><circle id="linkDot" r="2"/></svg>
+    <aside class="active-column"><section id="activeTask" aria-label="当前聚焦事项" aria-hidden="true" inert></section></aside>
+    <section class="creature" aria-label="粒子生命体">
+      <div class="orb-wrap"><canvas id="particleOrb" aria-label="三维方粒与流光"></canvas><button id="orbButton" aria-label="点击开始聆听，再次点击表示说完"></button></div>
+      <div class="orb-copy"><h1 id="stateLabel">我在。</h1><p id="stateSummary">安静地流动，等你开口。</p><div id="dialogueIndicator" class="dialogue-indicator" hidden><i aria-hidden="true"></i><span id="dialogueStatus">模拟输入 · 句间停顿</span></div><button id="finishListening" hidden>我说完了 ↵</button><nav class="expressions" aria-label="表情预览"><button data-expression="smile">微笑</button><button data-expression="happy">开心</button></nav></div>
+    </section>
+    <aside class="task-sidebar" aria-label="本地模拟事项"><section id="runningTasks" aria-label="运行与排队事项"></section><div id="taskStacks" class="stacks" aria-label="按状态收纳的事项"></div></aside>
+  </section>
+  <footer class="bottom">
+    <p id="response" class="response" aria-live="polite">点击球体开始聆听，或体验一次完整的处理过程。</p>
+    <form id="composer" class="composer"><span aria-hidden="true">∿</span><input id="prompt" aria-label="演示问题" placeholder="试着交给我一件事……"><button id="playDemo" type="submit"><span>▶</span> 演示完整过程</button></form>
+    <nav class="mode-controls" aria-label="动作预览"><span>动作</span><button data-mode="idle">待机</button><button data-mode="listening">聆听</button><button data-mode="acknowledging">听懂了</button><button data-mode="working">工作</button><button data-mode="speaking">说话</button><button data-mode="expressing">表情</button><button data-mode="calling">通话</button><span class="control-divider"></span><span>结果</span><button data-result="completed">完成</button><button data-result="confirmation">待确认</button><button data-result="failed">失败</button><button id="endCallPreview" data-mode="idle" hidden>结束通话预览</button></nav>
+    <nav class="task-demo-controls" aria-label="任务演示"><button id="parallelDemo">并行演示 ↗</button><button data-mode="idle">返回待机</button><span>结果按钮仅处理左侧聚焦事项</span></nav>
+    <p class="demo-note">演示事项 · 模拟过程 · 未接入 AI、语音或拨号</p>
+  </footer>
+</main>
+<aside id="tuningPanel" class="tuning-panel" aria-label="动效调试台" hidden>
+  <header class="tuning-head"><div><h2>动效调试台</h2><p>实时预览 · <span id="tuningCount">3,600 颗</span> · 仅本机保存</p></div><button id="closeTuning" aria-label="关闭调参">×</button></header>
+  <p class="tune-hint">图标的封闭镂空自动补光；亮度与流速跟随光团设置，大小由孔洞形状决定。</p>
+  <div class="tuning-body"><nav class="tuning-preview-modes" aria-label="调参动作预览"><button data-mode="idle">球体</button><button data-mode="listening">聆听</button><button data-mode="speaking">说话</button><button data-mode="working">工作</button><button data-mode="expressing">笑脸</button><button data-mode="calling">电话</button></nav>
+    <details id="iconLibrary" class="icon-library"><summary><span>内置图标库 <small>120 · 实心</small></span></summary><div class="icon-filters"><input id="iconSearch" type="search" aria-label="搜索内置图标" placeholder="搜索名称、用途或英文 ID"><select id="iconCategory" aria-label="图标分类"><option value="">全部分类</option></select></div><div id="iconGrid" class="icon-grid"></div><div class="icon-paging"><button id="iconPrevious" aria-label="上一页图标">←</button><span id="iconPage"></span><button id="iconNext" aria-label="下一页图标">→</button></div><p id="iconSelection">选择图标预览 · 全部离线可用</p></details>
+    <div id="tuningFields"></div>
+    <section class="svg-import"><h3>自己的 SVG 图标</h3><div id="svgDrop" class="svg-drop"><p>把 SVG 拖到这里</p><small>路径与基本几何 · 最多 256 KB<br>只在本机读取，不上传</small><span id="svgName">尚未导入 SVG</span><div class="svg-actions"><button id="chooseSVG">选择 SVG</button><button id="previewSVG">预览图标</button><label><input id="svgFill" type="checkbox">实心采样</label></div></div><details class="svg-paste"><summary>或粘贴 SVG 源码</summary><textarea id="svgPaste" aria-label="SVG 源码" placeholder="<svg viewBox=…>…</svg>" spellcheck="false"></textarea><button id="applySVGText">应用 SVG 源码</button></details><p>不支持文字、图片、外链、滤镜。导入后展开「图标」调整厚度和运动。</p><input id="svgFile" type="file" accept=".svg,image/svg+xml" hidden><input id="presetFile" type="file" accept=".json,application/json" hidden></section>
+  </div><div class="tuning-actions"><button id="pauseTuning" aria-pressed="false">暂停动画</button><button id="exportTuning">导出配置</button><button id="importTuning">导入配置</button><button id="resetTuning">恢复默认</button></div><p id="tuningStatus" role="status">调整即生效，数量在松手后更新。</p>
+</aside>
+<div class="glyph-assets" aria-hidden="true">
+  <svg data-glyph="smile" viewBox="0 0 24 24"><path data-feature d="M9 10l.01 0"/><path data-feature d="M15 10l.01 0"/><path data-feature d="M9.5 15a3.5 3.5 0 0 0 5 0"/></svg>
+  <svg data-glyph="wink" viewBox="0 0 24 24"><path data-feature d="M15 10h.01"/><path data-feature d="M9.5 15a3.5 3.5 0 0 0 5 0"/><path data-feature d="M8.5 8.5l1.5 1.5l-1.5 1.5"/></svg>
+  <svg data-glyph="phone" viewBox="0 0 24 24"><path data-feature d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"/></svg>
+</div>
+<output id="perfResult" hidden></output>
+<!-- LICENSES -->
+<script>/* SCRIPTS */</script>
+</body></html>

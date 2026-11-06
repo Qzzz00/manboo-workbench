@@ -1,6 +1,8 @@
 # 构建产物与依赖
 node_modules/
-dist/
+# dist 下只放行 README 引用的自媒体二维码；安装包等二进制不入库
+dist/*
+!dist/media/
 lib/
 *.tsbuildinfo
 .DS_Store

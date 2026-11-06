@@ -10,7 +10,7 @@ AI 正在加快写作、设计和开发，人的一天却没有变长。几家 A
 
 参与程度由人决定。你可以把精力放在自己重视的部分，也可以随时接手、改变做法或收回委托。我们希望共同做过的每一件事，都让下一次协作少一些重复交代，多一些可以放心交出的工作。
 
-[官网与演示](https://www.aibooo.cn/) · [实现状态](#实现状态) · [目前实现](docs/目前实现.md) · [开发入口](#安装与开发)
+[官网与演示](https://www.aibooo.cn/) · [下载](#下载) · [实现状态](#实现状态) · [目前实现](docs/目前实现.md) · [关注我们](#关注我们) · [开发入口](#安装与开发)
 
 ![座机外观示意：实体听筒、横屏手机与拓展坞底座。](docs/assets/project-intro/device-dock.webp)
 
@@ -157,6 +157,29 @@ AI 正在加快写作、设计和开发，人的一天却没有变长。几家 A
 
 应用通过 macOS 安装包与 Android 安装包分发，目前处于定向内测阶段。运行需要完成模型、语音与设备连接配置；实体座机另需树莓派、听筒、提挂机接线与网络。
 
+### 下载
+
+当前版本 **0.4.192**：桌面端面向 macOS / Apple Silicon，手机端为 Android。
+
+| 平台 | 安装包 | 大小 | 说明 |
+| --- | --- | --- | --- |
+| macOS | [Manboo工作台安装器-0.4.192.dmg](dist/Manboo工作台安装器-0.4.192.dmg) | 160 MB | 完整包，含通话组件 |
+| macOS | [Manboo工作台安装器-0.4.192-精简版.dmg](dist/Manboo工作台安装器-0.4.192-精简版.dmg) | 98 MB | 不含通话组件，装出来的机器手机通话不可用 |
+| Android | [Manboo事务官-0.4.192.apk](dist/Manboo事务官-0.4.192.apk) | 66 MB | debug 签名，可直接安装 |
+
+<details>
+<summary>SHA-256 校验值</summary>
+
+```text
+88bd9b1c4d1bb8000dfaec0ca7e068447d0bd5257e8e90b0380273028f67ab0c  Manboo工作台安装器-0.4.192.dmg
+77a469a06ce153a7d0dd950efb1c595d7080d549a3e3a2648b53df9966fbc672  Manboo工作台安装器-0.4.192-精简版.dmg
+ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo事务官-0.4.192.apk
+```
+
+</details>
+
+安装包为 ad-hoc 签名、未公证：macOS 首次打开需到「系统设置 → 隐私与安全性 → 仍要打开」。这些二进制文件不随 Git 仓库分发（`dist/` 在 `.gitignore` 中，且单文件超过 GitHub 100 MB 上限）；公开发布时请把它们作为 Release 附件上传，并把上表链接换成对应的 Releases 下载地址。
+
 插件开发需要将本仓库与 `deepseek-harness`（DeepSeek Harness 上游，锁在标签 `dsh-v0.1.7-rc.2`，不跟随升级）放在同一父目录。插件的 `link:` 依赖直接引用上游源码，不带版本约束；上游各包的 `main` / `types` 指向构建产物 `lib/`（不入库），所以必须先在上游里安装并构建，仅检出本仓库不足以安装这些依赖。
 
 ```text
@@ -187,4 +210,18 @@ pnpm build
 
 手机端命令见 [butler-app/package.json](butler-app/package.json)，展示层命令见 [display-client/package.json](display-client/package.json)，通话进程要求 Node.js 24 或更新版本，见 [channel-worker/package.json](channel-worker/package.json)。原生桌面壳使用 Swift，听筒程序使用 Python；分别在对应工程中构建和配置。参与代码修改前请阅读 [开发规范](AGENTS.md)。
 
-项目尚未发布正式许可证。[许可草案](docs/licensing/README.md)采用带附加条件的源码可用方案，主体与联系信息待填，尚未生效；第三方组件仍适用各自的许可证。
+## 关注我们
+
+扫码关注自媒体账号，或加入微信用户群：
+
+| 抖音 | 微信用户群 | 小红书 | B站 |
+| :---: | :---: | :---: | :---: |
+| <img src="dist/media/dy.jpg" width="160" alt="抖音二维码"> | <img src="dist/media/wechat.png" width="160" alt="微信用户群二维码"> | <img src="dist/media/red.jpg" width="160" alt="小红书二维码"> | <img src="dist/media/bilibili.jpg" width="160" alt="B站二维码"> |
+
+群二维码会定期更新，若已失效请以[官网](https://www.aibooo.cn/)公布的信息为准。
+
+## 许可证
+
+本项目采用 [Apache License 2.0](LICENSE)。你可以按该许可的条款使用、修改和分发本仓库代码。
+
+第三方组件仍适用各自的许可证，见 [第三方依赖清单](docs/开源-第三方依赖清单-2026-10-21.md) 与 [通话组件第三方声明](channel-worker/THIRD_PARTY_NOTICES.md)。[docs/licensing](docs/licensing/README.md) 中是早期未生效的许可草案，仅作历史档案，不构成对本项目的授权条件。

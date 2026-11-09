@@ -163,9 +163,9 @@ Current version **0.4.192**: desktop targets macOS / Apple Silicon; mobile targe
 
 | Platform | Package | Size | Notes |
 | --- | --- | --- | --- |
-| macOS | [Manboo-workbench-0.4.192.dmg](dist/Manboo-workbench-0.4.192.dmg) | 157 MB | Full installer, includes the call worker |
-| macOS | [Manboo-workbench-0.4.192-lite.dmg](dist/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | Slim installer without the call worker; phone calls will not work on the installed machine |
-| Android | [Manboo-app-0.4.192.apk](dist/Manboo-app-0.4.192.apk) | 66 MB | Debug-signed; install directly |
+| macOS | [Manboo-workbench-0.4.192.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192.dmg) | 157 MB | Full installer, includes the call worker |
+| macOS | [Manboo-workbench-0.4.192-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | Slim installer without the call worker; phone calls will not work on the installed machine |
+| Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-app-0.4.192.apk) | 66 MB | Debug-signed; install directly |
 
 <details>
 <summary>SHA-256 checksums</summary>
@@ -178,7 +178,7 @@ ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4
 
 </details>
 
-The installers are ad-hoc signed and not notarised: on first launch, macOS requires **System Settings → Privacy & Security → Open Anyway**. These binaries are not distributed through Git (`dist/` is in `.gitignore`; GitHub blocks files larger than 100 MiB in a Git repository, so installers must not enter Git history). A GitHub Release asset may be up to 2 GiB, with no limit on total release size or download bandwidth; for a public release, upload them as Release assets and replace the links above with the corresponding Releases download URLs.
+The installers are ad-hoc signed and not notarised: on first launch, macOS requires **System Settings → Privacy & Security → Open Anyway**. The binaries are distributed as [v0.4.192 Release assets](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.192), not through Git (`dist/` is in `.gitignore`; GitHub blocks files larger than 100 MiB in a Git repository, while a Release asset may be up to 2 GiB with no limit on total release size or download bandwidth). Verify downloads against the SHA-256 checksums above.
 
 Plugin development requires this repository and `deepseek-harness` (the DeepSeek Harness upstream, pinned to tag `dsh-v0.1.7-rc.2`, not upgraded) in the same parent directory. The plugin's `link:` dependencies point directly at upstream source without version constraints, and upstream packages' `main` / `types` point at build output in `lib/` (not committed), so you must install and build upstream first — checking out this repository alone is not enough to install those dependencies.
 

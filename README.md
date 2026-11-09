@@ -163,9 +163,9 @@ AI 正在加快写作、设计和开发，人的一天却没有变长。几家 A
 
 | 平台 | 安装包 | 大小 | 说明 |
 | --- | --- | --- | --- |
-| macOS | [Manboo-workbench-0.4.192.dmg](dist/Manboo-workbench-0.4.192.dmg) | 157 MB | 完整包，含通话组件 |
-| macOS | [Manboo-workbench-0.4.192-lite.dmg](dist/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | 不含通话组件，装出来的机器手机通话不可用 |
-| Android | [Manboo-app-0.4.192.apk](dist/Manboo-app-0.4.192.apk) | 66 MB | debug 签名，可直接安装 |
+| macOS | [Manboo-workbench-0.4.192.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192.dmg) | 157 MB | 完整包，含通话组件 |
+| macOS | [Manboo-workbench-0.4.192-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | 不含通话组件，装出来的机器手机通话不可用 |
+| Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-app-0.4.192.apk) | 66 MB | debug 签名，可直接安装 |
 
 <details>
 <summary>SHA-256 校验值</summary>
@@ -178,7 +178,7 @@ ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4
 
 </details>
 
-安装包为 ad-hoc 签名、未公证：macOS 首次打开需到「系统设置 → 隐私与安全性 → 仍要打开」。这些二进制文件不随 Git 仓库分发（`dist/` 在 `.gitignore` 中；GitHub 对仓库内单个文件限制 100 MiB，安装包不能进 Git 历史）。GitHub Release 附件单文件上限为 2 GiB，且不限 Release 总大小与下载带宽，因此公开发布时请把它们作为 Release 附件上传，并把上表链接换成对应的 Releases 下载地址。
+安装包为 ad-hoc 签名、未公证：macOS 首次打开需到「系统设置 → 隐私与安全性 → 仍要打开」。二进制文件作为 [v0.4.192 Release 附件](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.192) 分发，不进 Git 仓库（`dist/` 在 `.gitignore` 中；GitHub 对仓库内单个文件限制 100 MiB，Release 附件单文件上限为 2 GiB，且不限总大小与下载带宽）。下载后建议对照上面的 SHA-256 校验值。
 
 插件开发需要将本仓库与 `deepseek-harness`（DeepSeek Harness 上游，锁在标签 `dsh-v0.1.7-rc.2`，不跟随升级）放在同一父目录。插件的 `link:` 依赖直接引用上游源码，不带版本约束；上游各包的 `main` / `types` 指向构建产物 `lib/`（不入库），所以必须先在上游里安装并构建，仅检出本仓库不足以安装这些依赖。
 

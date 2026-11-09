@@ -239,7 +239,7 @@ function migrate(db) {
  * 打开(必要时建)库。`:memory:` 也认——测试里跑得最快的那条路。
  * 返回的是裸 DatabaseSync:这一层薄到不值得再包一层,调用方直接 prepare。
  */
-function openRelayDb(file) {
+function openRelayDb(file, opts = {}) {
   if (file !== ':memory:') fs.mkdirSync(path.dirname(file), { recursive: true });
   const db = new DatabaseSync(file);
   // WAL:一个写(记账)一堆读(查额度)并发时不互相卡。内存库不支持,跳过。
@@ -247,7 +247,9 @@ function openRelayDb(file) {
   db.exec('PRAGMA foreign_keys = ON;');
   db.exec(SCHEMA);
   // 协作区的表(2026-10-21)全是新表,CREATE IF NOT EXISTS 就够,存量库原地升。
-  db.exec(COLLAB_SCHEMA);
+  // 2026-11-09 起受总开关管:**没显式开就不建**。生产由 index.cjs 从 config.collabEnabled 传进来;
+  // 单测要跑协作区那一块就 openRelayDb(':memory:', { collab: true })。
+  if (opts.collab === true) db.exec(COLLAB_SCHEMA);
   migrate(db);
   return db;
 }

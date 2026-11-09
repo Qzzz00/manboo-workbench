@@ -1654,6 +1654,11 @@ export interface ProcessHealthView {
 }
 
 export interface WorkbenchState {
+  /**
+   * 「多人协作区」总开关此刻的值(2026-11-09,由 8791 如实下发)。
+   * **缺席 = 关**:老工作台 / 掉线时的离线快照不给这一格,两端据此收起协作区入口(fail-closed)。
+   */
+  collab_enabled?: boolean
   agents: readonly AgentView[]
   sessions: readonly SessionView[]
   quota: Partial<Record<AgentId, QuotaEntry>>

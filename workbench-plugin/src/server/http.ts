@@ -1653,6 +1653,15 @@ export interface StartWorkbenchServerOptions {
    */
   appConfig?: AppConfigService
   /**
+   * 「多人协作区」总开关(2026-11-09,开源版默认关)。由 `index.ts` 从环境变量 / app.json 算好后传进来;
+   * **缺席 = 开**是给老宿主与全部单测留的兼容位(它们不传这一格,行为与改动前逐字相同)。
+   * 生产入口只有 `index.ts` 一个,它会显式传值:没配就是 `false`。
+   *
+   * 关着时:不装配 /collab/* 路由、不建跨机 relay 与定时派活、不起长轮询与 pump、不合并协作区快照、
+   * 不放行 `collab-peer` 设备,并在 `/state.collab_enabled` 里如实下发 `false` 给桌面与手机。
+   */
+  collabEnabled?: boolean
+  /**
    * **一问一答当场答那一下问模型的口**(2026-10-02,卡「语音交代慢与老问上限」)。
    *
    * 走的是工作台模型服务定的那一家(`index.ts` 的 `askModel`:`deepseek-v4-flash` + 关思考 +
@@ -2723,12 +2732,15 @@ export async function startWorkbenchServer(
    * 没传(用例、老宿主)就在这儿造一份本地的:闸照样生效,只是账查不到别的进程里的事件。
    */
   const jobLog = options.jobLog ?? createJobLog()
+  /** 多人协作区总开关:放在最前面,下面所有装配点都读它(缺席 = 开,兼容老宿主与单测)。 */
+  const collabEnabled = options.collabEnabled ?? true
   /**
    * 协作区的 Agent 小鼠标(2026-10-21,`collabPresence.ts`):账上记一条,板上那只小鼠标跟着动。
-   * 经 `/live` 推 `kind:'presence'`,**不进快照、不落盘**。
+   * 经 `/live` 推 `kind:'presence'`,**不进快照、不落盘**。总开关关着就一条都不推。
    */
   const collabPresence = createPresenceBoard()
   jobLog.listen?.((event) => {
+    if (!collabEnabled) return
     const presence = presenceOfJob(event)
     if (presence === undefined) return
     collabPresence.apply(presence)
@@ -6362,6 +6374,8 @@ export async function startWorkbenchServer(
       : options.quotaSpendTips.itemsFor(quotaViewsNow, tasksState?.tasks, new Date(base.now))
     const composed: WorkbenchState = {
       ...base,
+      // 多人协作区总开关(2026-11-09):桌面与手机都读这一格收起入口,不再各自猜。
+      collab_enabled: collabEnabled,
       agents: agentsShown,
       quota: quotaShown,
       ...(installedView === undefined ? {} : { installed_agents: installedView }),
@@ -6450,7 +6464,8 @@ export async function startWorkbenchServer(
             tasks: {
               ...(shownTasks ?? risked?.tasks ?? tasksState),
               ...(sessionUsage === undefined ? {} : { session_usage: sessionUsage }),
-              ...(await collabStateOf(tasksState, base.sessions, projectsState?.projects ?? [], base.now)),
+              // 总开关关着时整块不合并:目标 / 工作室 / 跨机 / 头像 / 事项类型都不进 /state。
+              ...(collabEnabled ? await collabStateOf(tasksState, base.sessions, projectsState?.projects ?? [], base.now) : {}),
             },
           }),
       ...(notesList === undefined ? {} : { notes: notesList }),
@@ -7044,7 +7059,7 @@ export async function startWorkbenchServer(
    * 定时派活(2026-10-21 协作区全量,`collabTimers.ts`):挂在下面那根既有节拍上,一分钟才看一次。
    * 负责人是这台电脑上能派的那一家时顺手走现有派活(`dispatchItem`,同她点「派给 X」那一条)。
    */
-  const collabTimers = tasks === undefined ? undefined : createTimerRunner({
+  const collabTimers = !collabEnabled || tasks === undefined ? undefined : createTimerRunner({
     tasks,
     canDispatch: family => isAgentDispatchFamily(family) && isDispatchTarget(dispatchTargetsNow(), family),
     dispatch: async (noteId, family, text) => await dispatchItem(noteId, { family: family as AgentDispatchFamily, text }),
@@ -7056,7 +7071,7 @@ export async function startWorkbenchServer(
    */
   const relayHome = setupHome
   const avatarHome = options.collabAvatars?.home ?? setupHome
-  const collabAvatars = avatarHome === '' ? undefined : createAvatarStore({ home: avatarHome })
+  const collabAvatars = !collabEnabled || avatarHome === '' ? undefined : createAvatarStore({ home: avatarHome })
   const relayLink = options.collabRelay?.link ?? (relayHome === '' ? undefined : async (): Promise<RelayLink | undefined> => {
     const config = await loadModelConfig(`${relayHome}/.dsh/workbench/model.json`)
     let session: string | undefined
@@ -7068,7 +7083,7 @@ export async function startWorkbenchServer(
       ...(session === undefined ? {} : { sessionToken: session }),
     }
   })
-  const collabRelay: CollabRelay | undefined = tasks === undefined || relayLink === undefined ? undefined : createCollabRelay({
+  const collabRelay: CollabRelay | undefined = !collabEnabled || tasks === undefined || relayLink === undefined ? undefined : createCollabRelay({
     link: relayLink,
     ...(options.collabRelay?.fetchImpl === undefined ? {} : { fetchImpl: options.collabRelay.fetchImpl }),
     inboxFile: options.collabRelay?.inboxFile ?? defaultRelayInboxFile(relayHome),
@@ -7082,7 +7097,8 @@ export async function startWorkbenchServer(
     // 名片登记到工作室时只带内置 id 或小图;原图不出这台电脑。
     ...(collabAvatars === undefined ? {} : { avatarOf: owner => collabAvatars.shareOf(owner) }),
   })
-  if (options.collabRelay?.loop === true) collabRelay?.start()
+  // 总开关关着时连那两条跨机长轮询都不起(既有「loop === true」规矩照旧)。
+  if (collabEnabled && options.collabRelay?.loop === true) collabRelay?.start()
   const collabRelayRoutes = createCollabRelayRoutes({
     ...(collabRelay === undefined ? {} : { relay: collabRelay }),
     changed: async () => { broadcast({ kind: 'snapshot', state: await composeState() }) },
@@ -7093,7 +7109,8 @@ export async function startWorkbenchServer(
   })
   // 事项类型表(2026-10-22):`<工作目录>/协作区/事项类型.json`,/state 带整张表。
   const collabWorkTypes = createWorkTypesStore(collabCanvasFile)
-  const collabRoutes = createCollabRoutes({
+  // 总开关关着时整块路由对象都不造:下面三处 handle 判空后直接落到「没这条路由」。
+  const collabRoutes = collabEnabled ? createCollabRoutes({
     ...(feed === undefined ? {} : { feed }),
     dispatch: (id, input) => dispatchItem(id, input),
     lanPeerFile: async () => join(dirname(await collabCanvasFile()), '.lan-peers.json'),
@@ -7117,7 +7134,7 @@ export async function startWorkbenchServer(
       itemDriver?.kick()
       broadcast({ kind: 'snapshot', state: await composeState() })
     },
-  })
+  }) : undefined
 
   /**
    * 协作区那几格现算(2026-10-21):目标上的排期风险(**只在有截止日时**)与「这条会话挂到哪个目标?」。
@@ -7820,6 +7837,11 @@ export async function startWorkbenchServer(
       }
       personalRequests.add(req)
     }
+    // 总开关关着时,协作成员凭据一律不认(它只随协作区 LAN 配对产生,不该有别的入口)。
+    if (!collabEnabled && device?.platform === 'collab-peer') {
+      sendJson(res, 403, { error: '多人协作区已关闭' })
+      return
+    }
     // 协作成员只获同项目消息的传输权,不继承手机的看板/文件/房间访问权。
     if (device?.platform === 'collab-peer' && !((req.method === 'GET' && path === '/collab/lan/hello') || (req.method === 'POST' && path === '/collab/lan/receive') || req.method === 'OPTIONS')) {
       sendJson(res, 403, { error: '协作成员凭据只用于局域网消息,不能访问工作台其它内容' })
@@ -7972,21 +7994,23 @@ export async function startWorkbenchServer(
       }
     }
 
-    if (await collabAvatarRoutes.handle({
+    // 多人协作区总开关(2026-11-09):关着时下面三条 handler 一条都不进,
+    // /collab/* 与 /token/personal* 直接落到后面的「没这条路由」(404)。
+    if (collabEnabled && await collabAvatarRoutes.handle({
       req, res, path, trusted, loopback, page: asker === 'page', sendJson, readJsonBody,
       writeDenied: () => agentWriteDenied(req, device),
     })) return
     // 协作区跨机那几条(2026-10-21,`collabRelayRoutes.ts`)。
-    if (await collabRelayRoutes.handle({
+    if (collabEnabled && await collabRelayRoutes.handle({
       req, res, path, trusted, loopback, page: asker === 'page', sendJson, readJsonBody,
       writeDenied: () => agentWriteDenied(req, device),
     })) return
     // 协作区那几条(2026-10-21,`collabRoutes.ts`):新路径,老路由一条不碰。
-    if (await collabRoutes.handle({
+    if (collabEnabled && await collabRoutes?.handle({
       ...(device === undefined ? {} : { device }),
       req, res, path, trusted, loopback, page: asker === 'page', sendJson, readJsonBody,
       writeDenied: () => agentWriteDenied(req, device),
-    })) return
+    }) === true) return
 
     /**
      * 「工作台起来了没有」(2026-09-26,卡 U6)。**壳在让页面开始加载之前先探这一条**。
@@ -19631,10 +19655,12 @@ export async function startWorkbenchServer(
     pumpLayoutSnapshot()
     // 例程定时(2026-09-15):同款。到点之前每一拍只是几次比较,不组装 state。
     routines?.pump()
-    // 定时派活(2026-10-21 协作区全量):同款,内部一分钟才看一次。
-    void collabTimers?.pump().catch(() => {})
-    // 原F来源发布:复用既有节拍,仅显式启用项目按分钟检查,不新建定时器。
-    void collabRoutes.pumpSources().catch(() => {})
+    // 定时派活(2026-10-21 协作区全量):同款,内部一分钟才看一次。总开关关着两样都不挂上节拍。
+    if (collabEnabled) {
+      void collabTimers?.pump().catch(() => {})
+      // 原F来源发布:复用既有节拍,仅显式启用项目按分钟检查,不新建定时器。
+      void collabRoutes?.pumpSources().catch(() => {})
+    }
     // 负责人驱动(2026-09-25,卡 N):同款,内部 30 秒一拍。
     itemDriver?.pump()
     // 修复交回守门(2026-10-23,卡「分层自愈完善」):同款,没有待核的派活就一次 I/O 都不做。
@@ -19871,7 +19897,7 @@ export async function startFromEnv(
     | 'agentCaps' | 'loginLauncher' | 'itemBudget' | 'appInstalled' | 'windowQuota' | 'quotaAlerts' | 'quotaSpendTips'
     | 'agents' | 'callState' | 'sessionChildren'
     | 'actorTokens' | 'processHealth'
-    | 'personalTokens' | 'collabWorkdir' | 'githubDevice' | 'mcpSecrets' | 'collabRelay' | 'collabAvatars'
+    | 'personalTokens' | 'collabWorkdir' | 'githubDevice' | 'mcpSecrets' | 'collabRelay' | 'collabAvatars' | 'collabEnabled'
   > = {},
 ): Promise<WorkbenchServer> {
   return startWorkbenchServer({

@@ -210,6 +210,22 @@ pnpm build
 
 手机端命令见 [butler-app/package.json](butler-app/package.json)，展示层命令见 [display-client/package.json](display-client/package.json)，通话进程要求 Node.js 24 或更新版本，见 [channel-worker/package.json](channel-worker/package.json)。原生桌面壳使用 Swift，听筒程序使用 Python；分别在对应工程中构建和配置。参与代码修改前请阅读 [开发规范](AGENTS.md)。
 
+### 多人协作区（默认关闭）
+
+仓库里还留着一套面向工作室的多人协作代码：工作室与成员邀请、跨机收件箱、对象目录、频道、定时派活、企微绑定等。**开源版默认整块关闭**：本机不挂 `/collab/*` 路由、不合并协作区快照、不起跨机长轮询与定时派活；`relay/` 不建那 15 张表、不挂 `/v1/*` 协作路由；桌面与手机的协作区入口都不显示。
+
+开关只有一个，启动时读一次（改完要重启工作台与中转）：
+
+| 位置 | 取值 | 说明 |
+| --- | --- | --- |
+| 环境变量 `WORKBENCH_COLLAB_ENABLED` | `1` / `true` / `on` 开，`0` / `false` / `off` 关 | 优先级最高；本机工作台与 `relay/` 中转读同一个变量 |
+| `~/.dsh/workbench/app.json` 的 `collab_enabled` | 布尔值 | 只影响本机工作台；relay 是独立进程，不读这个文件 |
+| 两处都没配 | **关** | 有意如此：开箱不接这一整块 |
+
+要完整开启，两边都得开：本机设环境变量或在 `app.json` 写 `"collab_enabled": true`，中转侧设 `WORKBENCH_COLLAB_ENABLED=1`。服务端把当前值放进 `/state.collab_enabled`，桌面与手机据此收起或显示入口，不用重新打包。
+
+> **这个开关关的是功能，不是源码。** 协作区的实现文件仍在本仓库里，克隆即可读到；若目标是连实现都不公开，需要在发布前从源码仓剔除相关文件、重建一个没有历史记录的提交，并重新打包 DMG / APK —— 当前 `dist/` 里的安装包是加开关之前构建的，仍含这部分前端代码。
+
 ## 关注我们
 
 扫码关注自媒体账号，或加入微信用户群：

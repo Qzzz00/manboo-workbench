@@ -315,7 +315,8 @@ function createApp({ db, config, fetchImpl = fetch, now = () => new Date(), log 
         volc_tts_reuses_asr: config.channel?.volcTts?.reusesAsr === true,
       },
       // 协作区跨机底座(2026-10-21):有这一格 = 这台中转有工作室 / 收件箱 / 频道。企微机器人配没配只回布尔。
-      collab: { inbox: true, wecom_configured: wecomConfigured(config.wecom) },
+      // 2026-11-09:总开关关着时整格缺席 —— 健康检查不该说一台没有的东西「有」。
+      ...(config.collabEnabled === true ? { collab: { inbox: true, wecom_configured: wecomConfigured(config.wecom) } } : {}),
       active_tokens: Number(tokens?.n ?? 0),
       day: dayKey(now(), config.dayOffsetMinutes),
       // 每日额度(元)与启动时的注意事项(已废弃的变量、写坏的价格)。只是话,不含任何值。
@@ -1133,7 +1134,10 @@ function createApp({ db, config, fetchImpl = fetch, now = () => new Date(), log 
   });
 
   // 协作区跨机底座(工作室、收件箱、对象目录、频道、定时派活回调、企微机器人),路由与规则见 collabRoutes.cjs。
-  mountCollab(app, { db, config, now, fetchImpl, log, deviceOf, sessionOf });
+  // 2026-11-09 起受总开关管:开源版默认关,整块路由一条都不挂。
+  if (config.collabEnabled === true) {
+    mountCollab(app, { db, config, now, fetchImpl, log, deviceOf, sessionOf });
+  }
 
   /** 管理面:只认回环(理由见文件头)。 */
   function adminGate(req, res) {

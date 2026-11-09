@@ -1050,6 +1050,8 @@ export interface QuietView {
 }
 
 export interface WorkbenchState {
+  /** 「多人协作区」总开关(2026-11-09,电脑那边如实下发)。**缺席 = 关**:老工作台 / 掉线一律收起入口。 */
+  collab_enabled?: boolean;
   now: string;
   stale: boolean;
   /** Agent 登记表(卡 Q):正在办、各家正在办、各家叫什么都读它。老工作台没有这一格。 */

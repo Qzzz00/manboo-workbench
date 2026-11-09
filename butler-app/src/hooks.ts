@@ -7,6 +7,21 @@ export function useFeed(feed: StateFeed): FeedSnapshot {
   return useSyncExternalStore((cb) => feed.subscribe(cb), () => feed.get(), () => feed.get());
 }
 
+const noFeedSubscribe = (): (() => void) => () => {};
+
+/**
+ * 「多人协作区」总开关(2026-11-09):电脑那边 /state.collab_enabled 说了算,手机不自己猜。
+ * 老工作台 / 掉线 / 开源版关着时一律 false —— 入口整块收起(fail-closed)。
+ * 订阅状态流:开关随快照到达或改变时,这一格当场跟着变,不用重启 App。
+ */
+export function useCollabEnabled(feed: StateFeed | undefined): boolean {
+  return useSyncExternalStore(
+    feed === undefined ? noFeedSubscribe : (cb) => feed.subscribe(cb),
+    () => feed?.get().state.collab_enabled === true,
+    () => false,
+  );
+}
+
 export function useAppearance(feed: AppearanceFeed): AppearanceState {
   return useSyncExternalStore((cb) => feed.subscribe(cb), () => feed.get(), () => feed.get());
 }

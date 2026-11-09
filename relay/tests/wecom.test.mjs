@@ -19,10 +19,12 @@ let base;
 let replies;
 
 async function startRelay(env = { RELAY_WECOM_TOKEN: TOKEN, RELAY_WECOM_ENCODING_AES_KEY: AES_KEY }) {
-  db = openRelayDb(':memory:');
+  // 这一份测的是协作区里的企微绑定:总开关默认关(2026-11-09),用例里显式开一次。
+  // 只往 env 里补这一格,**不动原来的默认参数语义**(startRelay({}) 仍是「没配密钥」那一档)。
+  db = openRelayDb(':memory:', { collab: true });
   replies = [];
   const fetchImpl = async (url, init) => { replies.push({ url, body: JSON.parse(init.body) }); return new Response('{}'); };
-  const app = createApp({ db, config: relayConfigOf(env), fetchImpl });
+  const app = createApp({ db, config: relayConfigOf({ ...env, WORKBENCH_COLLAB_ENABLED: '1' }), fetchImpl });
   server = await new Promise((resolve) => { const s = app.listen(0, '127.0.0.1', () => resolve(s)); });
   base = `http://127.0.0.1:${server.address().port}`;
 }

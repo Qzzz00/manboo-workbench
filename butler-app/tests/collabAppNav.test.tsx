@@ -29,6 +29,9 @@ function jsonRes(status: number, body: unknown) {
 const STATE = {
   now: '2026-10-24T12:00:00+08:00',
   stale: false,
+  // 2026-11-09:多人协作区默认关,这一份测的是「开着时壳里怎么走」,所以显式开一次。
+  // 关着时入口与下级页整块不挂,由下面那颗开关的默认值保证。
+  collab_enabled: true,
   sessions: [],
   butler_inbox: { items: [] },
   tasks: {

@@ -11,7 +11,8 @@ const { openRelayDb } = require('./db.cjs');
 
 function main() {
   const config = relayConfigOf(process.env);
-  const db = openRelayDb(config.dbPath);
+  // 总开关关着时连协作区那 15 张表都不建(2026-11-09)。
+  const db = openRelayDb(config.dbPath, { collab: config.collabEnabled === true });
   const app = createApp({ db, config, log: line => console.log(`[relay] ${line}`) });
 
   const server = app.listen(config.port, config.bind, () => {

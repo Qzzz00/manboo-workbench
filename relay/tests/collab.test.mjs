@@ -13,9 +13,10 @@ let base;
 let clock;
 
 async function startRelay(env = {}) {
-  db = openRelayDb(':memory:');
+  // 这一份测的就是协作区:总开关默认关(2026-11-09),用例里显式开一次(表 + 路由都要)。
+  db = openRelayDb(':memory:', { collab: true });
   clock = new Date('2026-10-21T02:00:00Z');
-  const config = relayConfigOf({ RELAY_PUBLIC_URL: 'https://relay.example.test', ...env });
+  const config = relayConfigOf({ RELAY_PUBLIC_URL: 'https://relay.example.test', WORKBENCH_COLLAB_ENABLED: '1', ...env });
   const app = createApp({ db, config, now: () => clock });
   server = await new Promise((resolve) => {
     const s = app.listen(0, '127.0.0.1', () => resolve(s));

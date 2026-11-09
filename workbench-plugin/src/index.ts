@@ -96,6 +96,7 @@ import { createOnboardingWarm, defaultOnboardingWarmFile } from './server/onboar
 import { createAccountService, defaultAccountFile, defaultAccountSessionKeyFile } from './server/account.ts'
 import { createServerAccountService, defaultServerAccountFile } from './server/serverAccount.ts'
 import { createAppConfig, defaultAppConfigFile } from './server/appConfig.ts'
+import { collabFeatureOf } from './collabFeature.ts'
 import { createMdnsAdvertiser } from './server/mdns.ts'
 import { findRepos } from './server/scan.ts'
 import type { ScanRoot } from './server/scan.ts'
@@ -692,6 +693,18 @@ export async function apply(ctx?: DshHostContext): Promise<void> {
    * (它同时还是「允许手机在局域网访问」那个开关的落脚点,与 2026-09-11 那一版是同一个实例。)
    */
   const appConfig = createAppConfig({ file: defaultAppConfigFile(home) })
+  /**
+   * 多人协作区总开关(2026-11-09,开源版默认关)。**环境变量 > app.json > 没配就关**,
+   * 启动时读一次,改了要重启工作台。这一格一路传给 `createServer`,再由 `/state.collab_enabled`
+   * 下发桌面与手机;relay 是独立进程,读同一个环境变量(`WORKBENCH_COLLAB_ENABLED`)。
+   */
+  const collabEnabled = collabFeatureOf({
+    env: process.env.WORKBENCH_COLLAB_ENABLED,
+    saved: (await appConfig.get()).collab_enabled,
+  })
+  if (!collabEnabled) {
+    console.log('[协作区] 总开关关着:本机 /collab/*、跨机长轮询、旧冲刺迁移整块不接(要开见 src/collabFeature.ts)')
+  }
   /** 环境变量里的事务官仓库。空串按没配算——dsh-start 里留了个空值是常见事故。 */
   const envButlerCwd = process.env.WORKBENCH_BUTLER_CWD
   /** 此刻生效的三项路径(环境变量 > app.json > 默认)。 */
@@ -776,9 +789,11 @@ export async function apply(ctx?: DshHostContext): Promise<void> {
    * `tasks.json.pre-collab.json`;老字段一个不删(再留一个版本只读);回退走 `POST /collab/migrate/rollback`
    * (命令行 `workbench migrate rollback`)。没有老冲刺就一个字节都不写。迁不成不挡起服务。
    */
-  void tasks.migrateToGoals()
-    .then((ran) => { if (ran.goals > 0) console.log(`[协作区] 老冲刺迁成目标:${ran.goals} 个目标、${ran.tasks} 张卡挂上(备份 ${ran.backup ?? ''})`) })
-    .catch((error: unknown) => { console.warn(`[协作区] 老冲刺没迁成,看板照旧:${error instanceof Error ? error.message : String(error)}`) })
+  if (collabEnabled) {
+    void tasks.migrateToGoals()
+      .then((ran) => { if (ran.goals > 0) console.log(`[协作区] 老冲刺迁成目标:${ran.goals} 个目标、${ran.tasks} 张卡挂上(备份 ${ran.backup ?? ''})`) })
+      .catch((error: unknown) => { console.warn(`[协作区] 老冲刺没迁成,看板照旧:${error instanceof Error ? error.message : String(error)}`) })
+  }
   /** 个人访问令牌(2026-10-21 协作区):设置页发、命令行带;盘上只有哈希。 */
   const personalTokens = createPersonalTokens({ file: defaultPersonalTokenFile(home) })
   /**
@@ -4140,11 +4155,12 @@ export async function apply(ctx?: DshHostContext): Promise<void> {
     // 动作闸与任务日志(2026-10-02,卡 AG):与捎话巡检用的是同一份。
     actionGate,
     jobLog,
-    personalTokens,
-    githubDevice,
-    mcpSecrets,
+    // 多人协作区总开关(2026-11-09):关着时下面这些专属依赖整块不注入,
+    // http.ts 里「依赖缺席 = 404」那条老规矩照旧生效,连跨机长轮询都不起。
+    collabEnabled,
+    ...(collabEnabled ? { personalTokens, githubDevice, mcpSecrets } : {}),
     // 协作区跨机(2026-10-21):连法在 http.ts 里按 model.json + 账号现取;这里只开两条长轮询(加入了工作室才真拉)。
-    collabRelay: { loop: true },
+    ...(collabEnabled ? { collabRelay: { loop: true } } : {}),
     /*
      * ★ **一条引擎**(2026-10-02,卡「引擎接线与删复制品」):派活送话、派活盯窗、
      * 「只盯不发」核那一眼,全走它 —— 与替她答 / 捎话用的是**同一个实例**(全进程一条引擎、一处闸、一本账)。

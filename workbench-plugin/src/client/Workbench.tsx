@@ -961,8 +961,11 @@ function WorkbenchOverlayInner({
    * 一块指向不存在模块的 iframe 就是一片白。
    */
   const customModules = feed.state.modules ?? []
-  /** 协作区那一格(2026-10-21):接了任务账才有;它是本体的一格,永远不算「不在清单里了」。 */
-  const collabOn = feed.state.tasks !== undefined
+  /**
+   * 协作区那一格(2026-10-21):接了任务账才有;它是本体的一格,永远不算「不在清单里了」。
+   * 2026-11-09 起还认服务端下发的总开关:老工作台 / 开源版关着时这一格整块不出现(fail-closed)。
+   */
+  const collabOn = feed.state.tasks !== undefined && feed.state.collab_enabled === true
   const activeModuleGone = activeModuleId !== null
     && !customModules.some(module => module.id === activeModuleId)
   const moduleActive = butlerActive && activeModuleId !== null && !activeModuleGone
@@ -1707,7 +1710,8 @@ function WorkbenchOverlayInner({
    * ButlerScene 自己经 talk 也挂了一份同一钩子,两边各自取数、同一本账。
    * 位置:必须放在下面「浮层关了就不画」那个提前 return 之前 —— 那句之后一个 hook 都不许有。
    */
-  const runFacts = useCollabRuns(feed.state, { baseUrl: feed.baseUrl, fetchImpl: serviceFetch ?? fetch })
+  // 总开关关着时不发 /collab/runs(那条路已经 404),退回 /state.running 快照口径。
+  const runFacts = useCollabRuns(feed.state, collabOn ? { baseUrl: feed.baseUrl, fetchImpl: serviceFetch ?? fetch } : undefined)
 
   // 浮层关了就不画 —— **必须在最后一个 hook 之后**(2026-09-25)。以前这句在上面 lamps 之后,
   // 横屏浮窗落点那两个 hook(landButlerBottomPx)排在它后面:「进项目」/打开事项对话一关浮层,

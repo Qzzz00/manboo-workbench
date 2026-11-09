@@ -209,6 +209,22 @@ Which external services it contacts and how to change or disable each is in [Ext
 
 Mobile commands are in [butler-app/package.json](butler-app/package.json), display-layer commands in [display-client/package.json](display-client/package.json), and the call worker requires Node.js 24 or newer, see [channel-worker/package.json](channel-worker/package.json). The native desktop shell is Swift and the handset program is Python; build and configure each in its own project. Read the [development guidelines (Chinese)](AGENTS.md) before contributing code.
 
+### Multi-user collaboration (off by default)
+
+This repository still contains a studio-oriented multi-user collaboration stack: workspaces and member invites, cross-machine inbox, object directory, channels, scheduled dispatch, WeCom bindings and more. **It is switched off by default in the open-source build**: the local service mounts no `/collab/*` routes, does not merge collaboration data into `/state`, and starts no cross-machine polling or scheduled dispatch; `relay/` creates none of the 15 collaboration tables and mounts none of the `/v1/*` collaboration routes; neither the desktop nor the phone UI shows a collaboration entry.
+
+There is one switch, read once at startup (restart the workbench and the relay after changing it):
+
+| Where | Values | Notes |
+| --- | --- | --- |
+| Environment variable `WORKBENCH_COLLAB_ENABLED` | `1` / `true` / `on` enables, `0` / `false` / `off` disables | Highest priority; the local workbench and `relay/` read the same variable |
+| `collab_enabled` in `~/.dsh/workbench/app.json` | boolean | Affects the local workbench only; the relay is a separate process and does not read this file |
+| Neither is set | **Off** | Intentional: the out-of-the-box build does not wire this feature up |
+
+To enable it fully, both sides must opt in: set the environment variable or `"collab_enabled": true` on the Mac, and set `WORKBENCH_COLLAB_ENABLED=1` on the relay. The server publishes the effective value as `/state.collab_enabled`, so the desktop and phone UIs follow it without a rebuild.
+
+> **This switch disables the feature, not the source code.** The implementation files are still in this repository and readable by anyone who clones it. If the goal is to keep the implementation itself private, the related files must be removed from the source tree, a history-free commit rebuilt, and the DMG / APK repackaged — the installers currently in `dist/` were built before this switch existed and still contain that front-end code.
+
 ## Follow Us
 
 Scan to follow our social accounts or join the WeChat user group:

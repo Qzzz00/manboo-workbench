@@ -202,9 +202,11 @@ export function ButlerScene({ state, onOpen, onConfirm, onProposal, onAdoptTopic
   const setFocus = (id: string | null) => { setLocalFocus(id); onFocus?.(id) }
   const read = externalRead ?? localRead, model = buildButlerScene(state, read, proposals)
   // 台上那几张会话卡(卡 ST)不在 `items` 里(它们不进下面那几个收纳夹),所以点开的那一张两处都找。
-  const conditionApi = useMemo(() => talk === undefined ? undefined : collabApi(talk.baseUrl, talk.fetchImpl), [talk?.baseUrl, talk?.fetchImpl])
+  // 多人协作区总开关(2026-11-09):关着时这两条 /collab/* 捷径都不接,退回快照口径。
+  const collabApiOn = state.collab_enabled === true
+  const conditionApi = useMemo(() => !collabApiOn || talk === undefined ? undefined : collabApi(talk.baseUrl, talk.fetchImpl), [collabApiOn, talk?.baseUrl, talk?.fetchImpl])
   // 在跑哪几件:与展开窗同一本账(/collab/runs)。runFacts 是数组时按片段判;没接上('missing'/undefined)退回快照口径。
-  const runFacts = useCollabRuns(state, talk === undefined ? undefined : { baseUrl: talk.baseUrl, fetchImpl: talk.fetchImpl })
+  const runFacts = useCollabRuns(state, !collabApiOn || talk === undefined ? undefined : { baseUrl: talk.baseUrl, fetchImpl: talk.fetchImpl })
   const runTaskIds = Array.isArray(runFacts) ? runningTaskIdsOfRuns(runFacts) : undefined
   const businessIds = runTaskIds ?? (state.running === undefined ? model.stage.filter(item => item.external === undefined).map(item => item.id) : businessExecutionView(state).ids)
   const selected = model.items.find(item => item.id === focus) ?? model.stage.find(item => item.id === focus)

@@ -78,6 +78,15 @@ export interface AppConfig {
    */
   away_keep_awake?: boolean
   /**
+   * 「多人协作区」总开关(2026-11-09,开源版)。**缺席 = 关**,与 away_keep_awake 同款,而且是故意的:
+   * 开源版开箱不接工作室 / 收件箱 / 频道 / 跨机那一整套,要开必须明确写下来(或设环境变量
+   * `WORKBENCH_COLLAB_ENABLED=1`,见 `src/collabFeature.ts`)。只认真正的布尔,写坏一律当没配 = 关。
+   *
+   * 启动时读一次,改了要重启工作台。服务端这一格会随 `/state.collab_enabled` 下发,
+   * 桌面与手机据此收起入口;relay 是独立进程,读同一个环境变量。
+   */
+  collab_enabled?: boolean
+  /**
    * 这台机器收哪条更新通道(2026-10-21,内测发版底座;两条的说法见 `update/types.ts`)。
    * **缺席 = 稳定版**;写成认不出的值同样当没配 —— 读不懂一份配置不该让体验的人收到热修。
    */
@@ -127,6 +136,7 @@ export async function loadAppConfigFile(file: string): Promise<AppConfigFile> {
     delete next.diag_notice_seen_at
     delete next.system_awake_while_running
     delete next.away_keep_awake
+    delete next.collab_enabled
     delete next.update_channel
     delete next.experiments
     delete next.audience
@@ -140,6 +150,7 @@ export async function loadAppConfigFile(file: string): Promise<AppConfigFile> {
       ...readDiagNoticeSeenAt(parsed.diag_notice_seen_at),
       ...readSystemAwake(parsed.system_awake_while_running),
       ...readAwayKeepAwake(parsed.away_keep_awake),
+      ...readCollabEnabled(parsed.collab_enabled),
       ...(isUpdateChannel(parsed.update_channel) ? { update_channel: parsed.update_channel } : {}),
       ...readExperiments(parsed.experiments),
       ...readAudience(parsed.audience),
@@ -205,6 +216,11 @@ function readAwayKeepAwake(raw: unknown): { away_keep_awake?: boolean } {
   return typeof raw === 'boolean' ? { away_keep_awake: raw } : {}
 }
 
+/** 多人协作区总开关:只认真正的布尔,写坏 / 缺席一律按「没配」= 关。 */
+function readCollabEnabled(raw: unknown): { collab_enabled?: boolean } {
+  return typeof raw === 'boolean' ? { collab_enabled: raw } : {}
+}
+
 /** 实验开关:只留认得的那几样、只认真正的布尔;一样都没留下就整项缺席(= 全按默认)。 */
 function readExperiments(raw: unknown): { experiments?: Partial<Record<ExperimentKey, boolean>> } {
   if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return {}
@@ -243,6 +259,7 @@ function view(data: AppConfigFile): AppConfig {
     ...(data.diag_notice_seen_at === undefined ? {} : { diag_notice_seen_at: data.diag_notice_seen_at }),
     ...(data.system_awake_while_running === undefined ? {} : { system_awake_while_running: data.system_awake_while_running }),
     ...(data.away_keep_awake === undefined ? {} : { away_keep_awake: data.away_keep_awake }),
+    ...(data.collab_enabled === undefined ? {} : { collab_enabled: data.collab_enabled }),
     ...(data.experiments === undefined ? {} : { experiments: data.experiments }),
     ...(data.audience === undefined ? {} : { audience: data.audience }),
   }
@@ -273,6 +290,7 @@ export function createAppConfig(opts: { file: string }): AppConfigService {
           ...(patch.diag_notice_seen_at === undefined ? {} : { diag_notice_seen_at: patch.diag_notice_seen_at }),
           ...(patch.system_awake_while_running === undefined ? {} : { system_awake_while_running: patch.system_awake_while_running }),
           ...(patch.away_keep_awake === undefined ? {} : { away_keep_awake: patch.away_keep_awake }),
+          ...(patch.collab_enabled === undefined ? {} : { collab_enabled: patch.collab_enabled }),
           // 实验开关一样一样地改:合进已存的那几样,不把别的几样抹回默认。
           ...(patch.experiments === undefined ? {} : { experiments: { ...data.experiments, ...patch.experiments } }),
           ...(patch.audience === undefined ? {} : { audience: patch.audience }),

@@ -17,6 +17,7 @@
 const os = require('node:os');
 const path = require('node:path');
 
+const { collabEnabledOf } = require('./collabFeature.cjs');
 const { relayChannelConfigOf } = require('./channel.cjs');
 const { relayProvidersConfigOf } = require('./providers.cjs');
 const { relaySearchConfigOf } = require('./search.cjs');
@@ -169,6 +170,12 @@ function relayConfigOf(env = process.env) {
      * 不是密钥;缺省就是生产那台的反代域名。
      */
     publicUrl: trimSlash(text(env.RELAY_PUBLIC_URL) ?? 'https://api.aibooo.cn'),
+    /**
+     * 「多人协作区」总开关(2026-11-09,开源版默认关)。与本机工作台同一个环境变量
+     * `WORKBENCH_COLLAB_ENABLED`;没配就 false —— 不建协作区的表、不挂 /v1/* 协作路由。
+     * 测试要跑那一块就显式传 `WORKBENCH_COLLAB_ENABLED: '1'`。
+     */
+    collabEnabled: collabEnabledOf(env),
     // 企业微信机器人的回调密钥(2026-10-21)。只从环境变量读,规矩见 server/wecom.cjs 文件头。
     wecom: wecomConfigOf(env),
   };

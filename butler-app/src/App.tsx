@@ -34,7 +34,7 @@ import { DisplayPage } from './display/DisplayPage';
 import { InboxPage } from './items/InboxPage';
 import { NewsPage } from './feed/NewsPage';
 import { SettingsPage } from './settings/SettingsPage';
-import { useAppearance, useLandscape, usePortraitSplit } from './hooks';
+import { useAppearance, useCollabEnabled, useLandscape, usePortraitSplit } from './hooks';
 import { BackProvider, BackScope, useBackHandler, useSystemBack } from './nav/back';
 import { BACK_PAGE, createBackStack } from './nav/backStack';
 import { SubPage } from './nav/BackHeader';
@@ -349,6 +349,8 @@ function Shell() {
   const setOnboarding = useCallback((open: boolean) => { writeFlag(ONBOARDING_OPEN_KEY, open); setOnboardingState(open); }, []);
   useEffect(() => { console.info('[butler] Shell mounted', { onboarding }); return () => { console.info('[butler] Shell unmounted'); }; }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const session = useSession();
+  /** 多人协作区总开关(2026-11-09):电脑 /state 说了算,关着时这一整块下级页与入口都不挂。 */
+  const collabOn = useCollabEnabled(session.feed);
   const { settings } = useSettings();
   const avatar = useAvatar(session, settings.avatarId);
   // 形象只从电脑上来(10-21):会话换了就告诉形象库去问这一台电脑上有哪些。
@@ -389,9 +391,13 @@ function Shell() {
   /** 首页卡片点进事项页时要落在哪(2026-09-25):哪一段、哪一张。 */
   const [inboxTarget, setInboxTarget] = useState<InboxTarget | undefined>(undefined);
   const openInbox = useCallback((target?: InboxTarget) => { setInboxTarget(target); setPage('inbox'); }, []);
-  /** 协作区(2026-10-24,卡「完整手机协作下级页」):从事项页进,带落点(目标/卡)。 */
+  /** 协作区(2026-10-24,卡「完整手机协作下级页」):从事项页进,带落点(目标/卡)。2026-11-09 起总开关关着就进不去。 */
   const [collabTarget, setCollabTarget] = useState<CollabTarget | undefined>(undefined);
-  const openCollab = useCallback((target?: CollabTarget) => { setCollabTarget(target); setPage('collab'); }, []);
+  const openCollab = useCallback((target?: CollabTarget) => {
+    if (!collabOn) return;
+    setCollabTarget(target);
+    setPage('collab');
+  }, [collabOn]);
   /** 通话记录页;「最近一次通话」带着那一通进来就直接打开它(2026-10-01)。 */
   const [callsTarget, setCallsTarget] = useState<CallsTarget | undefined>(undefined);
   const openCalls = useCallback((callId?: string) => { setCallsTarget(callId === undefined ? undefined : { callId }); setPage('calls'); }, []);
@@ -577,17 +583,19 @@ function Shell() {
           </section>
           <section className="ba-pane ba-pane--inbox" hidden={page !== 'inbox'}>
             <BackScope active={paneShown('inbox', page, split)}>
-              <SubPage title={PAGE_TITLES.inbox} onBack={goHome}><InboxPage {...(inboxTarget === undefined ? {} : { target: inboxTarget })} onOpenCollab={openCollab} /></SubPage>
+              <SubPage title={PAGE_TITLES.inbox} onBack={goHome}><InboxPage {...(inboxTarget === undefined ? {} : { target: inboxTarget })} {...(collabOn ? { onOpenCollab: openCollab } : {})} /></SubPage>
             </BackScope>
           </section>
-          {/* 协作区(2026-10-24):事项页的下一级,目标/事项/频道;返回沿壳规则回首页。 */}
-          <section className="ba-pane ba-pane--collab" hidden={page !== 'collab'}>
-            <BackScope active={paneShown('collab', page, split)}>
-              <SubPage title={PAGE_TITLES.collab} onBack={goHome}>
-                {page === 'collab' && <CollabPage {...(collabTarget === undefined ? {} : { target: collabTarget })} onOpenItem={(taskId) => openInbox({ taskId })} />}
-              </SubPage>
-            </BackScope>
-          </section>
+          {/* 协作区(2026-10-24):事项页的下一级,目标/事项/频道;返回沿壳规则回首页。2026-11-09 起总开关关着整块不挂。 */}
+          {collabOn && (
+            <section className="ba-pane ba-pane--collab" hidden={page !== 'collab'}>
+              <BackScope active={paneShown('collab', page, split)}>
+                <SubPage title={PAGE_TITLES.collab} onBack={goHome}>
+                  {page === 'collab' && <CollabPage {...(collabTarget === undefined ? {} : { target: collabTarget })} onOpenItem={(taskId) => openInbox({ taskId })} />}
+                </SubPage>
+              </BackScope>
+            </section>
+          )}
           {/* 资讯(2026-09-21):**只在这一页开着时才挂**——它一挂上就会去拉 /feed,
               而那是一天只变一次的东西,没必要在别的页上先拉一遍。 */}
           <section className="ba-pane ba-pane--news" hidden={page !== 'news'}>

@@ -659,8 +659,9 @@ export function InboxPage({ target, onOpenCollab }: { target?: InboxTarget; onOp
           </button>
         ))}
       </div>
-      {/* 协作区入口(2026-10-24,卡「完整手机协作下级页」):目标的进展/分桶/频道在下一级;一行,不动首页。 */}
-      {onOpenCollab !== undefined && (
+      {/* 协作区入口(2026-10-24,卡「完整手机协作下级页」):目标的进展/分桶/频道在下一级;一行,不动首页。
+          2026-11-09:还要 /state.collab_enabled 为真 —— 开源版默认关着时连这颗键都不摆。 */}
+      {onOpenCollab !== undefined && feed.state.collab_enabled === true && (
         <button type="button" className="ba-collab__entry" onClick={onOpenCollab}>
           协作区 <span className="ba-collab__entrynote">目标进展 · 分工清单 · 频道</span>
         </button>

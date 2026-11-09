@@ -163,17 +163,17 @@ Current version **0.4.192**: desktop targets macOS / Apple Silicon; mobile targe
 
 | Platform | Package | Size | Notes |
 | --- | --- | --- | --- |
-| macOS | [Manboo工作台安装器-0.4.192.dmg](dist/Manboo工作台安装器-0.4.192.dmg) | 160 MB | Full installer, includes the call worker |
-| macOS | [Manboo工作台安装器-0.4.192-精简版.dmg](dist/Manboo工作台安装器-0.4.192-精简版.dmg) | 98 MB | Slim installer without the call worker; phone calls will not work on the installed machine |
-| Android | [Manboo事务官-0.4.192.apk](dist/Manboo事务官-0.4.192.apk) | 66 MB | Debug-signed; install directly |
+| macOS | [Manboo-workbench-0.4.192.dmg](dist/Manboo-workbench-0.4.192.dmg) | 157 MB | Full installer, includes the call worker |
+| macOS | [Manboo-workbench-0.4.192-lite.dmg](dist/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | Slim installer without the call worker; phone calls will not work on the installed machine |
+| Android | [Manboo-app-0.4.192.apk](dist/Manboo-app-0.4.192.apk) | 66 MB | Debug-signed; install directly |
 
 <details>
 <summary>SHA-256 checksums</summary>
 
 ```text
-88bd9b1c4d1bb8000dfaec0ca7e068447d0bd5257e8e90b0380273028f67ab0c  Manboo工作台安装器-0.4.192.dmg
-77a469a06ce153a7d0dd950efb1c595d7080d549a3e3a2648b53df9966fbc672  Manboo工作台安装器-0.4.192-精简版.dmg
-ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo事务官-0.4.192.apk
+c74a1216385fa71ca1ff8c9acf986e519715830c6bbad19a5e6371451716036a  Manboo-workbench-0.4.192.dmg
+472be85eee09728daa0b24a2bedaebf3857e4d411616fae7e2e334a550832535  Manboo-workbench-0.4.192-lite.dmg
+ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4.192.apk
 ```
 
 </details>

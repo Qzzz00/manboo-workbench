@@ -163,17 +163,17 @@ AI 正在加快写作、设计和开发，人的一天却没有变长。几家 A
 
 | 平台 | 安装包 | 大小 | 说明 |
 | --- | --- | --- | --- |
-| macOS | [Manboo工作台安装器-0.4.192.dmg](dist/Manboo工作台安装器-0.4.192.dmg) | 160 MB | 完整包，含通话组件 |
-| macOS | [Manboo工作台安装器-0.4.192-精简版.dmg](dist/Manboo工作台安装器-0.4.192-精简版.dmg) | 98 MB | 不含通话组件，装出来的机器手机通话不可用 |
-| Android | [Manboo事务官-0.4.192.apk](dist/Manboo事务官-0.4.192.apk) | 66 MB | debug 签名，可直接安装 |
+| macOS | [Manboo-workbench-0.4.192.dmg](dist/Manboo-workbench-0.4.192.dmg) | 157 MB | 完整包，含通话组件 |
+| macOS | [Manboo-workbench-0.4.192-lite.dmg](dist/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | 不含通话组件，装出来的机器手机通话不可用 |
+| Android | [Manboo-app-0.4.192.apk](dist/Manboo-app-0.4.192.apk) | 66 MB | debug 签名，可直接安装 |
 
 <details>
 <summary>SHA-256 校验值</summary>
 
 ```text
-88bd9b1c4d1bb8000dfaec0ca7e068447d0bd5257e8e90b0380273028f67ab0c  Manboo工作台安装器-0.4.192.dmg
-77a469a06ce153a7d0dd950efb1c595d7080d549a3e3a2648b53df9966fbc672  Manboo工作台安装器-0.4.192-精简版.dmg
-ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo事务官-0.4.192.apk
+c74a1216385fa71ca1ff8c9acf986e519715830c6bbad19a5e6371451716036a  Manboo-workbench-0.4.192.dmg
+472be85eee09728daa0b24a2bedaebf3857e4d411616fae7e2e334a550832535  Manboo-workbench-0.4.192-lite.dmg
+ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4.192.apk
 ```
 
 </details>

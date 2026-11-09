@@ -262,6 +262,18 @@ else
   info "channel-worker:按 --no-worker 跳过(装出来的机器上手机通话用不了)"
 fi
 
+# 出包前统一归一化 pnpm 垫片:butler-server 是整棵 node_modules rsync 过来的,
+# channel-worker 是 pack-channel-worker.sh 摆过来的,两边都会带出包机绝对路径。
+# 在 payload 收齐之后、编安装器之前做一次,覆盖全部来源(脚本幂等,再跑一次不改字节)。
+node "$REPO_ROOT/deploy/normalize-bin-shims.mjs" "$PAYLOAD" \
+  || die "垫片归一化没过(包里还留着构建机绝对路径)。"
+
+# pnpm 的记账文件里还写着出包机的家目录
+# (`.modules.yaml` 的 "storeDir": "/Users/<谁>/Library/pnpm/store/v10")。
+# 用户机器上不跑 pnpm,这些文件一个都用不到;worker 那棵已由 pack-channel-worker.sh 删过,
+# butler-server 是整棵 rsync 过来的,在这里统一补掉。顺带删掉 Finder 留下的 .DS_Store。
+find "$PAYLOAD" -type f \( -name '.modules.yaml' -o -name '.pnpm-workspace-state-v1.json' -o -path '*/.pnpm/lock.yaml' -o -name '.DS_Store' \) -delete 2>/dev/null || true
+
 info "payload 合计 $(du -sh "$PAYLOAD" | cut -f1)"
 
 # ───────────────────────── 5. 编安装器 ─────────────────────────

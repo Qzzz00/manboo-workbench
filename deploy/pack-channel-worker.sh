@@ -184,6 +184,13 @@ find "$NM" -type f -name '*.md' ! -iname 'LICENSE*' ! -path '*/@img/sharp-libvip
 #    「内容没变的包每次 sha256 都不一样」,而客户端「只下变了的」比的正是 sha。
 rm -f "$NM/.modules.yaml" "$NM/.pnpm-workspace-state-v1.json" "$NM/.pnpm/lock.yaml"
 
+# ⑧ `.bin/` 垫片。pnpm 把**出包机器的绝对路径**写进每个垫片的 NODE_PATH
+#    (`export NODE_PATH="/Users/<谁>/…/node_modules/.pnpm/…"`)。公开发布的包
+#    (热更新 tgz / 安装包 payload)不该带出包机的用户名与目录结构;而且这些路径
+#    装到用户机器上本来就是失效的。归一化成由垫片自身位置推算,见脚本头注释。
+node "$REPO_ROOT/deploy/normalize-bin-shims.mjs" "$NM" \
+  || die "垫片归一化没过(包里还留着构建机绝对路径)。"
+
 # 声明齐不齐:缺一样不出包(LGPL 的二进制必须带着许可与源码说明走)。
 # 两个 LGPL 包在 pnpm 的布局里不提到顶层,在 node_modules/.pnpm/<包@版本>/node_modules/ 底下。
 for need in THIRD_PARTY_NOTICES.md licenses/LGPL-2.1.txt licenses/LGPL-3.0.txt licenses/GPL-3.0.txt \

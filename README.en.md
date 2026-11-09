@@ -178,7 +178,7 @@ ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo事务�
 
 </details>
 
-The installers are ad-hoc signed and not notarised: on first launch, macOS requires **System Settings → Privacy & Security → Open Anyway**. These binaries are not distributed through Git (`dist/` is in `.gitignore`, and a single file exceeds GitHub's 100 MB limit); for a public release, upload them as Release assets and replace the links above with the corresponding Releases download URLs.
+The installers are ad-hoc signed and not notarised: on first launch, macOS requires **System Settings → Privacy & Security → Open Anyway**. These binaries are not distributed through Git (`dist/` is in `.gitignore`; GitHub blocks files larger than 100 MiB in a Git repository, so installers must not enter Git history). A GitHub Release asset may be up to 2 GiB, with no limit on total release size or download bandwidth; for a public release, upload them as Release assets and replace the links above with the corresponding Releases download URLs.
 
 Plugin development requires this repository and `deepseek-harness` (the DeepSeek Harness upstream, pinned to tag `dsh-v0.1.7-rc.2`, not upgraded) in the same parent directory. The plugin's `link:` dependencies point directly at upstream source without version constraints, and upstream packages' `main` / `types` point at build output in `lib/` (not committed), so you must install and build upstream first — checking out this repository alone is not enough to install those dependencies.
 

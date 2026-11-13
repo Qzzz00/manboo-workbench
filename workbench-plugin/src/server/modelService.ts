@@ -183,11 +183,49 @@ export interface ModelService {
    * 成了才算接上。`message` 是人话(模型的半句话或一句错因),**永不带 key**。
    */
   try: () => Promise<{ ok: boolean, message: string }>
+  /**
+   * 首启在「图二」填完 DeepSeek Key 后调用：把工作台存的 Key 桥接给 DSH 的 `deepseek-official`
+   * 路由(写入 ~/.dsh/.credentials.yaml，$DSH_HOME/.env 兜底)，否则那条路由读不到 Key、模型一直
+   * 报 MISSING_CREDENTIAL（卡 U1c）。零服务器档(默认 own + 官方地址)下这是让模型真正连上的关键一步。
+   * 清空 DeepSeek Key 时跟着收走。ok=false 表示 DSH 未启用；restartRequired=true 表示要重启 DSH 才生效。
+   */
+  bridgeDeepseekKey: () => Promise<{ ok: boolean, restartRequired?: boolean }>
 }
 
 async function readTextOr(file: string, fallback: string): Promise<string> {
   try { return await readFile(file, 'utf8') }
   catch { return fallback }
+}
+
+/**
+ * own 档（官方地址）下 DSH 走自带的 `deepseek-official`，它从 `DEEPSEEK_API_KEY` 读 Key
+ * （进程环境 → ~/.dsh/.credentials.yaml → <cwd>/.env → $DSH_HOME/.env）。工作台把用户在
+ * 「图二」/模型面板填的 DeepSeek Key 只存进自己的 credentials.json，**从没**桥到这条读取链 ——
+ * 于是首启填了 Key、模型仍报 MISSING_CREDENTIAL（卡 U1c）。把 credentials.json 那把 Key 注入
+ * DSH 凭据服务(~/.dsh/.credentials.yaml，deepseek-official 会读)并兜底写 .env，让它读得到。
+ * ownKey 为空则收走这一行。返回 .env 是否真被改动（决定要不要重启 DSH，凭据服务写成了就不重启）。
+ */
+async function bridgeDeepseekOfficialKey(
+  envFile: string,
+  dshCredentials: ModelServiceOptions['dshCredentials'],
+  storeInDsh: (name: string, value: string) => Promise<boolean>,
+  ownKey: string | undefined,
+): Promise<boolean> {
+  if (ownKey === undefined) {
+    try { await dshCredentials?.()?.unset('DEEPSEEK_API_KEY') } catch { /* 收不走就留着:不会被用到 */ }
+  } else {
+    try { await dshCredentials?.()?.set('DEEPSEEK_API_KEY', ownKey) } catch { /* 退回 .env 兜底 */ }
+  }
+  const envText = await readTextOr(envFile, '')
+  const nextEnv = ownKey === undefined
+    ? removeEnvLine(envText, 'DEEPSEEK_API_KEY')
+    : upsertEnvLine(envText, 'DEEPSEEK_API_KEY', ownKey)
+  if (nextEnv === envText) return false
+  await mkdir(dirname(envFile), { recursive: true })
+  await writeFile(envFile, nextEnv, { mode: 0o600 })
+  await chmod(envFile, 0o600)
+  // 凭据服务写成了 → 立即生效,不留 .env 改动(不报重启);否则靠 .env 兜底、要重启。
+  return !(ownKey !== undefined && (await storeInDsh('DEEPSEEK_API_KEY', ownKey)))
 }
 
 /**
@@ -335,6 +373,8 @@ export function createModelService(options: ModelServiceOptions): ModelService {
         }
       }
     }
+    // 桥接用的 Key：调用方没给就从 credentials.json 取,避免「没传 ownKey」的调用把已有的 Key 误收走。
+    const bridgeKey = ownKey ?? (await ownKeyOf().catch(() => undefined))
     try {
       if (config.mode === 'relay') {
         // 中转值班:自己端点那把 Key 从 .env 与凭据服务里收走(下次切回来再写)。
@@ -402,6 +442,8 @@ export function createModelService(options: ModelServiceOptions): ModelService {
           await chmod(envFile, 0o600)
           envChanged = true
         }
+        // 官方 provider(deepseek-official)要从 DEEPSEEK_API_KEY 读 Key;桥接工作台存的 DeepSeek Key。
+        if (await bridgeDeepseekOfficialKey(envFile, options.dshCredentials, storeInDsh, bridgeKey)) envChanged = true
         hints.push(ownModelCustom
           ? '事务官(DSH)那一侧也换成你自己选的模型了。'
           : '事务官(DSH)那一侧也切回你自己的 Key 了。')
@@ -418,6 +460,8 @@ export function createModelService(options: ModelServiceOptions): ModelService {
           await writeFile(envFile, nextEnv, { mode: 0o600 })
           envChanged = true
         }
+        // 官方 provider(deepseek-official)要从 DEEPSEEK_API_KEY 读 Key;桥接工作台存的 DeepSeek Key(清空则收走)。
+        if (await bridgeDeepseekOfficialKey(envFile, options.dshCredentials, storeInDsh, bridgeKey)) envChanged = true
         hints.push('事务官(DSH)那一侧也切回你自己的 Key 了,它要重启一次才认,工作台会自己挑时候重启。')
       }
 
@@ -801,6 +845,17 @@ export function createModelService(options: ModelServiceOptions): ModelService {
       catch {
         return { ok: false, message: '连不上这个模型服务:看一下地址有没有填对、这台电脑能不能上网。' }
       }
+    },
+    /**
+     * 首启在「图二」填完 DeepSeek Key 后桥接给 DSH 的 deepseek-official 路由。
+     * 写进 ~/.dsh/.credentials.yaml(立即生效)并兜底写 $DSH_HOME/.env;清空时收走。
+     */
+    bridgeDeepseekKey: async () => {
+      if (options.dshHome === undefined) return { ok: false }
+      const envFile = `${options.dshHome}/.env`
+      const key = await ownKeyOf().catch(() => undefined)
+      const changed = await bridgeDeepseekOfficialKey(envFile, options.dshCredentials, storeInDsh, key)
+      return { ok: true, ...(changed ? { restartRequired: true } : {}) }
     },
   }
 }

@@ -163,7 +163,7 @@ AI 正在加快写作、设计和开发，人的一天却没有变长。几家 A
 
 | 平台 | 安装包 | 大小 | 说明 |
 | --- | --- | --- | --- |
-| macOS | [Manboo-workbench-0.4.193.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193.dmg) | 160 MB | 完整包，含通话组件 |
+| macOS | [Manboo-workbench-0.4.193.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193.dmg) | 182 MB | 完整包，含通话组件 |
 | macOS | [Manboo-workbench-0.4.193-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193-lite.dmg) | 104 MB | 不含通话组件，装出来的机器手机通话不可用 |
 | Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-app-0.4.192.apk) | 66 MB | 仍为 0.4.192，debug 签名，可直接安装 |
 
@@ -171,8 +171,8 @@ AI 正在加快写作、设计和开发，人的一天却没有变长。几家 A
 <summary>SHA-256 校验值</summary>
 
 ```text
-d4c6a630239c471832581309f276950e390a8870b03a372282b3f6081060f477  Manboo-workbench-0.4.193.dmg
-1056904f39e3a4ed9730c39e8d1851915cd24b31ae6d3a6824cb41f5da75581e  Manboo-workbench-0.4.193-lite.dmg
+8533977d216f3b9a416159b4d9ee5c8583d3a4857b635197cda78d0ce6ebbe35  Manboo-workbench-0.4.193.dmg
+059eb0062153eb20215257f38d0697470b023e7a93806aae23f2a5d0fba37a3c  Manboo-workbench-0.4.193-lite.dmg
 ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4.192.apk
 ```
 

@@ -163,7 +163,7 @@ Current source version **0.4.193**; desktop targets macOS / Apple Silicon, mobil
 
 | Platform | Package | Size | Notes |
 | --- | --- | --- | --- |
-| macOS | [Manboo-workbench-0.4.193.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193.dmg) | 160 MB | Full installer, includes the call worker |
+| macOS | [Manboo-workbench-0.4.193.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193.dmg) | 182 MB | Full installer, includes the call worker |
 | macOS | [Manboo-workbench-0.4.193-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193-lite.dmg) | 104 MB | Slim installer without the call worker; phone calls will not work on the installed machine |
 | Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-app-0.4.192.apk) | 66 MB | Still 0.4.192; debug-signed; install directly |
 
@@ -171,8 +171,8 @@ Current source version **0.4.193**; desktop targets macOS / Apple Silicon, mobil
 <summary>SHA-256 checksums</summary>
 
 ```text
-d4c6a630239c471832581309f276950e390a8870b03a372282b3f6081060f477  Manboo-workbench-0.4.193.dmg
-1056904f39e3a4ed9730c39e8d1851915cd24b31ae6d3a6824cb41f5da75581e  Manboo-workbench-0.4.193-lite.dmg
+8533977d216f3b9a416159b4d9ee5c8583d3a4857b635197cda78d0ce6ebbe35  Manboo-workbench-0.4.193.dmg
+059eb0062153eb20215257f38d0697470b023e7a93806aae23f2a5d0fba37a3c  Manboo-workbench-0.4.193-lite.dmg
 ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4.192.apk
 ```
 

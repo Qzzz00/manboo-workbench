@@ -9533,6 +9533,11 @@ export async function startWorkbenchServer(
 
         const key = raw.key.trim()
         await saveCredential(credentialFile, raw.provider, key)
+        // 首启在「图二」填的 DeepSeek Key 要桥接给 DSH 的 deepseek-official(否则模型读不到 → MISSING_CREDENTIAL)。
+        // 只在 deepseek 这一家触发;清空时也跟着收走。桥接失败不阻断存盘,主流程照常返回。
+        if (raw.provider === 'deepseek') {
+          try { await model?.bridgeDeepseekKey?.() } catch { /* 桥接失败不影响凭据落盘 */ }
+        }
         // 先采后推：这样推出去的快照里已经是新 Key 取到的数。
         // 清空时还要告诉那头**是哪一家被清空了**——它得当场作废这一家的上一次采样,
         // 否则重采那几秒里界面上还挂着用刚删掉的 Key 取来的余额(2026-09-18 Ben 真机)。

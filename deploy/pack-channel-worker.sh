@@ -104,7 +104,7 @@ done
 #
 # **唯一一处会被 rm -rf 的路径是 `<暂存>/channel-worker`**,而且它由 STAGE 拼出来、
 # 不是从参数原样拿来删的(0904 家目录事故之后的规矩)。
-STAGE="${STAGE:-$REPO_ROOT/dist/worker-pack}"
+STAGE="${STAGE:-/tmp/worker-pack}"
 case "$STAGE" in
   /*) ;;
   *) die "--stage 要给绝对路径(现在是 $STAGE)。" ;;

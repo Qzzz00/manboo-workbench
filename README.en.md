@@ -159,26 +159,26 @@ The app is distributed as a macOS installer and an Android package, currently in
 
 ### Downloads
 
-Current source version **0.4.193**; desktop targets macOS / Apple Silicon, mobile targets Android. The table below lists the published **v0.4.192** Release assets; it will be replaced when the two 0.4.193 installers (full / lite) are published.
+Current source version **0.4.193**; desktop targets macOS / Apple Silicon, mobile targets Android. The table below lists the [v0.4.193 Release](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.193) assets. Both macOS installers were rebuilt with this source version; the Android APK is still the 0.4.192 build (not rebuilt in this release, merely attached to the same Release).
 
 | Platform | Package | Size | Notes |
 | --- | --- | --- | --- |
-| macOS | [Manboo-workbench-0.4.192.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192.dmg) | 157 MB | Full installer, includes the call worker |
-| macOS | [Manboo-workbench-0.4.192-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | Slim installer without the call worker; phone calls will not work on the installed machine |
-| Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-app-0.4.192.apk) | 66 MB | Debug-signed; install directly |
+| macOS | [Manboo-workbench-0.4.193.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193.dmg) | 160 MB | Full installer, includes the call worker |
+| macOS | [Manboo-workbench-0.4.193-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193-lite.dmg) | 104 MB | Slim installer without the call worker; phone calls will not work on the installed machine |
+| Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-app-0.4.192.apk) | 66 MB | Still 0.4.192; debug-signed; install directly |
 
 <details>
 <summary>SHA-256 checksums</summary>
 
 ```text
-c74a1216385fa71ca1ff8c9acf986e519715830c6bbad19a5e6371451716036a  Manboo-workbench-0.4.192.dmg
-472be85eee09728daa0b24a2bedaebf3857e4d411616fae7e2e334a550832535  Manboo-workbench-0.4.192-lite.dmg
+d4c6a630239c471832581309f276950e390a8870b03a372282b3f6081060f477  Manboo-workbench-0.4.193.dmg
+1056904f39e3a4ed9730c39e8d1851915cd24b31ae6d3a6824cb41f5da75581e  Manboo-workbench-0.4.193-lite.dmg
 ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4.192.apk
 ```
 
 </details>
 
-The installers are ad-hoc signed and not notarised: on first launch, macOS requires **System Settings → Privacy & Security → Open Anyway**. The binaries are distributed as [v0.4.192 Release assets](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.192), not through Git (`dist/` is in `.gitignore`; GitHub blocks files larger than 100 MiB in a Git repository, while a Release asset may be up to 2 GiB with no limit on total release size or download bandwidth). Verify downloads against the SHA-256 checksums above.
+The installers are ad-hoc signed and not notarised: on first launch, macOS requires **System Settings → Privacy & Security → Open Anyway**. The binaries are distributed as [v0.4.193 Release assets](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.193), not through Git (`dist/` is in `.gitignore`; GitHub blocks files larger than 100 MiB in a Git repository, while a Release asset may be up to 2 GiB with no limit on total release size or download bandwidth). Verify downloads against the SHA-256 checksums above.
 
 Plugin development requires this repository and `deepseek-harness` (the DeepSeek Harness upstream, pinned to tag `dsh-v0.1.7-rc.2`, not upgraded) in the same parent directory. The plugin's `link:` dependencies point directly at upstream source without version constraints, and upstream packages' `main` / `types` point at build output in `lib/` (not committed), so you must install and build upstream first — checking out this repository alone is not enough to install those dependencies.
 
@@ -223,7 +223,7 @@ There is one switch, read once at startup (restart the workbench and the relay a
 
 To enable it fully, both sides must opt in: set the environment variable or `"collab_enabled": true` on the Mac, and set `WORKBENCH_COLLAB_ENABLED=1` on the relay. The server publishes the effective value as `/state.collab_enabled`, so the desktop and phone UIs follow it without a rebuild.
 
-> **This switch disables the feature, not the source code.** The implementation files are still in this repository and readable by anyone who clones it. If the goal is to keep the implementation itself private, the related files must be removed from the source tree, a history-free commit rebuilt, and the DMG / APK repackaged — the installers currently in `dist/` were built before this switch existed and still contain that front-end code.
+> **This switch disables the feature, not the source code.** The implementation files are still in this repository and readable by anyone who clones it. If the goal is to keep the implementation itself private, the related files must be removed from the source tree, a history-free commit rebuilt, and the DMG / APK repackaged — the installers in `dist/` carry that front-end code too, since the switch disables behaviour, not files.
 
 ## Follow Us
 

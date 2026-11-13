@@ -159,26 +159,26 @@ AI 正在加快写作、设计和开发，人的一天却没有变长。几家 A
 
 ### 下载
 
-当前源码版本 **0.4.193**：桌面端面向 macOS / Apple Silicon，手机端为 Android。下表是已发布的 **v0.4.192** Release 附件；0.4.193 的两个安装包（完整包 / lite 包）发布后替换本表与下面的校验值。
+当前源码版本 **0.4.193**：桌面端面向 macOS / Apple Silicon，手机端为 Android。下表是 [v0.4.193 Release](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.193) 附件；两个 macOS 安装包随本次源码一同重构建，Android APK 仍是 0.4.192 原件（本次未重构建，只是挂到了同一个 Release 下）。
 
 | 平台 | 安装包 | 大小 | 说明 |
 | --- | --- | --- | --- |
-| macOS | [Manboo-workbench-0.4.192.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192.dmg) | 157 MB | 完整包，含通话组件 |
-| macOS | [Manboo-workbench-0.4.192-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-workbench-0.4.192-lite.dmg) | 104 MB | 不含通话组件，装出来的机器手机通话不可用 |
-| Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.192/Manboo-app-0.4.192.apk) | 66 MB | debug 签名，可直接安装 |
+| macOS | [Manboo-workbench-0.4.193.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193.dmg) | 160 MB | 完整包，含通话组件 |
+| macOS | [Manboo-workbench-0.4.193-lite.dmg](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-workbench-0.4.193-lite.dmg) | 104 MB | 不含通话组件，装出来的机器手机通话不可用 |
+| Android | [Manboo-app-0.4.192.apk](https://github.com/Qzzz00/manboo-workbench/releases/download/v0.4.193/Manboo-app-0.4.192.apk) | 66 MB | 仍为 0.4.192，debug 签名，可直接安装 |
 
 <details>
 <summary>SHA-256 校验值</summary>
 
 ```text
-c74a1216385fa71ca1ff8c9acf986e519715830c6bbad19a5e6371451716036a  Manboo-workbench-0.4.192.dmg
-472be85eee09728daa0b24a2bedaebf3857e4d411616fae7e2e334a550832535  Manboo-workbench-0.4.192-lite.dmg
+d4c6a630239c471832581309f276950e390a8870b03a372282b3f6081060f477  Manboo-workbench-0.4.193.dmg
+1056904f39e3a4ed9730c39e8d1851915cd24b31ae6d3a6824cb41f5da75581e  Manboo-workbench-0.4.193-lite.dmg
 ddbc5bdf0fa60dc35469a43cf10693c52e104822fcb5bc6b7da20e480ce6e21d  Manboo-app-0.4.192.apk
 ```
 
 </details>
 
-安装包为 ad-hoc 签名、未公证：macOS 首次打开需到「系统设置 → 隐私与安全性 → 仍要打开」。二进制文件作为 [v0.4.192 Release 附件](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.192) 分发，不进 Git 仓库（`dist/` 在 `.gitignore` 中；GitHub 对仓库内单个文件限制 100 MiB，Release 附件单文件上限为 2 GiB，且不限总大小与下载带宽）。下载后建议对照上面的 SHA-256 校验值。
+安装包为 ad-hoc 签名、未公证：macOS 首次打开需到「系统设置 → 隐私与安全性 → 仍要打开」。二进制文件作为 [v0.4.193 Release 附件](https://github.com/Qzzz00/manboo-workbench/releases/tag/v0.4.193) 分发，不进 Git 仓库（`dist/` 在 `.gitignore` 中；GitHub 对仓库内单个文件限制 100 MiB，Release 附件单文件上限为 2 GiB，且不限总大小与下载带宽）。下载后建议对照上面的 SHA-256 校验值。
 
 插件开发需要将本仓库与 `deepseek-harness`（DeepSeek Harness 上游，锁在标签 `dsh-v0.1.7-rc.2`，不跟随升级）放在同一父目录。插件的 `link:` 依赖直接引用上游源码，不带版本约束；上游各包的 `main` / `types` 指向构建产物 `lib/`（不入库），所以必须先在上游里安装并构建，仅检出本仓库不足以安装这些依赖。
 
@@ -224,7 +224,7 @@ pnpm build
 
 要完整开启，两边都得开：本机设环境变量或在 `app.json` 写 `"collab_enabled": true`，中转侧设 `WORKBENCH_COLLAB_ENABLED=1`。服务端把当前值放进 `/state.collab_enabled`，桌面与手机据此收起或显示入口，不用重新打包。
 
-> **这个开关关的是功能，不是源码。** 协作区的实现文件仍在本仓库里，克隆即可读到；若目标是连实现都不公开，需要在发布前从源码仓剔除相关文件、重建一个没有历史记录的提交，并重新打包 DMG / APK —— 当前 `dist/` 里的安装包是加开关之前构建的，仍含这部分前端代码。
+> **这个开关关的是功能，不是源码。** 协作区的实现文件仍在本仓库里，克隆即可读到；若目标是连实现都不公开，需要在发布前从源码仓剔除相关文件、重建一个没有历史记录的提交，并重新打包 DMG / APK —— 当前 `dist/` 里的安装包同样带着这部分前端代码 —— 开关关的是功能，不是文件。
 
 ## 关注我们
 

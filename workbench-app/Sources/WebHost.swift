@@ -58,7 +58,7 @@ final class WebHost: NSObject, WKUIDelegate, WKDownloadDelegate {
     }
 
     /// 开着的选文件框选完之后回给谁(nil = 没有框开着)。一次只开一个框,见 runOpenPanel 里那段。
-    private var pendingOpenPanel: (@MainActor ([URL]?) -> Void)?
+    private var pendingOpenPanel: (([URL]?) -> Void)?
     /// 在路上的下载(WKDownload 的 delegate 是弱引用,自己拿住)与它们要落的地址。
     private var downloads: [ObjectIdentifier: (download: WKDownload, destination: URL?)] = [:]
 
@@ -113,7 +113,7 @@ final class WebHost: NSObject, WKUIDelegate, WKDownloadDelegate {
 
     func webView(_ webView: WKWebView, runOpenPanelWith parameters: WKOpenPanelParameters,
                  initiatedByFrame frame: WKFrameInfo,
-                 completionHandler: @escaping @MainActor ([URL]?) -> Void) {
+                 completionHandler: @escaping ([URL]?) -> Void) {
         let request = WebPolicy.OpenPanelRequest(allowsMultipleSelection: parameters.allowsMultipleSelection,
                                                  allowsDirectories: parameters.allowsDirectories,
                                                  allowedExtensions: Self.acceptedExtensions(parameters))
@@ -196,18 +196,18 @@ final class WebHost: NSObject, WKUIDelegate, WKDownloadDelegate {
     // MARK: - WKUIDelegate:alert / confirm / prompt
 
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
-                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor () -> Void) {
+                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
         presentDialog(.alert(message), window ?? webView.window) { _, _ in completionHandler() }
     }
 
     func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String,
-                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor (Bool) -> Void) {
+                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
         presentDialog(.confirm(message), window ?? webView.window) { ok, _ in completionHandler(ok) }
     }
 
     func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String,
                  defaultText: String?, initiatedByFrame frame: WKFrameInfo,
-                 completionHandler: @escaping @MainActor (String?) -> Void) {
+                 completionHandler: @escaping (String?) -> Void) {
         presentDialog(.prompt(prompt, defaultText: defaultText), window ?? webView.window) { ok, text in
             completionHandler(ok ? (text ?? "") : nil)
         }
@@ -247,7 +247,7 @@ final class WebHost: NSObject, WKUIDelegate, WKDownloadDelegate {
     // MARK: - WKDownloadDelegate
 
     func download(_ download: WKDownload, decideDestinationUsing response: URLResponse,
-                  suggestedFilename: String, completionHandler: @escaping @MainActor (URL?) -> Void) {
+                  suggestedFilename: String, completionHandler: @escaping (URL?) -> Void) {
         let dir = downloadsDirectory()
         do {
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)

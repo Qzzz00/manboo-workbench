@@ -41,6 +41,12 @@ export interface ShellWindowStage {
    * 这里跟着翻成 false,所以不需要再单独看一次 `/onboarding.done`。
    */
   firstRunNeeded: boolean | undefined
+  /**
+   * 首次安装的密钥引导屏在不在屏上(2026-11-11)。
+   * `true` 时和登录屏 / 首次流程一样是整屏,窗口要置前 —— 否则这屏压在认领的原生窗底下,
+   * 新用户又会觉得「装完什么都没发生」。缺席(老调用方 / 还没问到)按没有这一屏办。
+   */
+  apiKeyGateNeeded?: boolean
 }
 
 /**
@@ -59,6 +65,9 @@ export function decideWindowMode(stage: ShellWindowStage): ShellWindowMode | und
   if (!account.enabled) return 'desktop'
   // 没登录 → 整屏登录/注册卡。
   if (!account.view.logged_in) return 'front'
+  // 首次安装密钥引导屏(2026-11-11):与首次流程同层整屏,窗口要在前。
+  // 它出现在首次流程之后,所以 firstRunNeeded 必须为 false 时才轮得到它。
+  if (stage.apiKeyGateNeeded === true) return 'front'
   // 登录了,但旗子还没问到 —— 同样是"还不知道",不发。
   if (firstRunNeeded === undefined) return undefined
   // 首次流程三屏 + 引导对话,都是整屏。

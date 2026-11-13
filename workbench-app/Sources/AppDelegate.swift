@@ -16,6 +16,18 @@ final class ShellWindow: NSWindow {
 /// 覆盖成 true 后第一下点击既激活窗口也直接命中里面的元素,不用先"焦点热身"。
 final class ClickThroughWebView: WKWebView {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    /// 网页发来的 `titlebar_drag` 是异步 WKScriptMessage:等壳收到,`NSApp.currentEvent`
+    /// 有可能已经不是那一下 leftMouseDown(尤其全屏网页刚切换过界面)。留一份最近的按下,
+    /// `performDrag` 才有得用 —— 拿到的是同一次按下,不是随手抓一个不相干的事件。
+    private(set) var lastMouseDownEvent: NSEvent?
+    override func mouseDown(with event: NSEvent) {
+        lastMouseDownEvent = event
+        super.mouseDown(with: event)
+    }
+    override func mouseUp(with event: NSEvent) {
+        lastMouseDownEvent = nil
+        super.mouseUp(with: event)
+    }
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, NSWindowDelegate, WKScriptMessageHandler {
@@ -79,6 +91,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         // 标题文字与标题栏底色都不要(标题「工作台」改由网页顶栏那一行小字说)。
         window.titleVisibility = ShellTitleBar.titleHidden ? .hidden : .visible
         window.titlebarAppearsTransparent = ShellTitleBar.titlebarAppearsTransparent
+        // 标题栏透明之后拖拽落点只剩网页顶栏;全屏界面(登录 / 启动弹窗 / 首次引导)连顶栏
+        // 都没有。原生侧这一条让 WKWebView 没吃掉的窗口空白也能按住拖,与网页那条不冲突。
+        window.isMovableByWindowBackground = ShellTitleBar.movableByWindowBackground
         // contentRect 认内容区、setFrame 认整窗矩形:`.fullSizeContentView` 之后两者本该一样大,
         // 这一下仍然留着 —— 它同时把「铺满 visibleFrame」落实一次,不依赖 AppKit 对 contentRect 的换算细节。
         window.setFrame(initialFrame, display: false)
@@ -995,14 +1010,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         switch message {
         case .drag:
             // performDrag 要「此刻正在处理的那个鼠标事件」。网页的 mousedown 经
-            // WKScriptMessageHandler 过来时,NSApp.currentEvent 还是那一下 leftMouseDown
+            // WKScriptMessageHandler 过来时,NSApp.currentEvent 通常还是那一下 leftMouseDown
             // (拖动事件要等手真的动了才产生),用它 performDrag 走的就是原生标题栏同一条
             // 系统路径 —— 手感、贴边吸附、拖到另一块屏全是系统在做,壳不自己算 frame。
             //
-            // 取不到那一下(理论上只在消息迟到、中间又来了别的事件时)就什么都不做:
-            // 宁可这一次拖不动(再按一下就好),也不要拿一个不相干的事件让窗口跳一下。
-            guard let event = NSApp.currentEvent,
-                  event.type == .leftMouseDown || event.type == .leftMouseDragged else { return }
+            // 消息是异步的,偶尔到这里 currentEvent 已经换了(全屏界面切换、WebKit 内部
+            // 多派一轮)。那就退回 WebView 记下的**同一次按下**:不至于整扇窗一下都拖不动。
+            // 两个都拿不到时什么都不做:宁可这一次拖不动(再按一下就好),也不要拿一个
+            // 不相干的事件让窗口跳一下。
+            let current = NSApp.currentEvent
+            let usable = (current?.type == .leftMouseDown || current?.type == .leftMouseDragged) ? current : nil
+            guard let event = usable ?? (webView as? ClickThroughWebView)?.lastMouseDownEvent else { return }
             window.performDrag(with: event)
             // performDrag 是同步的:手松开才回来。松手时鼠标在另一块屏上 → 挪到那块屏并按它铺好
             // (铺满大屏的窗往小屏拖,系统按覆盖面积永远认原屏,人就「拖不过去」;2026-09-27)。

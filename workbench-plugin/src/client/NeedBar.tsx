@@ -25,9 +25,19 @@ import { useState } from 'react'
 import { useAccessAuthorize } from './accessAuthorize.ts'
 import { accessNotice, fileAccessNotice, type AccessAlertKind } from './accessNotice.ts'
 import { retryModelAutoSetup } from './model.ts'
+import { DEEPSEEK_API_KEYS_URL } from './apiKeyGate.ts'
 
 /** 只在「用自己的 Key」模式下才会出现的那一句 —— 所以话里先说「你选了」,再给一条不填的退路。 */
 export const DEEPSEEK_KEY_LINE = '你选了用自己的 DeepSeek Key,但还没填(事务官接话要它;不想填就在设置里切回工作台提供的服务)'
+
+/**
+ * 一个 AI 来源都没配时首页那一条(2026-11-12)。
+ *
+ * 不依赖上一次体检:`GET /credentials` 的真相直接传进来(整屏引导点过「稍后再说」之后,
+ * 首页就靠这一条把人领回去)。按钮**直接打开 DeepSeek 开放平台的 API Keys 页** ——
+ * 省掉「入口在哪」,不再把人先送进设置里自己找那一格。
+ */
+export const AI_SOURCE_MISSING_LINE = '还没配 AI 来源,事务官现在接不了话。配一把 DeepSeek 密钥就能开口。'
 
 export interface NeedBarProps {
   baseUrl: string
@@ -43,9 +53,13 @@ export interface NeedBarProps {
   }
   /** 「去设置」:打开齿轮弹窗(密钥那一格就在里面)。 */
   onOpenSettings: () => void
+  /** 服务端真相:一个 AI 来源都没配。true 时顶上多一条直达开放平台的横幅。 */
+  aiSourceMissing?: boolean
+  /** 点「配置 AI 来源」:把整屏引导重新唤起(回来正好落在「贴 Key」那一步)。 */
+  onConfigureAi?: () => void
 }
 
-export function NeedBar({ baseUrl, fetchImpl, alerts, onOpenSettings }: NeedBarProps) {
+export function NeedBar({ baseUrl, fetchImpl, alerts, onOpenSettings, aiSourceMissing, onConfigureAi }: NeedBarProps) {
   const { authorize, error } = useAccessAuthorize(baseUrl, fetchImpl)
   /**
    * 说哪一句由 accessNotice 定(2026-09-18),这里不再写死「还差一个授权」——
@@ -86,8 +100,11 @@ export function NeedBar({ baseUrl, fetchImpl, alerts, onOpenSettings }: NeedBarP
     }
   }
 
-  if (alerts === undefined) return null
-  if (alerts.accessibility !== true && alerts.deepseek_key !== true && alerts.model_service !== true && alerts.file_access !== true) return null
+  /** 体检那条与「一个来源都没配」是同一件事的两条来路,只显示一行,别叠两遍。 */
+  const missing = aiSourceMissing === true || alerts?.deepseek_key === true
+  const hasAlert = alerts !== undefined
+    && (alerts.accessibility === true || alerts.model_service === true || alerts.file_access === true)
+  if (!missing && !hasAlert) return null
 
   return (
     <div className="ben-wb__needbar" role="status">
@@ -103,13 +120,16 @@ export function NeedBar({ baseUrl, fetchImpl, alerts, onOpenSettings }: NeedBarP
           <button type="button" className="ben-wb__needbar-go" onClick={authorizeFiles}>{fileAccess.action}</button>
         </div>
       )}
-      {alerts.deepseek_key === true && (
+      {missing && (
         <div className="ben-wb__needbar-row" data-kind="deepseek">
-          <span>{DEEPSEEK_KEY_LINE}</span>
+          <span>{aiSourceMissing === true ? AI_SOURCE_MISSING_LINE : DEEPSEEK_KEY_LINE}</span>
+          {/* 主入口:直接把 API Keys 页交给系统浏览器(壳里 target=_blank 会走默认浏览器)。 */}
+          <a className="ben-wb__needbar-go" href={DEEPSEEK_API_KEYS_URL}
+            target="_blank" rel="noreferrer noopener" onClick={onConfigureAi}>配置 AI 来源 ↗</a>
           <button type="button" className="ben-wb__needbar-go" onClick={onOpenSettings}>去设置</button>
         </div>
       )}
-      {alerts.model_service === true && (
+      {alerts?.model_service === true && (
         <div className="ben-wb__needbar-row" data-kind="model">
           <span>{retryNote ?? '模型服务还没接上(事务官暂时接不了话)'}</span>
           <button type="button" className="ben-wb__needbar-go" onClick={() => { void retry() }} disabled={retrying}>

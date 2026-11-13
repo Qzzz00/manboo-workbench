@@ -39,6 +39,38 @@ export async function fetchCredentialStatus(
   }
 }
 
+/**
+ * 启动时的「有没有配 AI 来源」严格探测(2026-11-13)。
+ *
+ * 与 `fetchCredentialStatus` 的区别只有一条,但很要紧:那边服务没起 / 回包看不懂时
+ * **一律回全 false**(界面照常渲染、显示未填),那是给设置面板用的宽松口径;
+ * 启动弹窗是**拦路**的,不能把「问不到」当成「没配」,否则服务抖一下、
+ * 或者老服务端 / 测试桩回的不是凭据结构,都会平白把人按在弹窗里。
+ *
+ * 所以这里只认长得像 `{ deepseek: { configured: boolean } }` 的回包:
+ * - `true` / `false` = 问到了,配了 / 明确没配;
+ * - `undefined` = 问不到(没起、非 2xx、JSON 坏、结构不对、超时异常)。
+ * 调用方另记一格 `probeDone` 区分「还没问到」与「问不到」,见 apiKeyStartup.ts。
+ */
+export async function fetchAiSourceConfigured(
+  baseUrl: string,
+  fetchImpl: typeof fetch = fetch,
+): Promise<boolean | undefined> {
+  try {
+    const res = await fetchImpl(`${baseUrl}/credentials`)
+    if (!res.ok) return undefined
+    const body = await res.json() as unknown
+    if (body === null || typeof body !== 'object') return undefined
+    const deepseek = (body as Record<string, unknown>).deepseek
+    if (deepseek === null || typeof deepseek !== 'object') return undefined
+    const configured = (deepseek as Record<string, unknown>).configured
+    return typeof configured === 'boolean' ? configured : undefined
+  }
+  catch {
+    return undefined
+  }
+}
+
 /** 提交一家的 Key。空字符串＝清除这一家。 */
 export async function submitCredential(
   baseUrl: string,
@@ -61,6 +93,53 @@ export async function submitCredential(
 
   if (!res.ok) throw new Error(`保存失败：HTTP ${res.status}`)
   return toView(await res.json())
+}
+
+/**
+ * 「一键测试连接」(2026-11-12,首次引导第 3 步)。
+ *
+ * 送的是**草稿里那把还没保存的 Key** —— 测不通的不该先落盘。服务端只回
+ * 「成没成 + 一句人话」(401/402 已经翻好了),**不回显 Key**。
+ * 底层错误一律换成自己的话:它可能把请求体(含 Key)带出来。
+ */
+export interface CredentialTestView {
+  ok: boolean
+  message: string
+}
+
+/** 这一层自己的兜底话术(导出给单测,免得界面与用例各抄一遍)。 */
+export const CREDENTIAL_TEST_CLIENT_COPY = {
+  noService: '连不上工作台服务,这次没能测',
+  failed: '这次没能测,稍后再试',
+} as const
+
+export async function testCredentialConnection(
+  baseUrl: string,
+  key: string,
+  fetchImpl: typeof fetch = fetch,
+): Promise<CredentialTestView> {
+  let res: Response
+  try {
+    res = await fetchImpl(`${baseUrl}/credentials/test`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ key }),
+    })
+  }
+  catch {
+    return { ok: false, message: CREDENTIAL_TEST_CLIENT_COPY.noService }
+  }
+  if (!res.ok) return { ok: false, message: CREDENTIAL_TEST_CLIENT_COPY.failed }
+  try {
+    const body = await res.json() as { ok?: unknown, message?: unknown }
+    return {
+      ok: body.ok === true,
+      message: typeof body.message === 'string' ? body.message : CREDENTIAL_TEST_CLIENT_COPY.failed,
+    }
+  }
+  catch {
+    return { ok: false, message: CREDENTIAL_TEST_CLIENT_COPY.failed }
+  }
 }
 
 /** 一次登录抓取的进展。只有状态和人话，不含 Cookie。 */

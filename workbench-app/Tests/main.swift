@@ -947,6 +947,7 @@ expect(ShellTitleBar.styleMask & ShellTitleBar.resizable != 0, "窗口还能缩�
 expectEqual(ShellTitleBar.styleMask, 1 | 2 | 4 | 8 | 32768, "styleMask 就这五项,没多没少")
 expect(ShellTitleBar.titleHidden, "★标题文字隐藏(标题「工作台」由网页顶栏那一行小字说)")
 expect(ShellTitleBar.titlebarAppearsTransparent, "★标题栏透明,红绿灯浮在网页顶栏上")
+expect(ShellTitleBar.movableByWindowBackground, "★窗口背景也能拖(全屏网页没有顶栏时多一条原生兜底)")
 expect(ShellTitleBar.trafficLightInset >= 70, "网页顶栏左边给红绿灯留出的位置够(78pt,与插件那侧同一个数)")
 
 expectEqual(ShellTitleBar.handlerName, LoadingCover.handlerName, "与加载占位共用一条通道,不给页面多开一条")

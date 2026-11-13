@@ -1,6 +1,6 @@
 {
   "name": "@ben/dsh-workbench",
-  "version": "0.4.192",
+  "version": "0.4.193",
   "private": true,
   "type": "module",
   "main": "lib/index.js",

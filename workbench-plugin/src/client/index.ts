@@ -13,6 +13,7 @@ import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import { WorkbenchButton, WorkbenchOverlay } from './Workbench.tsx'
 import { createWorkbenchStore } from './store.ts'
 import { registerShellOnboardingGate } from './onboardingGate.ts'
+import { installWindowDrag } from './windowDrag.ts'
 import { readServiceBaseUrl } from '../serviceOrigin.ts'
 import { DEFAULT_BASE_URL } from './useWorkbenchState.ts'
 
@@ -45,6 +46,10 @@ export const inject = ['slots', 'uiWorkspace']
 
 /** Register Ben's full-screen portfolio and the sidebar action that restores it. */
 export function apply(ctx: Context): void {
+  // 全屏界面(登录屏 / 启动弹窗 / 首次引导 / 整屏密钥引导)不渲染 TopBar,没有拖拽落点。
+  // 监听装在 document 上一次就够,之后界面怎么切都在;主工作台有 TopBar 时它整体让开。
+  // 不在壳里(普通浏览器)消息发不出去,这一层什么也不做。
+  if (typeof document !== 'undefined') installWindowDrag(document, window)
   const store = createWorkbenchStore()
   /**
    * 这一页该打哪台服务(卡 GP)。读一次、整页共用一份 —— 浮层底下每一处请求都从

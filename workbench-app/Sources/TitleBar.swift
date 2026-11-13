@@ -43,6 +43,10 @@ enum ShellTitleBar {
     /// 标题栏透明 + 标题文字隐藏。写成常量只为「这两条是有意为之」留一处断言。
     static let titlebarAppearsTransparent = true
     static let titleHidden = true
+    /// 窗口背景也能按住拖(2026-11-13)。标题栏透明之后,登录屏 / 启动弹窗 / 首次引导
+    /// 这些整屏网页一屏都没有顶栏,网页侧的拖拽落点靠插件 `windowDrag.ts` 的顶部带补;
+    /// 这一条是原生侧的兜底,凡 WKWebView 没吃掉的空白按下,系统自己就能拖。两条不冲突。
+    static let movableByWindowBackground = true
 
     /// 网页顶栏左边要给红绿灯留出的宽度(pt)。三颗键在 x≈7/27/47,直径 12,最右一颗到 ≈59;
     /// 留到 78 是让名字与第一颗小灯离它有一口气,不贴着。

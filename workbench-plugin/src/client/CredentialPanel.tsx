@@ -22,6 +22,8 @@
  */
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { ClaudeConnectView, CredentialProvider, CredentialStatusView, LoginProgressView } from './credentials.ts'
+// 去哪拿密钥那一处地址与首次引导 / 首页入口同源(2026-11-12):三处都只认这一个常量,改一处不漂。
+import { DEEPSEEK_API_KEYS_URL } from './apiKeyGate.ts'
 import { SetActions, SetBtn, SetErr, SetFold, SetMsg, SetRow, SetSection, SetWarn } from './settings/setKit.tsx'
 import {
   cancelClaudeConnect, cancelLogin, captureLoginNow, EMPTY_CREDENTIAL_STATUS, fetchClaudeConnect, fetchCredentialStatus,
@@ -71,7 +73,7 @@ const KEY_ROWS: readonly {
     provider: 'deepseek',
     name: 'DeepSeek',
     hint: '在 DeepSeek 开放平台上生成的那串密钥',
-    where: { label: '去 DeepSeek 开放平台拿一串', url: 'https://platform.deepseek.com/api_keys' },
+    where: { label: '去 DeepSeek 开放平台拿一串', url: DEEPSEEK_API_KEYS_URL },
   },
   // 2026-10-03:这一行的主路是上面那颗「接上」(见 CLAUDE_CONNECT_INVITE)。
   // 不接也能看到 Claude 额度,只是慢一个采样间隔(退回桌面端那份本地文件);接上才实时

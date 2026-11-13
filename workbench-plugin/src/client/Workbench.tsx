@@ -13,6 +13,7 @@ import { inShellApp, isTopFrame, notifyShellReady } from './shell.ts'
 import { installFileDropGuard } from './fileDropGuard.ts'
 import { Butler } from './Butler.tsx'
 import { TopBar } from './TopBar.tsx'
+import { WindowDragHandle } from './WindowDragHandle.tsx'
 import { topClockText } from './clockText.ts'
 import { ModuleBox, ModuleHeader, SplitHandle } from './ModuleBox.tsx'
 import { SlotZone } from './SlotZone.tsx'
@@ -73,6 +74,15 @@ import { AccountScreen } from './account/AccountScreen.tsx'
 import { probeAccount, type AccountProbe } from './account/accountApi.ts'
 import { FirstRunFlow } from './firstrun/FirstRunFlow.tsx'
 import { fetchFirstRun, markFirstRunDone } from './firstrun/firstRunApi.ts'
+// 首次安装后的整屏密钥引导(2026-11-11):判定在 apiKeyGate.ts(纯函数、有单测),这里接状态与放行。
+import { ApiKeySetupGate } from './ApiKeySetupGate.tsx'
+import { needApiKeySetup } from './apiKeyGate.ts'
+import { fetchAiSourceConfigured, fetchCredentialStatus, type CredentialStatusView } from './credentials.ts'
+// 启动时的「有没有配 AI 来源」这一问(2026-11-13):挡在首次流程图一之前,没配先弹窗、3 秒后直达图二。
+import { ApiKeyStartupNotice } from './ApiKeyStartupNotice.tsx'
+import {
+  API_KEY_STARTUP_PROBE_TIMEOUT_MS, apiKeyStartupWaiting, needApiKeyStartupNotice,
+} from './apiKeyStartup.ts'
 import { NeedBar } from './NeedBar.tsx'
 import { accessNotice } from './accessNotice.ts'
 import { useAccessAuthorize } from './accessAuthorize.ts'
@@ -324,6 +334,32 @@ function WorkbenchOverlayInner({
    * 真相是 app.json 的 `first_run_done_at`,只在**登录之后**问一次。
    */
   const [firstRunNeeded, setFirstRunNeeded] = useState<boolean | undefined>(undefined)
+  /**
+   * 首次安装密钥引导(2026-11-11):`GET /credentials` 的真相(只回「配了没有」,只留布尔)。
+   * undefined = 还没问到 —— 此时不弹引导(问不到别把人按在整屏里)。填对密钥后重问一次,
+   * deepseek 翻 true,引导自然退场;这是持久放行,不另写旗子。
+   */
+  const [credentialStatus, setCredentialStatus] = useState<CredentialStatusView | undefined>(undefined)
+  /** 本次会话点过「稍后再说」没有。不持久化,刷新/重启就重新提醒(用户拍板:直到配上)。 */
+  const [apiKeySkipped, setApiKeySkipped] = useState(false)
+  /**
+   * 从首页「配置 AI 来源」重新进来(2026-11-12):外链已经把 API Keys 页打开了,
+   * 回来直接落第 3 步「贴 Key」,不必再从「去登录」走一遍。
+   */
+  const [apiKeyReentry, setApiKeyReentry] = useState(false)
+  /**
+   * 启动弹窗那格真相(2026-11-13):严格探测 `GET /credentials` 的 `deepseek.configured`。
+   * undefined = 问不到(服务没起 / 回包不是凭据结构 / 超时)——按「没这回事」放行,
+   * 不把人按在弹窗里,也不空屏卡死。与上面 credentialStatus 的宽松口径刻意分开:
+   * 那边服务没起回全 false 是给设置面板看的,这边是**拦路**的,不能拿抖动当没配。
+   */
+  const [aiSourceConfigured, setAiSourceConfigured] = useState<boolean | undefined>(undefined)
+  /** 这次启动的探测回来了没有(不管结论是什么)。没回来时先空屏,避免「先闪一下图一」。 */
+  const [aiSourceProbeDone, setAiSourceProbeDone] = useState(false)
+  /** 启动弹窗本次结算过没有(自动跳过去了 / 点了稍后再说)。不持久化,下次启动重新问。 */
+  const [apiKeyStartupHandled, setApiKeyStartupHandled] = useState(false)
+  /** 3 秒到点(或点「立即去配置」):首次流程直接从 config 步(图二)开始,不先显示图一。 */
+  const [startAtConfig, setStartAtConfig] = useState(false)
   /**
    * 刚在登录屏上登进来(2026-09-24 去卡顿)。登录屏已经把最新的 /account 问回来了,直接用,不再问一遍;
    * 首次流程那面旗子问回来之前**先空着**,不把整块工作台先渲染一遍再换成引导屏 —— 那一下正好压在
@@ -1022,6 +1058,68 @@ function WorkbenchOverlayInner({
   }, [loggedIn, firstRunNeeded, feed.baseUrl, serviceFetch])
 
   /**
+   * 首次安装密钥引导那格真相(2026-11-11):登录后拉一次 `GET /credentials`,只把 deepseek 那一格
+   * 摆到判定里(只回布尔,组件不显示、不缓存密钥本身)。
+   *
+   * fetchCredentialStatus 连不上时也回全 false(它自己的纪律:界面照常渲染、显示未填)。
+   * 但能走到这里说明 probeAccount 已经成功、服务是在的 —— 所以这里的 false 就是真的没配,
+   * 不会因为一次网络抖动把人锁在整屏引导里。判定那一边另有 `undefined=还没问到不弹` 的兜底。
+   */
+  useEffect(() => {
+    if (!loggedIn) return
+    let alive = true
+    void fetchCredentialStatus(feed.baseUrl, serviceFetch ?? fetch).then((status) => {
+      if (alive) setCredentialStatus(status)
+    })
+    return () => { alive = false }
+  }, [loggedIn, feed.baseUrl, serviceFetch])
+
+  /**
+   * 启动时的「有没有配 AI 来源」严格探测(2026-11-13)。
+   *
+   * 触发条件只看 `firstRunNeeded === true`,**不再看 `loggedIn`**:真机上 `/account` 的
+   * `logged_in` 会抖(实测登录进引导屏时它仍是 false),多叠一道门槛弹窗就时有时无;
+   * 而首次流程这面旗子本来就只有登录之后才问得出来。
+   *
+   * 两条兜底:① `fetchAiSourceConfigured` 自己 catch + 只认凭据结构,问不到回 undefined;
+   * ② 这里另起 3 秒超时,连 fetch 都挂住时也要把 probeDone 翻开 —— 绝不把人卡在空屏。
+   * 结论口径在 apiKeyStartup.ts:**只有明确 `true` 才放行**,问不到/没配都弹(弹窗有出口,不锁人)。
+   */
+  useEffect(() => {
+    if (firstRunNeeded !== true) return
+    let alive = true
+    const bail = setTimeout(() => { if (alive) setAiSourceProbeDone(true) }, API_KEY_STARTUP_PROBE_TIMEOUT_MS)
+    void fetchAiSourceConfigured(feed.baseUrl, serviceFetch ?? fetch).then((configured) => {
+      if (!alive) return
+      setAiSourceConfigured(configured)
+      setAiSourceProbeDone(true)
+    })
+    return () => { alive = false; clearTimeout(bail) }
+  }, [firstRunNeeded, feed.baseUrl, serviceFetch])
+
+  /** 启动弹窗那一问:两格结论都来自纯函数,单测直接钉。 */
+  const startupStage = {
+    loggedIn,
+    firstRunNeeded,
+    probeDone: aiSourceProbeDone,
+    aiConfigured: aiSourceConfigured,
+    handled: apiKeyStartupHandled,
+  }
+  const startupNoticeNeeded = needApiKeyStartupNotice(startupStage)
+  const startupWaiting = apiKeyStartupWaiting(startupStage)
+
+  /**
+   * 首次安装密钥引导屏要不要出现(纯函数、可测)。
+   * 启动弹窗已经结算过的一次启动里不再叠这一层 —— 否则人刚从图二回来,
+   * 又被按进整屏三步向导。但从首页「配置 AI 来源」主动重入时照旧放行。
+   */
+  const apiKeyGateNeeded = needApiKeySetup({
+    loggedIn,
+    deepseekConfigured: credentialStatus?.deepseek,
+    skipped: apiKeySkipped || (apiKeyStartupHandled && !apiKeyReentry),
+  })
+
+  /**
    * 壳窗口「前台 / 桌面」两档(2026-09-18,Ben:「安装完……现在的层级已经在底部了,导致我缩小了
    * 很多应用才看到页面,用户会觉得出 bug 了。登录和引导的时候,应该是和其他应用一样,能在顶部
    * 的,现在写死是底部」)。
@@ -1041,7 +1139,7 @@ function WorkbenchOverlayInner({
    * 下面槽体元素整个没挂载(slotBodyRef 为空),上报 effect 的 measureSlotRect 量不到东西
    * 就自己噤声了 —— 不是"另外又加了一道开关",是本来就发不出来。详见交接文档第三节。
    */
-  const windowMode = decideWindowMode({ account, firstRunNeeded })
+  const windowMode = decideWindowMode({ account, firstRunNeeded, apiKeyGateNeeded })
   /** 上一次**真的发出去**的那一档(undefined = 还没发过)。 */
   const sentWindowModeRef = useRef<ShellWindowMode | undefined>(undefined)
   /**
@@ -1800,6 +1898,7 @@ function WorkbenchOverlayInner({
     return (
       <main className="ben-wb" aria-label={WORKBENCH_TITLE}>
         <style>{STYLE}</style>
+        <WindowDragHandle />
         <AccountScreen
           baseUrl={feed.baseUrl}
           {...(serviceFetch === undefined ? {} : { fetchImpl: serviceFetch })}
@@ -1822,6 +1921,38 @@ function WorkbenchOverlayInner({
     return (
       <main className="ben-wb" aria-label={WORKBENCH_TITLE} aria-busy="true">
         <style>{STYLE}</style>
+        <WindowDragHandle />
+      </main>
+    )
+  }
+
+  /**
+   * 启动探测还没回来(2026-11-13):先空一拍,别把图一先渲染出来再换成弹窗 —— 那一下
+   * 正是「启动直接到图一」的观感来源。探测有 3 秒超时兜底,不会把人卡在空屏。
+   */
+  if (startupWaiting) {
+    return (
+      <main className="ben-wb" aria-label={WORKBENCH_TITLE} aria-busy="true">
+        <style>{STYLE}</style>
+        <WindowDragHandle />
+      </main>
+    )
+  }
+
+  /**
+   * 检测到没配大模型 api key:启动时**先弹窗**,不是直接到图一。
+   * 3 秒到点(或点「立即去配置」)→ 结算这一层,并让首次流程直接从 `config` 步(图二)开始;
+   * 点「稍后再说」→ 结算这一层,按原流程进图一。两者都只在本次启动生效,不写旗子。
+   */
+  if (startupNoticeNeeded) {
+    return (
+      <main className="ben-wb" aria-label={WORKBENCH_TITLE}>
+        <style>{STYLE}</style>
+        <WindowDragHandle />
+        <ApiKeyStartupNotice
+          onGo={() => { setApiKeyStartupHandled(true); setStartAtConfig(true) }}
+          onSkip={() => setApiKeyStartupHandled(true)}
+        />
       </main>
     )
   }
@@ -1830,15 +1961,48 @@ function WorkbenchOverlayInner({
     return (
       <main className="ben-wb" aria-label={WORKBENCH_TITLE}>
         <style>{STYLE}</style>
+        <WindowDragHandle />
         <MeNameProvider name={feed.state.me?.name}>
           <FirstRunFlow
             baseUrl={feed.baseUrl}
             {...(serviceFetch === undefined ? {} : { fetchImpl: serviceFetch })}
             state={feed.state}
-            onDone={() => setFirstRunNeeded(false)}
+            // 启动弹窗带过来的:直接落「配置模型与 AI 来源」那一屏(图二),不先显示图一。
+            {...(startAtConfig ? { initialStep: 'config' as const } : {})}
+            onDone={() => {
+              setFirstRunNeeded(false)
+              setStartAtConfig(false)
+              // 图二里若真把 Key 填上了,首页那条「还没配 AI 来源」也要跟着消掉。
+              void fetchCredentialStatus(feed.baseUrl, serviceFetch ?? fetch).then(setCredentialStatus)
+            }}
           />
         </MeNameProvider>
       </main>
+    )
+  }
+
+  /**
+   * 首次安装后的整屏密钥引导(2026-11-11):首次流程走完之后、主界面之前。
+   * 此时 skill 还没接话的能力,先把「配一把 DeepSeek 密钥」这件事摆到台面上。
+   * 填对保存成功 → 重问一次 /credentials,deepseek 翻 true → 这一屏自然消失(持久)。
+   * 「稍后再说」→ 只记在本次会话,进去用,下次启动再提醒(不写旗子,直到配上)。
+   */
+  if (apiKeyGateNeeded) {
+    return (
+      <>
+        <WindowDragHandle />
+        <ApiKeySetupGate
+        baseUrl={feed.baseUrl}
+        {...(serviceFetch === undefined ? {} : { fetchImpl: serviceFetch })}
+        // 从首页「配置 AI 来源」回来时,外链已经打开过,直接落第 3 步贴 Key。
+        {...(apiKeyReentry ? { initialStep: 'paste' as const } : {})}
+        onSaved={() => {
+          setApiKeyReentry(false)
+          void fetchCredentialStatus(feed.baseUrl, serviceFetch ?? fetch).then(setCredentialStatus)
+        }}
+        onSkip={() => setApiKeySkipped(true)}
+        />
+      </>
     )
   }
 
@@ -2470,6 +2634,10 @@ function WorkbenchOverlayInner({
             {...(serviceFetch === undefined ? {} : { fetchImpl: serviceFetch })}
             {...(feed.state.setup_alerts === undefined ? {} : { alerts: feed.state.setup_alerts })}
             onOpenSettings={() => setSettingsOpen(true)}
+            // 一个 AI 来源都没配时,首页也留一条直达开放平台 API Keys 页的入口(2026-11-12)。
+            // 开源构建没接中转,own 档的 DeepSeek Key 就是唯一的 AI 来源,所以这一格即真相。
+            {...(credentialStatus?.deepseek === false ? { aiSourceMissing: true } : {})}
+            onConfigureAi={() => { setApiKeyReentry(true); setApiKeySkipped(false) }}
           />
         </div>
 

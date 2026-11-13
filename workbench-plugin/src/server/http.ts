@@ -98,6 +98,8 @@ import type {
 import { parseClaudeStatusLine } from '../quota/claude.ts'
 import type { CredentialProvider } from './credentials.ts'
 import { credentialStatus, defaultCredentialFile, isCredentialProvider, saveCredential } from './credentials.ts'
+// 首次引导里「一键测试连接」(2026-11-12):判定与外发都在 credentialTest.ts,这里只收 key、送回人话。
+import { testDeepSeekKey } from './credentialTest.ts'
 import type { ModelService } from './modelService.ts'
 import type { ModelAutoSetup } from './modelAutoSetup.ts'
 import type { OnboardingWarm } from './onboardingWarm.ts'
@@ -9541,6 +9543,32 @@ export async function startWorkbenchServer(
         sendJson(res, 200, await credentialStatus(credentialFile))
         return
       }
+    }
+
+    /**
+     * 「一键测试连接」(2026-11-12,首次引导)。用**草稿里那把还没保存的 Key** 打一次最小对话,
+     * 把 401 / 402 / 连不上翻成人话。与 POST /credentials 的区别:这里**一个字都不落盘** ——
+     * 测不通的 Key 不该先被存进凭据库,用户还得回头去删。
+     *
+     * 只认回环(同 POST /credentials,而且这一下花的是他自己 Key 的钱)。回包只有
+     * { ok, message, status? },不含 Key、不含上游正文、不进日志(连请求体都不记)。
+     */
+    if (path === '/credentials/test' && req.method === 'POST') {
+      if (!loopback) {
+        sendJson(res, 403, { error: '只能在本机测试连接' })
+        return
+      }
+      const text_ = await readBody(req)
+      let body: unknown
+      try { body = JSON.parse(text_) } catch { sendJson(res, 400, { error: 'body 不是合法 JSON' }); return }
+      const raw = (body ?? {}) as Record<string, unknown>
+      if (typeof raw.key !== 'string') {
+        sendJson(res, 400, { error: 'key 必须是字符串' })
+        return
+      }
+      const result = await testDeepSeekKey({ key: raw.key })
+      sendJson(res, 200, result)
+      return
     }
 
     /**

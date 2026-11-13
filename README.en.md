@@ -159,7 +159,7 @@ The app is distributed as a macOS installer and an Android package, currently in
 
 ### Downloads
 
-Current version **0.4.192**: desktop targets macOS / Apple Silicon; mobile targets Android.
+Current source version **0.4.193**; desktop targets macOS / Apple Silicon, mobile targets Android. The table below lists the published **v0.4.192** Release assets; it will be replaced when the two 0.4.193 installers (full / lite) are published.
 
 | Platform | Package | Size | Notes |
 | --- | --- | --- | --- |

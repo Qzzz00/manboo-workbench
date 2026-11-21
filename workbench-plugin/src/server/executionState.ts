@@ -57,11 +57,26 @@ export function executionOverview(tasks: readonly TaskView[], available = true,
     return { task_id: task.id, title: task.title, task_round: task.round ?? 1, state, role: role.kind, role_origin: role.origin, sources }
   })
   const statusById = new Map(tasks.map(task => [task.id, task.status]))
+  /*
+   * 收场 / 停住的卡不挡「今天在跑几件」的完整性闸门 —— 三档,宽严有别(2026-11-21):
+   * - **done / confirm**:活已经收尾(办完、或停下来等她验收),执行层面与「今天在跑几件」无关;
+   *   只要没目击到在跑来源就豁免,不分角色。业务的这类卡原来不豁免,旧卡来源文件没了就是永远
+   *   unknown,它们不解除,总数就永远发不出来 —— 手机首页只剩「业务任务总数未知」(维护者 11-21:
+   *   「正在办一直 0 事项」)。目击到 running 的照旧留在闸门里(卡片 done 不推断原生会话结束)。
+   * - **blocked**:未分类卡照老规矩豁免;**业务卡保持保守** —— 受阻是工作卡住的现场,来源失联时
+   *   不猜、不发布确定数(`execution-facts-http` 钉着:双来源旧阻塞、较晚来源失联 → 仍标未知、
+   *   总数缺席、事项不被重写)。
+   */
+  const parkedQuiet = (item: ExecutionItem): boolean => {
+    if (item.sources.some(one => one.state === 'running')) return false
+    const status = statusById.get(item.task_id)
+    if (status === 'done' || status === 'confirm') return true
+    return status === 'blocked' && item.role !== 'business' && item.state === 'unknown'
+  }
   const current = items.filter(item => item.role !== 'coordination' && item.state !== 'completed' && item.state !== 'canceled'
     // Historical imported cards remain visible as excluded unknown sources, but a closed/parked card
     // with no witnessed running source is not part of today's execution-count completeness gate.
-    && !(item.role === 'unclassified' && item.state === 'unknown'
-      && (statusById.get(item.task_id) === 'done' || statusById.get(item.task_id) === 'confirm' || statusById.get(item.task_id) === 'blocked')))
+    && !parkedQuiet(item))
   /*
    * 「在跑几件 / 几个会话」只从任务日志那一本账数(2026-10-29 改口,任务书「在跑的事项要数到
    * 命令行真在跑的活」①b):`runsOf` 与 `GET /collab/runs` 是同一处(collabRoutes.runSegmentsOf,

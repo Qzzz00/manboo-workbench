@@ -126,6 +126,15 @@ export function watchLine(watch: SentinelView['watches'][number]): string {
 /** 拖拽判定阈值(px):移动小于这个距离算"没拖动"，落到点击/键盘那条"切换收小"的老路。 */
 const DRAG_THRESHOLD_PX = 4
 
+/**
+ * 回锚校验的容差(px):按下那一刻 getBoundingClientRect 可能量到已失效的位置
+ * (过渡/重排中,真机 2026-11-21 三次「单击球就消失」都是这个入口——单击带几个像素的
+ * 微动越过了 DRAG_THRESHOLD_PX,offsetX 带着错锚点把落点写到屏幕另一头)。
+ * 所以每一次移动都跟「当前渲染位置 + 指针位移」对一遍:两个算法差出这个数,
+ * 信指针位移并把锚点自我纠正过来。正常拖拽两个算法本就相等,不会误伤。
+ */
+const DRAG_ANCHOR_DRIFT_PX = 24
+
 function clampPct(value: number): number {
   return Math.min(95, Math.max(0, value))
 }
@@ -222,8 +231,23 @@ export function Butler({
     const viewportW = window.innerWidth || 1
     const viewportH = window.innerHeight || 1
     // M4:浮窗左上角 = 指针当前位置 − 抓取时记录的偏移量,不是指针位置本身。
-    const leftPx = event.clientX - drag.offsetX
-    const topPx = event.clientY - drag.offsetY
+    let leftPx = event.clientX - drag.offsetX
+    let topPx = event.clientY - drag.offsetY
+    // 回锚校验(见 DRAG_ANCHOR_DRIFT_PX):锚点一旦失效就按「渲染位置 + 指针位移」改写锚点,
+    // 后续每一次移动都用纠正后的锚,落点始终跟得上指针。
+    const now = asideRef.current?.getBoundingClientRect()
+    if (now !== undefined) {
+      const expectLeft = now.left + dx
+      const expectTop = now.top + dy
+      if (Math.abs(leftPx - expectLeft) > DRAG_ANCHOR_DRIFT_PX) {
+        drag.offsetX = event.clientX - expectLeft
+        leftPx = expectLeft
+      }
+      if (Math.abs(topPx - expectTop) > DRAG_ANCHOR_DRIFT_PX) {
+        drag.offsetY = event.clientY - expectTop
+        topPx = expectTop
+      }
+    }
     onMove({ x_pct: clampPct((leftPx / viewportW) * 100), y_pct: clampPct((topPx / viewportH) * 100) })
   }
 

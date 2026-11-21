@@ -208,6 +208,18 @@ export function externalRecent(state: WorkbenchState): (Omit<SessionView, 'agent
 function doingCard(state: WorkbenchState, budget: number): StageCard {
   const tasks = executingTasks(state);
   const running = new Set(state.sessions.filter((s) => s.status === 'running').map(sessionKey));
+  // 各家客户端在跑、没挂在事项上的会话(2026-11-21 起分类业务范围里也照列 —— 这张卡的契约
+  // 一直是「在办事项 + 各家在跑会话」,10-28 断点④改数的时候没有道理把这几行从卡面抹掉,
+  // 电脑首页球周围那几张一直在)。与电脑 `butlerSceneModel.externalRunningSessions` 同一个筛子。
+  const externalRows: StageCard['lines'] = externalRunning(state).map((s) => ({
+    id: sessionJobId(s.agent, s.session_id),
+    // 标题:那家自己的标题(2026-09-25,卡 P:服务端读出来了);读不到才「Claude 的一条会话」。与电脑同一个函数。
+    text: sessionDisplayTitle(s, agentTitle(s.agent, state)),
+    // 它底下有后台任务(卡 Q):那一行写几项、在跑几项。
+    note: [agentTitle(s.agent, state), sessionChildrenLine(s.children)].filter((one): one is string => one !== undefined).join(' · '),
+    // 这一行就是某一家的一条会话:名字前那张 logo 认它(卡 LG3)。
+    agent: s.agent,
+  }));
   const rows: StageCard['lines'] = [
     ...tasks.map((task) => {
       const ids = [...new Set((task.links ?? []).filter((link) => running.has(sessionKey(link)) && link.agent !== 'dsh').map((link) => link.agent))];
@@ -220,15 +232,7 @@ function doingCard(state: WorkbenchState, budget: number): StageCard {
         ...(ids.length === 1 && ids[0] !== undefined ? { agent: ids[0] } : {}),
       };
     }),
-    ...externalRunning(state).map((s) => ({
-      id: sessionJobId(s.agent, s.session_id),
-      // 标题:那家自己的标题(2026-09-25,卡 P:服务端读出来了);读不到才「Claude 的一条会话」。与电脑同一个函数。
-      text: sessionDisplayTitle(s, agentTitle(s.agent, state)),
-      // 它底下有后台任务(卡 Q):那一行写几项、在跑几项。
-      note: [agentTitle(s.agent, state), sessionChildrenLine(s.children)].filter((one): one is string => one !== undefined).join(' · '),
-      // 这一行就是某一家的一条会话:名字前那张 logo 认它(卡 LG3)。
-      agent: s.agent,
-    })),
+    ...externalRows,
   ];
   // The public running list owns execution. Session-only entries are not business tasks.
   const scoped = state.running?.scope === 'classified_business_tasks';
@@ -240,14 +244,15 @@ function doingCard(state: WorkbenchState, budget: number): StageCard {
     const providers = [...new Set(scoped ? facts.flatMap(one => (one.sources ?? []).filter(source => source.role === 'business').map(source => source.provider ?? '提供方未确认')) : facts.map(one => one.agent))];
     return { id, text: task?.title ?? facts[0]!.text, note: `${unclassified ? '已确认业务 · ' : ''}${providers.map(one => agentTitle(one, state)).join(' · ')}`, ...(providers.length === 1 ? { agent: providers[0]! } : {}) };
   });
-  const count = state.running === undefined ? (!state.stale ? rows.length : undefined) : !state.stale && state.running.count !== undefined ? scoped ? state.running.count : publicRows.filter(one => state.tasks?.tasks.find(task => task.id === one.id)?.source?.kind !== 'session').length : undefined;
+  const count = state.running === undefined ? (!state.stale ? rows.length : undefined) : !state.stale && state.running.count !== undefined ? (scoped ? state.running.count : publicRows.filter(one => state.tasks?.tasks.find(task => task.id === one.id)?.source?.kind !== 'session').length) + externalRows.length : undefined;
   const businessRows = (scoped ? publicRows : publicRows.filter(one => state.tasks?.tasks.find(task => task.id === one.id)?.source?.kind !== 'session'))
     .map(one => scoped && count === undefined ? { ...one, note: `业务总数未知 · ${one.note}` } : one);
-  const fit = fitRows(businessRows, budget);
+  const fit = fitRows(state.running === undefined ? businessRows : [...businessRows, ...externalRows], budget);
   return {
     id: 'doing',
     title: '正在办',
-    // 手机与电脑舞台、球下、汇报共用公共业务事项数；窗口槽单列各家运行会话数。
+    // 那颗数 = 公共业务事项数(与电脑舞台、球下、汇报同源)+ 卡面列着的各家在跑会话数 ——
+    // 列着的与数着的要一致(2026-09-25 卡 V);业务总数没核完(闸门未过)时不画数,会话行照列(2026-11-21)。
     // 老工作台没给这一格才退回自己数这几行。
     ...(count === undefined ? {} : { count }),
     lines: fit.shown,
